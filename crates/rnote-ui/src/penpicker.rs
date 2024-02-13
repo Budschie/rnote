@@ -19,6 +19,8 @@ mod imp {
         #[template_child]
         pub(crate) typewriter_toggle: TemplateChild<ToggleButton>,
         #[template_child]
+        pub(crate) latex_toggle: TemplateChild<ToggleButton>,
+        #[template_child]
         pub(crate) eraser_toggle: TemplateChild<ToggleButton>,
         #[template_child]
         pub(crate) selector_toggle: TemplateChild<ToggleButton>,
@@ -85,6 +87,10 @@ impl RnPenPicker {
         self.imp().typewriter_toggle.get()
     }
 
+    pub(crate) fn latex_toggle(&self) -> ToggleButton {
+        self.imp().latex_toggle.get()
+    }
+
     pub(crate) fn eraser_toggle(&self) -> ToggleButton {
         self.imp().eraser_toggle.get()
     }
@@ -129,6 +135,14 @@ impl RnPenPicker {
                 if typewriter_toggle.is_active() {
                     adw::prelude::ActionGroupExt::activate_action(&appwindow, "pen-style",
                         Some(&PenStyle::Typewriter.to_string().to_variant()));
+                }
+            }));
+
+        imp.latex_toggle
+            .connect_toggled(clone!(@weak appwindow => move |latex_toggle| {
+                if latex_toggle.is_active() {
+                    adw::prelude::ActionGroupExt::activate_action(&appwindow, "pen-style",
+                        Some(&PenStyle::Latex.to_string().to_variant()));
                 }
             }));
 

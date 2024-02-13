@@ -4,14 +4,15 @@ mod appactions;
 // Imports
 use crate::{
     colorpicker::RnColorPad, colorpicker::RnColorSetter, config, penssidebar::RnBrushPage,
-    penssidebar::RnEraserPage, penssidebar::RnSelectorPage, penssidebar::RnShaperPage,
-    penssidebar::RnToolsPage, penssidebar::RnTypewriterPage, settingspanel::RnPenShortcutRow,
-    strokewidthpicker::RnStrokeWidthPreview, strokewidthpicker::RnStrokeWidthSetter,
-    strokewidthpicker::StrokeWidthPreviewStyle, workspacebrowser::workspacesbar::RnWorkspaceRow,
-    workspacebrowser::RnFileRow, workspacebrowser::RnWorkspacesBar, RnAppMenu, RnAppWindow,
-    RnCanvas, RnCanvasMenu, RnCanvasWrapper, RnColorPicker, RnIconPicker, RnMainHeader, RnOverlays,
-    RnPenPicker, RnPensSideBar, RnSettingsPanel, RnSidebar, RnStrokeContentPreview,
-    RnStrokeWidthPicker, RnUnitEntry, RnWorkspaceBrowser,
+    penssidebar::RnEraserPage, penssidebar::RnLatexPage, penssidebar::RnSelectorPage,
+    penssidebar::RnShaperPage, penssidebar::RnToolsPage, penssidebar::RnTypewriterPage,
+    settingspanel::RnPenShortcutRow, strokewidthpicker::RnStrokeWidthPreview,
+    strokewidthpicker::RnStrokeWidthSetter, strokewidthpicker::StrokeWidthPreviewStyle,
+    workspacebrowser::workspacesbar::RnWorkspaceRow, workspacebrowser::RnFileRow,
+    workspacebrowser::RnWorkspacesBar, RnAppMenu, RnAppWindow, RnCanvas, RnCanvasMenu,
+    RnCanvasWrapper, RnColorPicker, RnIconPicker, RnMainHeader, RnOverlays, RnPenPicker,
+    RnPensSideBar, RnSettingsPanel, RnSidebar, RnStrokeContentPreview, RnStrokeWidthPicker,
+    RnUnitEntry, RnWorkspaceBrowser,
 };
 use adw::subclass::prelude::AdwApplicationImpl;
 use gtk4::{gio, glib, glib::clone, prelude::*, subclass::prelude::*};
@@ -108,6 +109,7 @@ mod imp {
             RnEraserPage::static_type();
             RnSelectorPage::static_type();
             RnTypewriterPage::static_type();
+            RnLatexPage::static_type();
             RnToolsPage::static_type();
             RnWorkspaceBrowser::static_type();
             RnWorkspacesBar::static_type();

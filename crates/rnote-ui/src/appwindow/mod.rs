@@ -765,6 +765,12 @@ impl RnAppWindow {
                     .colorpicker()
                     .set_stroke_color(gdk::RGBA::from_compose_color(text_color));
             }
+            PenStyle::Latex => {
+                self.overlays()
+                    .penssidebar()
+                    .sidebar_stack()
+                    .set_visible_child_name("latex_page");
+            }
             PenStyle::Eraser => {
                 self.overlays().penpicker().eraser_toggle().set_active(true);
                 self.overlays()
@@ -802,6 +808,10 @@ impl RnAppWindow {
         self.overlays()
             .penssidebar()
             .typewriter_page()
+            .refresh_ui(active_tab);
+        self.overlays()
+            .penssidebar()
+            .latex_page()
             .refresh_ui(active_tab);
         self.overlays()
             .penssidebar()

@@ -56,6 +56,7 @@ poppler-rs = { workspace = true }
 # the long-term plan is to remove the gtk4 dependency entirely after switching to another renderer.
 gtk4 = { workspace = true, optional = true }
 clap = { workspace = true, optional = true }
+tempfile = "3.10.0"
 
 [dev-dependencies]
 approx = { workspace = true }

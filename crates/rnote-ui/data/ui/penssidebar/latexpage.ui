@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="RnLatexPage" parent="GtkWidget">
+    <property name="layout-manager">
+      <object class="GtkBoxLayout">
+        <property name="spacing">6</property>
+        <property name="orientation">vertical</property>
+      </object>
+    </property>
+    <property name="hexpand">false</property>
+    <property name="vexpand">false</property>
+    <child>
+      <object class="GtkBox" id="eraserstyle_togglebox">
+        <property name="orientation">vertical</property>
+        <property name="homogeneous">true</property>
+        <style>
+          <class name="linked" />
+        </style>
+      </object>
+    </child>
+    <child>
+      <object class="GtkSeparator">
+        <property name="orientation">vertical</property>
+      </object>
+    </child>
+  </template>
+</interface>

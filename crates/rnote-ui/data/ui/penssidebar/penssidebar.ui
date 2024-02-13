@@ -58,6 +58,22 @@
           </object>
         </child>
 
+		<!-- Latex Page -->
+		<child>
+		  <object class="GtkStackPage" id="latex_stackpage">
+			<property name="name">latex_page</property>
+            <property name="title" translatable="yes">LaTeX</property>
+			<property name="child">
+              <object class="RnLatexPage" id="latex_page">
+                <property name="margin_top">6</property>
+                <property name="margin_bottom">6</property>
+                <property name="margin_start">6</property>
+                <property name="margin_end">6</property>
+              </object>
+            </property>
+		  </object>
+		</child>
+
         <!-- Eraser Page -->
         <child>
           <object class="GtkStackPage" id="eraser_stackpage">

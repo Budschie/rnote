@@ -44,6 +44,18 @@
             </style>
           </object>
         </child>
+		<child>
+          <object class="GtkToggleButton" id="latex_toggle">
+            <property name="icon_name">pen-latex-symbolic</property>
+            <property name="tooltip_text" translatable="yes">Latex</property>
+            <property name="hexpand">true</property>
+            <property name="group">brush_toggle</property>
+            <style>
+              <class name="flat" />
+            </style>
+          </object>
+        </child>
+
         <child>
           <object class="GtkToggleButton" id="eraser_toggle">
             <property name="icon_name">pen-eraser-symbolic</property>

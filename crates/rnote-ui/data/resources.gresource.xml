@@ -8,6 +8,8 @@
         <file compressed="true" preprocess="xml-stripblanks">ui/groupediconpicker/groupediconpickergroup.ui</file>
         <file compressed="true" preprocess="xml-stripblanks">ui/penssidebar/brushpage.ui</file>
         <file compressed="true" preprocess="xml-stripblanks">ui/penssidebar/eraserpage.ui</file>
+		<file compressed="true" preprocess="xml-stripblanks">ui/penssidebar/latexpage.ui</file>
+		<file compressed="true" preprocess="xml-stripblanks">ui/latexeditor.ui</file>
         <file compressed="true" preprocess="xml-stripblanks">ui/penssidebar/penssidebar.ui</file>
         <file compressed="true" preprocess="xml-stripblanks">ui/penssidebar/selectorpage.ui</file>
         <file compressed="true" preprocess="xml-stripblanks">ui/penssidebar/shaperpage.ui</file>
@@ -105,6 +107,7 @@
         <file compressed="true">icons/scalable/actions/pen-tools-zoomtool-symbolic.svg</file>
         <file compressed="true">icons/scalable/actions/pen-typewriter-fontchooser-symbolic.svg</file>
         <file compressed="true">icons/scalable/actions/pen-typewriter-symbolic.svg</file>
+		<file compressed="true">icons/scalable/actions/pen-latex-symbolic.svg</file>
         <file compressed="true">icons/scalable/actions/plus-symbolic.svg</file>
         <file compressed="true">icons/scalable/actions/preferences-color-symbolic.svg</file>
         <file compressed="true">icons/scalable/actions/remove-page-symbolic.svg</file>
