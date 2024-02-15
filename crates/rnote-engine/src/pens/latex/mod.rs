@@ -1,13 +1,18 @@
-mod latex_generator;
+pub mod latex_generator;
+
+use std::time::Instant;
 
 use nalgebra::Vector2;
 use p2d::bounding_volume::Aabb;
 use piet::RenderContext;
-use rnote_compose::{eventresult::EventPropagation, penevent::PenProgress, EventResult, PenEvent};
+use rnote_compose::{
+    eventresult::EventPropagation, penevent::PenProgress, penpath::Element, EventResult, PenEvent,
+};
 
 use crate::{
     engine::{EngineView, EngineViewMut},
-    strokes::{Stroke, VectorImage},
+    store::StrokeKey,
+    strokes::{latexstroke::LatexImage, Stroke, VectorImage},
     DrawableOnDoc, WidgetFlags,
 };
 
@@ -23,7 +28,13 @@ pub struct LatexCompileInstruction {
 
 #[derive(Debug, Clone)]
 pub struct LatexDrawInstruction {
+    pub initial_code: String,
     pub position: Vector2<f64>,
+}
+
+#[derive(Debug, Clone)]
+pub struct LatexUpdateData {
+    pub old_latex_key: StrokeKey,
 }
 
 #[derive(Debug, Clone)]
@@ -34,9 +45,17 @@ pub enum LatexState {
     Finished(LatexCompileInstruction),
 }
 
+// CreateNew means that a new latex object will be created; UpdateOld will update an already existing one
+#[derive(Debug, Clone)]
+pub enum LatexReference {
+    CreateNew,
+    UpdateOld(LatexUpdateData),
+}
+
 #[derive(Debug, Clone)]
 pub struct Latex {
     pub state: LatexState,
+    pub reference: LatexReference,
     pub latex_context: LatexContext,
 }
 
@@ -44,6 +63,7 @@ impl Default for Latex {
     fn default() -> Self {
         Self {
 			state: LatexState::Idle,
+			reference: LatexReference::CreateNew,
 			latex_context: LatexContext {
 				preamble: String::from("\\usepackage{amsmath}\n\\usepackage{amssymb}\n\\usepackage[usenames]{color}\n\\usepackage{ifxetex}\n\\usepackage{ifluatex}\n"),
 				environment: INLINE,
@@ -57,6 +77,45 @@ impl Latex {
         let mut default_widget_flags = WidgetFlags::default();
         default_widget_flags.refresh_ui = true;
         default_widget_flags
+    }
+
+    fn determine_latex_reference(
+        element: Element,
+        engine_view: &mut EngineViewMut,
+    ) -> LatexReference {
+        if let Some(&stroke_key) = engine_view
+            .store
+            .stroke_hitboxes_contain_coord(engine_view.camera.viewport(), element.pos)
+            .last()
+        {
+            LatexReference::UpdateOld(LatexUpdateData {
+                old_latex_key: stroke_key,
+            })
+        } else {
+            LatexReference::CreateNew
+        }
+    }
+
+    fn determine_initial_code(
+        latex_reference: &LatexReference,
+        engine_view: &mut EngineViewMut,
+    ) -> String {
+        match latex_reference {
+            LatexReference::CreateNew => String::from(""),
+            LatexReference::UpdateOld(update_data) => {
+                let stroke = engine_view
+                    .store
+                    .get_stroke_ref(update_data.old_latex_key)
+                    .unwrap();
+
+                if let Stroke::LatexImage(latex_image) = stroke {
+                    latex_image.latex_code.clone()
+                } else {
+                    // TODO: Warn about the fact that the LatexReference is not valid here
+                    String::from("")
+                }
+            }
+        }
     }
 }
 
@@ -79,19 +138,32 @@ impl PenBehaviour for Latex {
         match &self.state {
             LatexState::Finished(compile_instructions) => {
                 done = true;
-                let svg_contents =
-                    create_svg_from_latex(&compile_instructions.code, &self.latex_context);
-                engine_view.store.insert_stroke(
-                    Stroke::VectorImage(
-                        VectorImage::from_svg_str(
-                            &svg_contents,
-                            compile_instructions.position,
-                            None,
-                        )
-                        .unwrap(),
-                    ),
+
+                let mut stroke: Option<Stroke> = None;
+
+                if let LatexReference::UpdateOld(update_data) = &self.reference {
+                    stroke = engine_view.store.remove_stroke(update_data.old_latex_key);
+                }
+
+                let mut latex_image = LatexImage::from_latex(
+                    &compile_instructions.code,
+                    &self.latex_context,
+                    compile_instructions.position,
                     None,
                 );
+
+                if let Some(some_stroke) = stroke {
+                    if let Stroke::LatexImage(old_latex_image) = some_stroke {
+                        latex_image.copy_transform(&old_latex_image);
+                    }
+                }
+
+                engine_view
+                    .store
+                    .insert_stroke(Stroke::LatexImage(latex_image), None);
+
+                engine_view.store.record(Instant::now());
+
                 engine_view.store.regenerate_rendering_in_viewport_threaded(
                     engine_view.tasks_tx.clone(),
                     true,
@@ -120,7 +192,10 @@ impl PenBehaviour for Latex {
     ) {
         let result = match (event, &self.state) {
             (PenEvent::Down { element, .. }, LatexState::Idle) => {
+                self.reference = Latex::determine_latex_reference(element, engine_view);
+
                 self.state = LatexState::ExpectingCode(LatexDrawInstruction {
+                    initial_code: Latex::determine_initial_code(&self.reference, engine_view),
                     position: element.pos,
                 });
 

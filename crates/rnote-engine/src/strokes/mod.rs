@@ -2,6 +2,7 @@
 pub mod bitmapimage;
 pub mod brushstroke;
 pub mod content;
+pub mod latexstroke;
 pub mod shapestroke;
 pub mod stroke;
 pub mod textstroke;

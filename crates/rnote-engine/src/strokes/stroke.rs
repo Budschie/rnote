@@ -2,6 +2,7 @@
 use super::bitmapimage::BitmapImage;
 use super::brushstroke::BrushStroke;
 use super::content::GeneratedContentImages;
+use super::latexstroke::LatexImage;
 use super::shapestroke::ShapeStroke;
 use super::vectorimage::VectorImage;
 use super::{Content, TextStroke};
@@ -32,6 +33,8 @@ pub enum Stroke {
     VectorImage(VectorImage),
     #[serde(rename = "bitmapimage")]
     BitmapImage(BitmapImage),
+    #[serde(rename = "lateximage")]
+    LatexImage(LatexImage),
 }
 
 impl Content for Stroke {
@@ -41,6 +44,7 @@ impl Content for Stroke {
             Stroke::ShapeStroke(shapestroke) => shapestroke.gen_svg(),
             Stroke::TextStroke(textstroke) => textstroke.gen_svg(),
             Stroke::VectorImage(vectorimage) => vectorimage.gen_svg(),
+            Stroke::LatexImage(lateximage) => lateximage.gen_svg(),
             Stroke::BitmapImage(bitmapimage) => bitmapimage.gen_svg(),
         }
     }
@@ -55,6 +59,7 @@ impl Content for Stroke {
             Stroke::ShapeStroke(shapestroke) => shapestroke.gen_images(viewport, image_scale),
             Stroke::TextStroke(textstroke) => textstroke.gen_images(viewport, image_scale),
             Stroke::VectorImage(vectorimage) => vectorimage.gen_images(viewport, image_scale),
+            Stroke::LatexImage(lateximage) => lateximage.gen_images(viewport, image_scale),
             Stroke::BitmapImage(bitmapimage) => bitmapimage.gen_images(viewport, image_scale),
         }
     }
@@ -69,6 +74,7 @@ impl Content for Stroke {
             Stroke::ShapeStroke(shapestroke) => shapestroke.draw_highlight(cx, total_zoom),
             Stroke::TextStroke(textstroke) => textstroke.draw_highlight(cx, total_zoom),
             Stroke::VectorImage(vectorimage) => vectorimage.draw_highlight(cx, total_zoom),
+            Stroke::LatexImage(lateximage) => lateximage.draw_highlight(cx, total_zoom),
             Stroke::BitmapImage(bitmapimage) => bitmapimage.draw_highlight(cx, total_zoom),
         }
     }
@@ -79,6 +85,7 @@ impl Content for Stroke {
             Stroke::ShapeStroke(shapestroke) => shapestroke.update_geometry(),
             Stroke::TextStroke(textstroke) => textstroke.update_geometry(),
             Stroke::VectorImage(vectorimage) => vectorimage.update_geometry(),
+            Stroke::LatexImage(lateximage) => lateximage.update_geometry(),
             Stroke::BitmapImage(bitmapimage) => bitmapimage.update_geometry(),
         }
     }
@@ -91,6 +98,7 @@ impl Drawable for Stroke {
             Stroke::ShapeStroke(shapestroke) => shapestroke.draw(cx, image_scale),
             Stroke::TextStroke(textstroke) => textstroke.draw(cx, image_scale),
             Stroke::VectorImage(vectorimage) => vectorimage.draw(cx, image_scale),
+            Stroke::LatexImage(lateximage) => lateximage.draw(cx, image_scale),
             Stroke::BitmapImage(bitmapimage) => bitmapimage.draw(cx, image_scale),
         }
     }
@@ -101,6 +109,7 @@ impl Drawable for Stroke {
             Stroke::ShapeStroke(shapestroke) => shapestroke.draw_to_cairo(cx, image_scale),
             Stroke::TextStroke(textstroke) => textstroke.draw_to_cairo(cx, image_scale),
             Stroke::VectorImage(vectorimage) => vectorimage.draw_to_cairo(cx, image_scale),
+            Stroke::LatexImage(lateximage) => lateximage.draw_to_cairo(cx, image_scale),
             Stroke::BitmapImage(bitmapimage) => bitmapimage.draw_to_cairo(cx, image_scale),
         }
     }
@@ -113,6 +122,7 @@ impl Shapeable for Stroke {
             Self::ShapeStroke(shapestroke) => shapestroke.bounds(),
             Self::TextStroke(textstroke) => textstroke.bounds(),
             Self::VectorImage(vectorimage) => vectorimage.bounds(),
+            Self::LatexImage(lateximage) => lateximage.bounds(),
             Self::BitmapImage(bitmapimage) => bitmapimage.bounds(),
         }
     }
@@ -123,6 +133,7 @@ impl Shapeable for Stroke {
             Self::ShapeStroke(shapestroke) => shapestroke.hitboxes(),
             Self::TextStroke(textstroke) => textstroke.hitboxes(),
             Self::VectorImage(vectorimage) => vectorimage.hitboxes(),
+            Self::LatexImage(lateximage) => lateximage.hitboxes(),
             Self::BitmapImage(bitmapimage) => bitmapimage.hitboxes(),
         }
     }
@@ -133,6 +144,7 @@ impl Shapeable for Stroke {
             Self::ShapeStroke(shapestroke) => shapestroke.outline_path(),
             Self::TextStroke(textstroke) => textstroke.outline_path(),
             Self::VectorImage(vectorimage) => vectorimage.outline_path(),
+            Self::LatexImage(lateximage) => lateximage.outline_path(),
             Self::BitmapImage(bitmapimage) => bitmapimage.outline_path(),
         }
     }
@@ -152,6 +164,9 @@ impl Transformable for Stroke {
             }
             Self::VectorImage(vectorimage) => {
                 vectorimage.translate(offset);
+            }
+            Self::LatexImage(lateximage) => {
+                lateximage.translate(offset);
             }
             Self::BitmapImage(bitmapimage) => {
                 bitmapimage.translate(offset);
@@ -173,6 +188,9 @@ impl Transformable for Stroke {
             Self::VectorImage(vectorimage) => {
                 vectorimage.rotate(angle, center);
             }
+            Self::LatexImage(lateximage) => {
+                lateximage.rotate(angle, center);
+            }
             Self::BitmapImage(bitmapimage) => {
                 bitmapimage.rotate(angle, center);
             }
@@ -193,6 +211,9 @@ impl Transformable for Stroke {
             Self::VectorImage(vectorimage) => {
                 vectorimage.scale(scale);
             }
+            Self::LatexImage(lateximage) => {
+                lateximage.scale(scale);
+            }
             Self::BitmapImage(bitmapimage) => {
                 bitmapimage.scale(scale);
             }
@@ -209,6 +230,7 @@ impl Stroke {
             Stroke::BrushStroke(_) => StrokeLayer::UserLayer(0),
             Stroke::ShapeStroke(_) => StrokeLayer::UserLayer(0),
             Stroke::TextStroke(_) => StrokeLayer::UserLayer(0),
+            Stroke::LatexImage(_) => StrokeLayer::UserLayer(0),
             Stroke::VectorImage(_) | Stroke::BitmapImage(_) => StrokeLayer::Image,
         }
     }
@@ -254,6 +276,8 @@ impl Stroke {
 
                 true
             }
+            // TODO: Add support for inverting colors here
+            Stroke::LatexImage(_) => false,
             Stroke::VectorImage(_) => false,
             Stroke::BitmapImage(_) => false,
         }
@@ -295,6 +319,7 @@ impl Stroke {
 
                 true
             }
+            Stroke::LatexImage(_) => false,
             Stroke::VectorImage(_) => false,
             Stroke::BitmapImage(_) => false,
         }
@@ -623,6 +648,10 @@ impl Stroke {
                         ),
                     },
                 ))
+            }
+            Stroke::LatexImage(latex) => {
+                // TODO: Implement this
+                None
             }
             Stroke::BitmapImage(bitmapimage) => {
                 let png_data = match bitmapimage.export_to_bitmap_image_bytes(

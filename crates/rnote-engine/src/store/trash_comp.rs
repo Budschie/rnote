@@ -105,8 +105,10 @@ impl StrokeStore {
                             }
                         }
                         // Ignore other strokes when trashing with the Eraser
-                        Stroke::TextStroke(_) | Stroke::VectorImage(_) | Stroke::BitmapImage(_) => {
-                        }
+                        Stroke::TextStroke(_)
+                        | Stroke::VectorImage(_)
+                        | Stroke::BitmapImage(_)
+                        | Stroke::LatexImage(_) => {}
                     }
                 }
 
@@ -222,7 +224,10 @@ impl StrokeStore {
                         }
                     }
                     // Ignore other strokes when trashing with the Eraser
-                    Stroke::TextStroke(_) | Stroke::VectorImage(_) | Stroke::BitmapImage(_) => {}
+                    Stroke::TextStroke(_)
+                    | Stroke::VectorImage(_)
+                    | Stroke::BitmapImage(_)
+                    | Stroke::LatexImage(_) => {}
                 }
 
                 if trash_current_stroke {

@@ -86,9 +86,8 @@ impl RnLatexPage {
 
         if let Pen::Latex(latex) = active_tab.canvas().engine_mut().penholder.current_pen_mut() {
             if let LatexState::ExpectingCode(expecting_code) = latex.state.clone() {
+                let editor = RnLatexEditor::new(&expecting_code.initial_code);
                 latex.state = LatexState::ReceivingCode(expecting_code);
-
-                let editor = RnLatexEditor::new();
                 editor.present();
 
                 let borrowed_canvas = active_tab.canvas();

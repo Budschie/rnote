@@ -125,7 +125,12 @@ glib::wrapper! {
 }
 
 impl RnLatexEditor {
-    pub(crate) fn new() -> Self {
-        glib::Object::new()
+    pub(crate) fn new(initial_latex_code: &String) -> Self {
+        let latex_editor: RnLatexEditor = glib::Object::new();
+        latex_editor
+            .imp()
+            .latex_code
+            .set_text(initial_latex_code.as_str());
+        latex_editor
     }
 }

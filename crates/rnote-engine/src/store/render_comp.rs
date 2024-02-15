@@ -380,7 +380,8 @@ impl StrokeStore {
                 Stroke::ShapeStroke(_)
                 | Stroke::TextStroke(_)
                 | Stroke::VectorImage(_)
-                | Stroke::BitmapImage(_) => {
+                | Stroke::BitmapImage(_)
+                | Stroke::LatexImage(_) => {
                     self.regenerate_rendering_for_stroke_threaded(
                         tasks_tx,
                         key,
