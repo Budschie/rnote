@@ -1,4 +1,7 @@
+pub mod equation_provider;
+pub mod latex_equation;
 pub mod latex_generator;
+pub mod mathjax_equation_provider;
 
 use std::time::Instant;
 
@@ -16,7 +19,11 @@ use crate::{
     DrawableOnDoc, WidgetFlags,
 };
 
-use self::latex_generator::{create_svg_from_latex, LatexContext, INLINE};
+use self::{
+    equation_provider::EquationProvider,
+    latex_generator::{create_svg_from_latex, LatexContext, INLINE},
+    mathjax_equation_provider::MathJaxEquationProvider,
+};
 
 use super::{PenBehaviour, PenStyle};
 
@@ -56,19 +63,19 @@ pub enum LatexReference {
 pub struct Latex {
     pub state: LatexState,
     pub reference: LatexReference,
-    pub latex_context: LatexContext,
+    // pub latex_context: LatexContext,
+    pub equation_provider: EquationProvider,
 }
 
 impl Default for Latex {
     fn default() -> Self {
         Self {
-			state: LatexState::Idle,
-			reference: LatexReference::CreateNew,
-			latex_context: LatexContext {
-				preamble: String::from("\\usepackage{amsmath}\n\\usepackage{amssymb}\n\\usepackage[usenames]{color}\n\\usepackage{ifxetex}\n\\usepackage{ifluatex}\n"),
-				environment: INLINE,
-			},
-		}
+            state: LatexState::Idle,
+            reference: LatexReference::CreateNew,
+            equation_provider: EquationProvider::MathJaxEquationProvider(
+                MathJaxEquationProvider {},
+            ),
+        }
     }
 }
 
@@ -147,7 +154,7 @@ impl PenBehaviour for Latex {
 
                 let mut latex_image = LatexImage::from_latex(
                     &compile_instructions.code,
-                    &self.latex_context,
+                    &self.equation_provider,
                     compile_instructions.position,
                     None,
                 );

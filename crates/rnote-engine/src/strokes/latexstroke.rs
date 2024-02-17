@@ -3,7 +3,10 @@ use rnote_compose::{shapes::Shapeable, transform::Transformable};
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    pens::latex::latex_generator::{self, LatexContext},
+    pens::latex::{
+        equation_provider::{self, EquationProvider, EquationProviderTrait},
+        latex_generator::{self, LatexContext},
+    },
     render, Drawable,
 };
 
@@ -94,11 +97,11 @@ impl Transformable for LatexImage {
 impl LatexImage {
     pub fn from_latex(
         latex_code: &String,
-        latex_context: &LatexContext,
+        equation_provider: &EquationProvider,
         pos: na::Vector2<f64>,
         size: Option<na::Vector2<f64>>,
     ) -> Self {
-        let svg_code = latex_generator::create_svg_from_latex(latex_code, latex_context);
+        let svg_code = equation_provider.generate_svg(latex_code, 42).unwrap();
         let vector_image = VectorImage::from_svg_str(&svg_code, pos, size).unwrap();
 
         Self {

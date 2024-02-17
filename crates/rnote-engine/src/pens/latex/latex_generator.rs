@@ -31,7 +31,10 @@ impl LatexContext {
     }
 }
 
-pub fn create_svg_from_latex(latex_code: &String, context: &LatexContext) -> String {
+pub fn create_svg_from_latex(
+    latex_code: &String,
+    context: &LatexContext,
+) -> Result<String, String> {
     // Create temporary directory
     let mut tmpdir = tempfile::tempdir().unwrap();
 
@@ -49,21 +52,31 @@ pub fn create_svg_from_latex(latex_code: &String, context: &LatexContext) -> Str
     drop(file);
 
     // Compile and convert to DVI
-    Command::new("latex")
+
+    // TODO: Wrap command calls in fn
+    let output_latex = Command::new("latex")
         .current_dir(tmpdir.path())
         .arg(&tex_path)
-        .status()
+        .output()
         .unwrap();
 
+    if !output_latex.status.success() {
+        return Result::Err(String::from_utf8(output_latex.stderr).unwrap());
+    }
+
     // ezlatex.dvi will have been created
-    Command::new("dvisvgm")
+    let output_svg = Command::new("dvisvgm")
         .current_dir(tmpdir.path())
         .arg("-n")
         .arg(&dvi_path)
-        .status()
+        .output()
         .unwrap();
+
+    if !output_svg.status.success() {
+        return Result::Err(String::from_utf8(output_latex.stderr).unwrap());
+    }
 
     // ezlatex.svg will have been created
 
-    std::fs::read_to_string(&svg_path).unwrap()
+    Result::Ok(std::fs::read_to_string(&svg_path).unwrap())
 }
