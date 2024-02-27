@@ -12,7 +12,6 @@ use gtk4::{glib, glib::clone, subclass::prelude::*, CompositeTemplate};
 use gtk4::{SpinButton, Widget, Window};
 use rnote_engine::pens::equation::equation_provider::EquationProvider;
 use rnote_engine::pens::equation::latex_equation_provider::LatexEquationProvider;
-use rnote_engine::pens::equation::mathjax_equation_provider::MathJaxEquationProvider;
 use rnote_engine::pens::equation::{LatexCompiledInstruction, LatexState};
 use rnote_engine::pens::pensconfig::equationconfig::EquationConfig;
 use rnote_engine::pens::Pen;
@@ -34,8 +33,6 @@ mod imp {
         pub(crate) equationtype_popover_close_button: TemplateChild<Button>,
         #[template_child]
         pub(crate) equationtype_latex_row: TemplateChild<ActionRow>,
-        #[template_child]
-        pub(crate) equationtype_mathjax_row: TemplateChild<ActionRow>,
         #[template_child]
         pub(crate) equationtype_listbox: TemplateChild<ListBox>,
         #[template_child]
@@ -108,8 +105,7 @@ impl RnLatexPage {
 
         if let Some(some_row) = currently_selected_row {
             return Some(match some_row.index() {
-                0 => EquationProvider::MathJaxEquationProvider(MathJaxEquationProvider {}),
-                1 => EquationProvider::LatexEquationProvider(LatexEquationProvider {}),
+                0 => EquationProvider::LatexEquationProvider(LatexEquationProvider {}),
                 _ => panic!("More than two rows are currently not implemented yet."),
             });
         }
@@ -123,11 +119,6 @@ impl RnLatexPage {
                 self.imp()
                     .equationtype_listbox
                     .select_row(Some(&*self.imp().equationtype_latex_row));
-            }
-            EquationProvider::MathJaxEquationProvider(_) => {
-                self.imp()
-                    .equationtype_listbox
-                    .select_row(Some(&*self.imp().equationtype_mathjax_row));
             }
         }
     }
@@ -174,9 +165,6 @@ impl RnLatexPage {
 				let icon_name = match equation_type {
 					EquationProvider::LatexEquationProvider(_) => {
 						"face-cool"
-					}
-					EquationProvider::MathJaxEquationProvider(_) => {
-						"face-angel"
 					}
 				};
 

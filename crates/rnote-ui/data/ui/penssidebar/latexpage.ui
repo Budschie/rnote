@@ -74,18 +74,6 @@
                   <class name="large" />
 				</style>
 				<child>
-                  <object class="AdwActionRow" id="equationtype_mathjax_row">
-					<property name="title" translatable="yes">MathJax</property>
-					<property name="subtitle" translatable="yes">Fast, built-in, more limited</property>
-					<child type="prefix">
-                      <object class="GtkImage">
-						<property name="icon-name">face-angel</property>
-						<property name="icon-size">large</property>
-                      </object>
-					</child>
-                  </object>
-				</child>
-				<child>
                   <object class="AdwActionRow" id="equationtype_latex_row">
 					<property name="title" translatable="yes">LaTeX</property>
 					<property name="subtitle" translatable="yes">Slow, requires full installation</property>

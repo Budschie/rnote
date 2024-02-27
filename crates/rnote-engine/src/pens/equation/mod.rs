@@ -1,7 +1,6 @@
 pub mod equation_provider;
 pub mod latex_equation_generator;
 pub mod latex_equation_provider;
-pub mod mathjax_equation_provider;
 
 use std::time::Instant;
 
