@@ -85,12 +85,18 @@ impl Latex {
             .stroke_hitboxes_contain_coord(engine_view.camera.viewport(), element.pos)
             .last()
         {
-            LatexReference::UpdateOld(LatexUpdateData {
-                old_latex_key: stroke_key,
-            })
-        } else {
-            LatexReference::CreateNew
+            let resolved = engine_view.store.get_stroke_ref(stroke_key);
+
+            if let Some(stroke) = resolved {
+                if let Stroke::LatexImage(_) = stroke {
+                    return LatexReference::UpdateOld(LatexUpdateData {
+                        old_latex_key: stroke_key,
+                    });
+                }
+            }
         }
+
+        LatexReference::CreateNew
     }
 
     fn determine_initial_code(
