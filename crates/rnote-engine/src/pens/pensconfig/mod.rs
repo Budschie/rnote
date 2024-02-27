@@ -1,5 +1,6 @@
 // Modules
 pub mod brushconfig;
+pub mod equationconfig;
 pub mod eraserconfig;
 pub mod selectorconfig;
 pub mod shaperconfig;
@@ -18,6 +19,8 @@ pub use typewriterconfig::TypewriterConfig;
 use crate::CloneConfig;
 use serde::{Deserialize, Serialize};
 
+use self::equationconfig::EquationConfig;
+
 #[derive(Clone, Debug, Default, Serialize, Deserialize)]
 #[serde(default, rename = "pens_config")]
 pub struct PensConfig {
@@ -33,6 +36,8 @@ pub struct PensConfig {
     pub selector_config: SelectorConfig,
     #[serde(default, rename = "tools_config")]
     pub tools_config: ToolsConfig,
+    #[serde(default, rename = "equation_config")]
+    pub equation_config: EquationConfig,
 }
 
 impl CloneConfig for PensConfig {

@@ -1,7 +1,7 @@
 // Modules
 pub mod brush;
+pub mod equation;
 pub mod eraser;
-pub mod latex;
 pub mod penbehaviour;
 pub mod penholder;
 pub mod penmode;
@@ -14,8 +14,8 @@ pub mod typewriter;
 
 // Re-exports
 pub use brush::Brush;
+pub use equation::Latex;
 pub use eraser::Eraser;
-pub use latex::Latex;
 pub use penbehaviour::PenBehaviour;
 pub use penholder::PenHolder;
 pub use penmode::PenMode;
@@ -203,7 +203,7 @@ pub enum PenStyle {
     Shaper,
     #[serde(rename = "typewriter")]
     Typewriter,
-    #[serde(rename = "latex")]
+    #[serde(rename = "equation")]
     Latex,
     #[serde(rename = "eraser")]
     Eraser,

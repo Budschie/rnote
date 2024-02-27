@@ -1,11 +1,23 @@
+use serde::{Deserialize, Serialize};
+
 use super::{
-    latex_equation::LatexEquationProvider, mathjax_equation_provider::MathJaxEquationProvider,
+    latex_equation_provider::LatexEquationProvider,
+    mathjax_equation_provider::MathJaxEquationProvider,
 };
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename = "equation_provider")]
 pub enum EquationProvider {
+    #[serde(rename = "math_jax_equation_provider")]
     MathJaxEquationProvider(MathJaxEquationProvider),
+    #[serde(rename = "latex_equation_provider")]
     LatexEquationProvider(LatexEquationProvider),
+}
+
+impl Default for EquationProvider {
+    fn default() -> Self {
+        EquationProvider::MathJaxEquationProvider(MathJaxEquationProvider {})
+    }
 }
 
 impl EquationProviderTrait for EquationProvider {

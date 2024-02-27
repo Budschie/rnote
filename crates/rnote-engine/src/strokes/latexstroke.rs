@@ -2,21 +2,17 @@ use p2d::bounding_volume::Aabb;
 use rnote_compose::{shapes::Shapeable, transform::Transformable};
 use serde::{Deserialize, Serialize};
 
-use crate::{
-    pens::latex::{
-        equation_provider::{self, EquationProvider, EquationProviderTrait},
-        latex_generator::{self, LatexContext},
-    },
-    render, Drawable,
-};
+use crate::{pens::pensconfig::equationconfig::EquationConfig, render, Drawable};
 
 use super::{content::GeneratedContentImages, Content, VectorImage};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(default, rename = "vectorimage")]
 pub struct LatexImage {
-    #[serde(rename = "latex_data")]
-    pub latex_code: String,
+    #[serde(rename = "equation_code")]
+    pub equation_code: String,
+    #[serde(default, rename = "equation_config")]
+    pub equation_config: EquationConfig,
     #[serde(rename = "vector_image")]
     pub vector_image: Option<VectorImage>,
 }
@@ -24,8 +20,9 @@ pub struct LatexImage {
 impl Default for LatexImage {
     fn default() -> Self {
         Self {
-            latex_code: String::default(),
+            equation_code: String::default(),
             vector_image: Option::None,
+            equation_config: EquationConfig::default(),
         }
     }
 }
@@ -95,23 +92,29 @@ impl Transformable for LatexImage {
 }
 
 impl LatexImage {
-    pub fn from_latex(
-        latex_code: &String,
-        equation_provider: &EquationProvider,
+    pub fn new(
+        equation_code: &String,
+        svg_code: &String,
+        equation_config: &EquationConfig,
         pos: na::Vector2<f64>,
         size: Option<na::Vector2<f64>>,
     ) -> Self {
-        let svg_code = equation_provider.generate_svg(latex_code, 42).unwrap();
-        let vector_image = VectorImage::from_svg_str(&svg_code, pos, size).unwrap();
+        let vector_image = VectorImage::from_svg_str(svg_code, pos, size).unwrap();
 
         Self {
-            latex_code: latex_code.clone(),
+            equation_code: equation_code.clone(),
             vector_image: Option::Some(vector_image),
+            equation_config: equation_config.clone(),
         }
     }
 
     pub fn copy_transform(&mut self, latex_image: &LatexImage) {
-        self.vector_image.as_mut().unwrap().rectangle =
-            latex_image.vector_image.as_ref().unwrap().rectangle.clone();
+        self.vector_image.as_mut().unwrap().rectangle.transform = latex_image
+            .vector_image
+            .as_ref()
+            .unwrap()
+            .rectangle
+            .transform
+            .clone();
     }
 }

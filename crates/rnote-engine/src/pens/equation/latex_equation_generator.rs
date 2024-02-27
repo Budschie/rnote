@@ -61,7 +61,7 @@ pub fn create_svg_from_latex(
         .unwrap();
 
     if !output_latex.status.success() {
-        return Result::Err(String::from_utf8(output_latex.stderr).unwrap());
+        return Result::Err(String::from_utf8(output_latex.stdout).unwrap());
     }
 
     // ezlatex.dvi will have been created

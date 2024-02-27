@@ -1,6 +1,6 @@
 pub mod equation_provider;
-pub mod latex_equation;
-pub mod latex_generator;
+pub mod latex_equation_generator;
+pub mod latex_equation_provider;
 pub mod mathjax_equation_provider;
 
 use std::time::Instant;
@@ -19,17 +19,12 @@ use crate::{
     DrawableOnDoc, WidgetFlags,
 };
 
-use self::{
-    equation_provider::EquationProvider,
-    latex_generator::{create_svg_from_latex, LatexContext, INLINE},
-    mathjax_equation_provider::MathJaxEquationProvider,
-};
-
 use super::{PenBehaviour, PenStyle};
 
 #[derive(Debug, Clone)]
-pub struct LatexCompileInstruction {
-    pub code: String,
+pub struct LatexCompiledInstruction {
+    pub equation_code: String,
+    pub svg_code: String,
     pub position: Vector2<f64>,
 }
 
@@ -49,7 +44,7 @@ pub enum LatexState {
     Idle,
     ExpectingCode(LatexDrawInstruction),
     ReceivingCode(LatexDrawInstruction),
-    Finished(LatexCompileInstruction),
+    Finished(LatexCompiledInstruction),
 }
 
 // CreateNew means that a new latex object will be created; UpdateOld will update an already existing one
@@ -63,8 +58,6 @@ pub enum LatexReference {
 pub struct Latex {
     pub state: LatexState,
     pub reference: LatexReference,
-    // pub latex_context: LatexContext,
-    pub equation_provider: EquationProvider,
 }
 
 impl Default for Latex {
@@ -72,9 +65,6 @@ impl Default for Latex {
         Self {
             state: LatexState::Idle,
             reference: LatexReference::CreateNew,
-            equation_provider: EquationProvider::MathJaxEquationProvider(
-                MathJaxEquationProvider {},
-            ),
         }
     }
 }
@@ -116,7 +106,7 @@ impl Latex {
                     .unwrap();
 
                 if let Stroke::LatexImage(latex_image) = stroke {
-                    latex_image.latex_code.clone()
+                    latex_image.equation_code.clone()
                 } else {
                     // TODO: Warn about the fact that the LatexReference is not valid here
                     String::from("")
@@ -152,22 +142,31 @@ impl PenBehaviour for Latex {
                     stroke = engine_view.store.remove_stroke(update_data.old_latex_key);
                 }
 
-                let mut latex_image = LatexImage::from_latex(
-                    &compile_instructions.code,
-                    &self.equation_provider,
+                /*let mut latex_image = LatexImage::from_latex(
+                        &compile_instructions.code,
+                        &self.equation_config,
+                        compile_instructions.position,
+                        None,
+                );
+                     */
+
+                let mut equation_image = LatexImage::new(
+                    &compile_instructions.equation_code,
+                    &compile_instructions.svg_code,
+                    &engine_view.pens_config.equation_config,
                     compile_instructions.position,
                     None,
                 );
 
                 if let Some(some_stroke) = stroke {
                     if let Stroke::LatexImage(old_latex_image) = some_stroke {
-                        latex_image.copy_transform(&old_latex_image);
+                        equation_image.copy_transform(&old_latex_image);
                     }
                 }
 
                 engine_view
                     .store
-                    .insert_stroke(Stroke::LatexImage(latex_image), None);
+                    .insert_stroke(Stroke::LatexImage(equation_image), None);
 
                 engine_view.store.record(Instant::now());
 
@@ -201,6 +200,18 @@ impl PenBehaviour for Latex {
             (PenEvent::Down { element, .. }, LatexState::Idle) => {
                 self.reference = Latex::determine_latex_reference(element, engine_view);
 
+                // Copy settings from a UpdateOld LatexReference if they are present
+                if let LatexReference::UpdateOld(update_data) = &self.reference {
+                    let old_latex_stroke =
+                        engine_view.store.get_stroke_ref(update_data.old_latex_key);
+
+                    if let Some(some_stroke) = old_latex_stroke {
+                        if let Stroke::LatexImage(latex_stroke) = some_stroke {
+                            engine_view.pens_config.equation_config =
+                                latex_stroke.equation_config.clone();
+                        }
+                    }
+                }
                 self.state = LatexState::ExpectingCode(LatexDrawInstruction {
                     initial_code: Latex::determine_initial_code(&self.reference, engine_view),
                     position: element.pos,
