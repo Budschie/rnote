@@ -16,10 +16,15 @@ impl Default for EquationProvider {
 }
 
 impl EquationProviderTrait for EquationProvider {
-    fn generate_svg(&self, code: &String, font_size: u32) -> Result<String, String> {
+    fn generate_svg(
+        &self,
+        code: &String,
+        font_size: u32,
+        page_width: f64,
+    ) -> Result<String, String> {
         match self {
             EquationProvider::LatexEquationProvider(latex_equation_provider) => {
-                latex_equation_provider.generate_svg(code, font_size)
+                latex_equation_provider.generate_svg(code, font_size, page_width)
             }
         }
     }
@@ -27,5 +32,10 @@ impl EquationProviderTrait for EquationProvider {
 
 pub trait EquationProviderTrait {
     // Generates a preview svg and returns either the SVG or an error output.
-    fn generate_svg(&self, code: &String, font_size: u32) -> Result<String, String>;
+    fn generate_svg(
+        &self,
+        code: &String,
+        font_size: u32,
+        page_width: f64,
+    ) -> Result<String, String>;
 }

@@ -2,16 +2,10 @@ use std::{io::Write, path::Path, process::Command};
 
 #[derive(Debug, Clone)]
 pub struct Environment {
-    pre_preamble: &'static str,
-    pre_code: &'static str,
-    post_code: &'static str,
+    pub pre_preamble: String,
+    pub pre_code: String,
+    pub post_code: String,
 }
-
-pub const INLINE: Environment = Environment {
-    pre_preamble: "\\documentclass[varwidth=true, border=10pt]{standalone}",
-    pre_code: "\\begin{document}\n",
-    post_code: "\\end{document}\n",
-};
 
 #[derive(Debug, Clone)]
 pub struct LatexContext {
@@ -21,11 +15,11 @@ pub struct LatexContext {
 
 impl LatexContext {
     fn preprocess_code(&self, latex_code: &String) -> String {
-        let mut complete_code = String::from(self.environment.pre_preamble);
+        let mut complete_code = self.environment.pre_preamble.clone();
         complete_code.push_str(&self.preamble);
-        complete_code.push_str(self.environment.pre_code);
+        complete_code.push_str(self.environment.pre_code.as_str());
         complete_code.push_str(&latex_code);
-        complete_code.push_str(self.environment.post_code);
+        complete_code.push_str(self.environment.post_code.as_str());
 
         complete_code
     }

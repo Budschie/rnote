@@ -1,5 +1,9 @@
 use p2d::bounding_volume::Aabb;
-use rnote_compose::{shapes::Shapeable, transform::Transformable};
+use rnote_compose::{
+    shapes::{Rectangle, Shapeable},
+    transform::Transformable,
+    Transform,
+};
 use serde::{Deserialize, Serialize};
 
 use crate::{pens::pensconfig::equationconfig::EquationConfig, render, Drawable};
@@ -108,7 +112,11 @@ impl LatexImage {
         }
     }
 
-    pub fn copy_transform(&mut self, latex_image: &LatexImage) {
+    pub fn access_rectangle(&self) -> &Rectangle {
+        &self.vector_image.as_ref().unwrap().rectangle
+    }
+
+    pub fn copy_transform_preserve_position(&mut self, latex_image: &LatexImage) {
         self.vector_image.as_mut().unwrap().rectangle.transform = latex_image
             .vector_image
             .as_ref()
@@ -116,5 +124,14 @@ impl LatexImage {
             .rectangle
             .transform
             .clone();
+
+        let self_upper_left = self.access_rectangle().outline_lines()[0].start;
+        let other_upper_left = latex_image.access_rectangle().outline_lines()[0].start;
+        self.vector_image
+            .as_mut()
+            .unwrap()
+            .rectangle
+            .transform
+            .translate(other_upper_left - self_upper_left);
     }
 }

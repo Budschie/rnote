@@ -11,6 +11,7 @@ pub mod shaper;
 pub mod shortcuts;
 pub mod tools;
 pub mod typewriter;
+pub mod width_picker;
 
 // Re-exports
 pub use brush::Brush;
