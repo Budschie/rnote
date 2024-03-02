@@ -114,7 +114,6 @@ impl WidthPickerContext {
                     PenEvent::Up { element, .. } => {
                         self.end.state = PenState::Proximity;
                         self.state = WidthPickerState::Idle;
-                        event_propagation = EventPropagation::Stop;
                     }
                     _ => {}
                 }
