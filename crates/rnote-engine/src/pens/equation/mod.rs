@@ -53,7 +53,6 @@ pub enum LatexState {
     Idle,
     InitialWidthPick(EquationInitialWidthPick),
     ExpectingCode(LatexDrawInstruction),
-    ReceivingCode(LatexDrawInstruction),
     Finished(LatexCompiledInstruction),
 }
 
@@ -148,13 +147,15 @@ impl PenBehaviour for Latex {
     }
 
     fn update_state(&mut self, engine_view: &mut EngineViewMut) -> WidgetFlags {
-        let mut done = false;
+        let mut done_data: Option<(LatexState, LatexReference)> = None;
 
         match &self.state {
             LatexState::Finished(compile_instructions) => {
-                done = true;
-
                 let mut stroke: Option<Stroke> = None;
+                let draw_instruction = LatexDrawInstruction {
+                    initial_code: compile_instructions.equation_code.clone(),
+                    position: compile_instructions.position,
+                };
 
                 if let LatexReference::UpdateOld(update_data) = &self.reference {
                     stroke = engine_view.store.remove_stroke(update_data.old_latex_key);
@@ -174,7 +175,7 @@ impl PenBehaviour for Latex {
                     }
                 }
 
-                engine_view
+                let latex_key = engine_view
                     .store
                     .insert_stroke(Stroke::LatexImage(equation_image), None);
 
@@ -186,15 +187,24 @@ impl PenBehaviour for Latex {
                     engine_view.camera.viewport(),
                     engine_view.camera.image_scale(),
                 );
+
+                done_data = Some((
+                    LatexState::ExpectingCode(draw_instruction),
+                    LatexReference::UpdateOld(LatexUpdateData {
+                        old_latex_key: latex_key,
+                    }),
+                ));
             }
             _ => {}
         }
 
-        if done {
-            self.state = LatexState::Idle;
+        if let Some((new_latex_state, new_latex_reference)) = done_data {
+            self.state = new_latex_state;
+            self.reference = new_latex_reference;
+            Latex::get_widget_flags_update()
+        } else {
+            WidgetFlags::default()
         }
-
-        WidgetFlags::default()
     }
 
     fn handle_event(
@@ -206,9 +216,20 @@ impl PenBehaviour for Latex {
         rnote_compose::EventResult<rnote_compose::penevent::PenProgress>,
         WidgetFlags,
     ) {
+        let initial_event_propagation = if let Some(equation_width_some) = &mut self.equation_width
+        {
+            equation_width_some.update(&event)
+        } else {
+            EventPropagation::Proceed
+        };
+
         // If an already existing equation has been clicked, edit that equation. Else, create a new one.
-        let result = match (&event, &self.state) {
-            (PenEvent::Down { element, .. }, LatexState::Idle) => {
+        let result = match (&event, &self.state, initial_event_propagation) {
+            (
+                PenEvent::Down { element, .. },
+                LatexState::Idle | LatexState::ExpectingCode(..),
+                EventPropagation::Proceed,
+            ) => {
                 self.reference = Latex::determine_latex_reference(element, engine_view);
 
                 // When updating, immediately open editor and skip dragging step
@@ -216,11 +237,8 @@ impl PenBehaviour for Latex {
                     LatexReference::UpdateOld(old) => {
                         // Determine scale and rotation of current equation to accurately place the width picker widget.
                         // TODO: Make this a separate function
-                        let position = if let Stroke::LatexImage(latex) = engine_view
-                            .as_im()
-                            .store
-                            .get_stroke_ref(old.old_latex_key)
-                            .unwrap()
+                        let position = if let Stroke::LatexImage(latex) =
+                            engine_view.store.get_stroke_mut(old.old_latex_key).unwrap()
                         {
                             let transformed_vector = latex
                                 .access_rectangle()
@@ -246,6 +264,8 @@ impl PenBehaviour for Latex {
                                 direction,
                                 WidthPickerState::Idle,
                             ));
+
+                            engine_view.pens_config.equation_config = latex.equation_config.clone();
 
                             Some(latex.pos())
                         } else {
@@ -287,7 +307,11 @@ impl PenBehaviour for Latex {
                     widget_flags,
                 )
             }
-            (PenEvent::Up { element, .. }, LatexState::InitialWidthPick(pos)) => {
+            (
+                PenEvent::Up { element, .. },
+                LatexState::InitialWidthPick(pos),
+                EventPropagation::Proceed,
+            ) => {
                 self.state = LatexState::ExpectingCode(LatexDrawInstruction {
                     initial_code: Latex::determine_initial_code(&self.reference, engine_view),
                     position: pos.position,
@@ -302,7 +326,7 @@ impl PenBehaviour for Latex {
                     Latex::get_widget_flags_update(),
                 )
             }
-            (_, _) => (
+            (_, _, _) => (
                 EventResult {
                     handled: false,
                     propagate: EventPropagation::Stop,
@@ -313,8 +337,6 @@ impl PenBehaviour for Latex {
         };
 
         if let Some(equation_width_some) = &mut self.equation_width {
-            equation_width_some.update(&event);
-
             // Maybe shorten this down and make a let mut instead of trying to fit everyting into one expression, but that could result in me later forgetting some match arms...
 
             // This monstrosity determines the equation width (in px). It returns the raw equation width of the width widget, except when an equation is being updated:

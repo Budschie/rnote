@@ -5,8 +5,8 @@ use p2d::{
     query::PointQuery,
 };
 use rnote_compose::{
-    ext::Vector2Ext, penevent::PenState, serialize::f64_dp3, shapes::Shapeable, style::indicators,
-    PenEvent,
+    eventresult::EventPropagation, ext::Vector2Ext, penevent::PenState, serialize::f64_dp3,
+    shapes::Shapeable, style::indicators, PenEvent,
 };
 
 use crate::DrawableOnDoc;
@@ -83,7 +83,9 @@ impl WidthPickerContext {
         }
     }
 
-    pub fn update(&mut self, pen_event: &PenEvent) {
+    pub fn update(&mut self, pen_event: &PenEvent) -> EventPropagation {
+        let mut event_propagation = EventPropagation::Proceed;
+
         match self.state {
             WidthPickerState::Idle => {
                 match pen_event {
@@ -95,6 +97,7 @@ impl WidthPickerContext {
                             .contains_local_point(&Point2::from(element.pos))
                         {
                             self.state = WidthPickerState::Dragging;
+                            event_propagation = EventPropagation::Stop;
                         }
                     }
                     _ => {}
@@ -106,15 +109,19 @@ impl WidthPickerContext {
                     PenEvent::Down { element, .. } => {
                         self.end.state = PenState::Down;
                         self.end.pos = self.project_vector(element.pos);
+                        event_propagation = EventPropagation::Stop;
                     }
                     PenEvent::Up { element, .. } => {
                         self.end.state = PenState::Proximity;
                         self.state = WidthPickerState::Idle;
+                        event_propagation = EventPropagation::Stop;
                     }
                     _ => {}
                 }
             }
         }
+
+        event_propagation
     }
 
     pub fn draw_on_doc(
