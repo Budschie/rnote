@@ -4,29 +4,14 @@
   <!-- interface-name latexeditor.ui -->
   <requires lib="gtk" version="4.12"/>
   <requires lib="libadwaita" version="1.4"/>
-  <template class="RnLatexEditor" parent="AdwApplicationWindow">
-    <property name="default-height">800</property>
-    <property name="default-width">600</property>
+  <template class="RnLatexEditor" parent="GtkWidget">
+	<property name="layout-manager">
+      <object class="GtkBinLayout"></object>
+    </property>
+
     <child>
       <object class="GtkBox">
         <property name="orientation">vertical</property>
-        <child>
-          <object class="AdwHeaderBar">
-            <child type="start">
-              <object class="GtkButton" id="compile_button">
-                <property name="label">Compile!</property>
-                <style>
-                  <class name="suggested-action"/>
-                </style>
-              </object>
-            </child>
-            <child type="end">
-              <object class="GtkButton" id="show_errors_button">
-                <property name="icon-name">emblem-unreadable</property>
-              </object>
-            </child>
-          </object>
-        </child>
         <child>
           <object class="AdwToastOverlay" id="compilation_failed_toast_overlay">
             <child>
@@ -35,16 +20,34 @@
                   <object class="GtkBox">
                     <property name="orientation">vertical</property>
                     <child>
-                      <object class="GtkLabel">
-                        <property name="label">Equation</property>
-                        <property name="margin-bottom">10</property>
-                        <property name="margin-end">10</property>
-                        <property name="margin-start">10</property>
-                        <property name="margin-top">10</property>
-                        <style>
-                          <class name="title-4"/>
-                        </style>
-                      </object>
+					  <object class="GtkCenterBox">
+						<child type="start">
+						  <object class="GtkLabel">
+							<property name="label">Equation</property>
+							<property name="margin-bottom">10</property>
+							<property name="margin-end">10</property>
+							<property name="margin-start">10</property>
+							<property name="margin-top">10</property>
+							<style>
+							  <class name="title-1"/>
+							</style>
+						  </object>
+						</child>
+						<child type="end">
+						  <object class="GtkToggleButton" id="show_errors_button">
+							<property name="icon-name">task-due-symbolic</property>
+							<property name="halign">center</property>
+							<property name="margin-bottom">10</property>
+							<property name="margin-end">10</property>
+							<property name="margin-start">10</property>
+							<property name="margin-top">10</property>
+							<property name="valign">center</property>
+							<style>
+							  <class name="flat" />
+							</style>
+						  </object>
+						</child>
+					  </object>
                     </child>
                     <child>
                       <object class="GtkScrolledWindow">
@@ -83,7 +86,7 @@
                         <property name="margin-start">10</property>
                         <property name="margin-top">10</property>
                         <style>
-                          <class name="title-4"/>
+                          <class name="title-1"/>
                         </style>
                       </object>
                     </child>

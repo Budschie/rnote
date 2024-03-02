@@ -12,15 +12,17 @@ use gtk4::{glib, glib::clone, subclass::prelude::*, CompositeTemplate};
 use gtk4::{SpinButton, Widget, Window};
 use rnote_engine::pens::equation::equation_provider::EquationProvider;
 use rnote_engine::pens::equation::latex_equation_provider::LatexEquationProvider;
-use rnote_engine::pens::equation::{LatexCompiledInstruction, LatexState};
+use rnote_engine::pens::equation::{LatexCompiledInstruction, LatexReference, LatexState};
 use rnote_engine::pens::pensconfig::equationconfig::EquationConfig;
 use rnote_engine::pens::Pen;
 
 use super::latexeditor::LatexEditorResult;
 
 mod imp {
-    use adw::ActionRow;
+    use adw::{glib::WeakRef, ActionRow, OverlaySplitView};
     use gtk4::{Button, ListBox, MenuButton, Popover, SpinButton};
+
+    use crate::RnSidebar;
 
     use super::*;
 
@@ -39,6 +41,14 @@ mod imp {
         pub(crate) equationtype_menubutton: TemplateChild<MenuButton>,
         #[template_child]
         pub(crate) font_size_spinbutton: TemplateChild<SpinButton>,
+        #[template_child]
+        pub(crate) edit_equation: TemplateChild<Button>,
+        #[template_child]
+        pub(crate) compile_equation: TemplateChild<Button>,
+        // TODO: Condense to one weak ref
+        pub(crate) latex_editor: WeakRef<RnLatexEditor>,
+        pub(crate) sidebar: WeakRef<RnSidebar>,
+        pub(crate) split_view: WeakRef<OverlaySplitView>,
     }
 
     #[glib::object_subclass]
@@ -172,11 +182,66 @@ impl RnLatexPage {
 				appwindow.active_tab_wrapper().canvas().engine_mut().pens_config.equation_config.equation_provider = equation_type;
 			}
 		}));
+
+        imp.edit_equation.connect_clicked(
+            clone!(@weak self as latexpage, @weak appwindow => move |_| {
+                latexpage.show_equation_editor();
+            }),
+        );
+
+        imp.compile_equation.connect_clicked(clone!(@weak self as latexpage, @weak appwindow => move |_| {
+			let mut request_compilation = false;
+
+			if let Pen::Latex(latex) = appwindow.active_tab_wrapper().canvas().engine_mut().penholder.current_pen_ref() {
+				if let LatexState::ExpectingCode(..) = &latex.state {
+					request_compilation = true;
+				}
+			}
+
+			if request_compilation {
+				appwindow.sidebar().latex_editor().request_compilation();
+			}
+		}));
+
+        appwindow.sidebar().latex_editor().connect_closure(
+            "latex-editor-compiled",
+            false,
+            closure_local!(@weak-allow-none appwindow => move |_latex: &RnLatexEditor, result: &LatexEditorResultBoxed| {
+				let appwindow_resolved = appwindow.unwrap();
+
+                RnLatexPage::apply_result_to_pen(
+                    appwindow_resolved.active_tab_wrapper().canvas().engine_mut().penholder.current_pen_mut(),
+                    result,
+                );
+                let _ = appwindow_resolved.active_tab_wrapper().canvas().engine_mut().current_pen_update_state();
+            })
+        );
+
+        appwindow.sidebar().latex_editor().connect_closure(
+            "latex-editor-request-compilation",
+            false,
+            closure_local!(@weak-allow-none appwindow => move |_latex: &RnLatexEditor, equation_code: String| {
+                LatexCodeCompilationResult::from(RnLatexPage::compile_equation_code(
+                    &equation_code,
+                    &appwindow.unwrap().active_tab_wrapper().canvas()
+                        .engine_ref()
+                        .pens_config
+                        .equation_config,
+                ))
+            }),
+        );
+
+        // TODO: Move as much as possible into the appwindow so that weak references don't have to be stored here...
+        self.imp()
+            .latex_editor
+            .set(Some(&appwindow.sidebar().latex_editor()));
+        self.imp().sidebar.set(Some(&appwindow.sidebar()));
+        self.imp().split_view.set(Some(&appwindow.split_view()));
     }
 
     fn apply_result_to_pen(current_pen: &mut Pen, result: &LatexEditorResultBoxed) {
         if let Pen::Latex(latex) = current_pen {
-            if let LatexState::ReceivingCode(draw_instructions) = latex.state.clone() {
+            if let LatexState::ExpectingCode(draw_instructions) = latex.state.clone() {
                 match result.clone().inner() {
                     LatexEditorResult::Compiled(svg, code) => {
                         latex.state = LatexState::Finished(LatexCompiledInstruction {
@@ -198,51 +263,43 @@ impl RnLatexPage {
         equation_config.generate_svg(equation_code)
     }
 
+    fn show_equation_editor(&self) {
+        self.imp()
+            .split_view
+            .upgrade()
+            .unwrap()
+            .set_show_sidebar(true);
+        self.imp()
+            .sidebar
+            .upgrade()
+            .unwrap()
+            .sidebar_stack()
+            .set_visible_child(&self.imp().latex_editor.upgrade().unwrap());
+    }
+
     pub(crate) fn refresh_ui(&self, active_tab: &RnCanvasWrapper) {
-        let mut editor_optional: Option<RnLatexEditor> = None;
+        // println!("Refreshing UI");
+
+        let mut editor_update_text: Option<String> = None;
         if let Pen::Latex(latex) = active_tab.canvas().engine_mut().penholder.current_pen_mut() {
             if let LatexState::ExpectingCode(expecting_code) = latex.state.clone() {
-                let editor = RnLatexEditor::new(&expecting_code.initial_code.clone());
+                // let editor = RnLatexEditor::new(&expecting_code.initial_code.clone());
                 // TODO: Find better way of determining parent window.
                 // I am not using the main window from the init function because GObjects
                 // are ref-counted and I fear that this would introduce a reference cycle
-
-                editor.set_transient_for(Some(&RnLatexPage::determine_window_of_widget(
-                    active_tab.upcast_ref::<Widget>().clone(),
+                /*
+                    editor.set_transient_for(Some(&RnLatexPage::determine_window_of_widget(
+                        active_tab.upcast_ref::<Widget>().clone(),
                 )));
-                latex.state = LatexState::ReceivingCode(expecting_code);
+                     */
 
-                let borrowed_canvas = active_tab.canvas();
-                // Editor callbacks
-                editor.connect_closure(
-                    "latex-editor-compiled",
-                    false,
-                    closure_local!(|_latex: &RnLatexEditor, result: &LatexEditorResultBoxed| {
-                        RnLatexPage::apply_result_to_pen(
-                            borrowed_canvas.engine_mut().penholder.current_pen_mut(),
-                            result,
-                        );
-                        let _ = borrowed_canvas.engine_mut().current_pen_update_state();
-                    }),
-                );
+                // Open code window if Creating new stuff
 
-                let borrowed_canvas_again = active_tab.canvas();
+                if let LatexReference::CreateNew = &latex.reference {
+                    self.show_equation_editor();
+                }
 
-                editor.connect_closure(
-                    "latex-editor-request-compilation",
-                    false,
-                    closure_local!(|_latex: &RnLatexEditor, equation_code: String| {
-                        LatexCodeCompilationResult::from(RnLatexPage::compile_equation_code(
-                            &equation_code,
-                            &borrowed_canvas_again
-                                .engine_mut()
-                                .pens_config
-                                .equation_config,
-                        ))
-                    }),
-                );
-
-                editor_optional = Some(editor);
+                editor_update_text = Some(expecting_code.initial_code.clone());
             }
         };
 
@@ -250,8 +307,9 @@ impl RnLatexPage {
             .read_settings_from_pen(&active_tab.canvas().engine_mut().pens_config.equation_config);
         target_state.apply(self);
 
-        if let Some(latex_editor) = editor_optional {
-            latex_editor.present();
+        if let Some(new_latex_code) = editor_update_text {
+            let latex_editor_resolved: RnLatexEditor = self.imp().latex_editor.upgrade().unwrap();
+            latex_editor_resolved.set_latex_code(&new_latex_code)
         }
     }
 }

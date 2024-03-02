@@ -11,6 +11,7 @@ mod typewriterpage;
 // Re-exports
 pub(crate) use brushpage::RnBrushPage;
 pub(crate) use eraserpage::RnEraserPage;
+pub(crate) use latexeditor::RnLatexEditor;
 pub(crate) use latexpage::RnLatexPage;
 use rnote_engine::pens::PenStyle;
 pub(crate) use selectorpage::RnSelectorPage;

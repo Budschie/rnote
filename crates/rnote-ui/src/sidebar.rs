@@ -1,10 +1,14 @@
 // Imports
-use crate::{RnAppMenu, RnAppWindow, RnSettingsPanel, RnWorkspaceBrowser};
+use crate::{
+    penssidebar::RnLatexEditor, RnAppMenu, RnAppWindow, RnSettingsPanel, RnWorkspaceBrowser,
+};
 use gtk4::{
     glib, glib::clone, prelude::*, subclass::prelude::*, Button, CompositeTemplate, Widget,
 };
 
 mod imp {
+    use crate::penssidebar::RnLatexEditor;
+
     use super::*;
 
     #[derive(Debug, CompositeTemplate, Default)]
@@ -22,6 +26,8 @@ mod imp {
         pub(crate) workspacebrowser: TemplateChild<RnWorkspaceBrowser>,
         #[template_child]
         pub(crate) settings_panel: TemplateChild<RnSettingsPanel>,
+        #[template_child]
+        pub(crate) latex_editor: TemplateChild<RnLatexEditor>,
     }
 
     #[glib::object_subclass]
@@ -94,6 +100,10 @@ impl RnSidebar {
 
     pub(crate) fn settings_panel(&self) -> RnSettingsPanel {
         self.imp().settings_panel.get()
+    }
+
+    pub(crate) fn latex_editor(&self) -> RnLatexEditor {
+        self.imp().latex_editor.get()
     }
 
     pub(crate) fn init(&self, appwindow: &RnAppWindow) {

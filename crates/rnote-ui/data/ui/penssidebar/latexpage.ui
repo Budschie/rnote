@@ -27,7 +27,8 @@
             <property name="tooltip_text" translatable="yes">Equation Type</property>
             <property name="popover">equationtype_popover</property>
             <style>
-              <class name="flat" />
+			  <class name="flat" />
+			  <class name="sidebar_action_button" />
             </style>
           </object>
         </child>
@@ -95,6 +96,32 @@
         <property name="orientation">vertical</property>
       </object>
     </child>
+	<child>
+		<object class="GtkButton" id="edit_equation">
+		<property name="tooltip_text" translatable="yes">Edit equation</property>
+        <property name="icon-name">document-edit</property>
+            <style>
+			  <class name="sidebar_action_button" />
+            </style>
+	  </object>
+	</child>
+	<child>
+	  <object class="GtkButton" id="compile_equation">
+        <property name="icon-name">object-select-symbolic</property>
+		<property name="tooltip_text" translatable="yes">Compile equation</property>
+            <style>
+              <class name="suggested-action"/>
+			  <class name="sidebar_action_button" />
+            </style>
+	  </object>
+	</child>
+	
+	<child>
+      <object class="GtkSeparator">
+        <property name="orientation">vertical</property>
+      </object>
+    </child>
+
     <child>
 	  <object class="GtkAdjustment" id="adj">
         <property name="lower">1</property>

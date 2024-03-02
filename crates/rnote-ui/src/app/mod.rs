@@ -18,6 +18,8 @@ use adw::subclass::prelude::AdwApplicationImpl;
 use gtk4::{gio, glib, glib::clone, prelude::*, subclass::prelude::*};
 
 mod imp {
+    use crate::penssidebar::RnLatexEditor;
+
     use super::*;
 
     #[derive(Debug)]
@@ -125,6 +127,7 @@ mod imp {
             RnStrokeContentPreview::static_type();
             RnSidebar::static_type();
             RnPenPicker::static_type();
+            RnLatexEditor::static_type();
         }
 
         /// Initializes and shows a new app window

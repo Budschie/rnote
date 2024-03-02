@@ -75,8 +75,6 @@ mod imp {
         #[template_child]
         pub(crate) error_message: TemplateChild<TextBuffer>,
         #[template_child]
-        pub(crate) compile_button: TemplateChild<Button>,
-        #[template_child]
         pub(crate) show_errors_button: TemplateChild<Button>,
         #[template_child]
         pub(crate) error_code_split: TemplateChild<OverlaySplitView>,
@@ -90,7 +88,7 @@ mod imp {
     impl ObjectSubclass for RnLatexEditor {
         const NAME: &'static str = "RnLatexEditor";
         type Type = super::RnLatexEditor;
-        type ParentType = adw::ApplicationWindow;
+        type ParentType = gtk4::Widget;
 
         fn class_init(klass: &mut Self::Class) {
             klass.bind_template();
@@ -101,22 +99,21 @@ mod imp {
         }
     }
 
-    impl WindowImpl for RnLatexEditor {
-        fn close_request(&self) -> glib::Propagation {
-            self.obj().emit_by_name::<()>(
-                "latex-editor-compiled",
-                &[&LatexEditorResultBoxed(LatexEditorResult::Skip)],
-            );
-            glib::Propagation::Proceed
-        }
+    /*
+        impl WindowImpl for RnLatexEditor {
+            fn close_request(&self) -> glib::Propagation {
+                self.obj().emit_by_name::<()>(
+                    "latex-editor-compiled",
+                    &[&LatexEditorResultBoxed(LatexEditorResult::Skip)],
+                );
+                glib::Propagation::Proceed
+            }
     }
+        */
 
     impl ObjectImpl for RnLatexEditor {
         fn constructed(&self) {
             self.parent_constructed();
-
-            let obj = self.obj();
-            let latex_code = self.latex_code.clone();
 
             let error_code_split = self.error_code_split.get();
             self.show_errors_button.connect_clicked(
@@ -124,26 +121,6 @@ mod imp {
                     error_code_split.set_show_sidebar(!error_code_split.shows_sidebar());
                 }),
             );
-
-            self.compile_button.connect_clicked(clone!(@weak self as latex_editor, @strong obj, @strong latex_code => move |_button| {
-				let text = String::from_utf8(latex_code.text(&latex_code.start_iter(), &latex_code.end_iter(), true).as_bytes().to_vec()).unwrap();
-
-				let result = obj.compile_equation(&text);
-
-				match result {
-					Ok(svg_code) => {
-						obj.emit_by_name::<()>("latex-editor-compiled", &[&LatexEditorResultBoxed(LatexEditorResult::Compiled(svg_code, text))]);
-						obj.close();
-					}
-					Err(error_message) => {
-						latex_editor.error_message.get().set_text(error_message.as_str());
-						latex_editor.compilation_failed_toast_overlay.add_toast(latex_editor.compilation_failed_toast.get());
-					}
-				}
-
-				// obj.emit_by_name::<()>("latex-editor-result", &[&LatexEditorResultBoxed(LatexEditorResult::Compile(String::from(text)))]);
-				// obj.close();
-			}));
         }
 
         fn dispose(&self) {
@@ -174,28 +151,56 @@ mod imp {
             self.parent_size_allocate(width, height, baseline);
         }
     }
-
-    impl AdwWindowImpl for RnLatexEditor {}
-
-    impl ApplicationWindowImpl for RnLatexEditor {}
-
-    impl AdwApplicationWindowImpl for RnLatexEditor {}
 }
 
 glib::wrapper! {
     pub(crate) struct RnLatexEditor(ObjectSubclass<imp::RnLatexEditor>)
-        @extends adw::ApplicationWindow, adw::Window, gtk4::Window, gtk4::Widget,
-    @implements gtk4::Accessible, gtk4::Buildable, gtk4::ConstraintTarget, gtk4::Native, gtk4::Root, gtk4::ShortcutManager;
+        @extends gtk4::Widget,
+    @implements gtk4::Buildable;
 }
 
 impl RnLatexEditor {
     pub(crate) fn new(initial_latex_code: &String) -> Self {
-        let latex_editor: RnLatexEditor = glib::Object::new();
-        latex_editor
-            .imp()
-            .latex_code
-            .set_text(initial_latex_code.as_str());
-        latex_editor
+        glib::Object::new()
+    }
+
+    pub fn set_latex_code(&self, latex_code: &String) {
+        self.imp().latex_code.set_text(latex_code.as_str());
+    }
+
+    pub fn request_compilation(&mut self) {
+        let latex_editor = self.imp();
+        let latex_code = &latex_editor.latex_code;
+        let text = String::from_utf8(
+            latex_code
+                .text(&latex_code.start_iter(), &latex_code.end_iter(), true)
+                .as_bytes()
+                .to_vec(),
+        )
+        .unwrap();
+
+        let result = self.compile_equation(&text);
+
+        match result {
+            Ok(svg_code) => {
+                self.emit_by_name::<()>(
+                    "latex-editor-compiled",
+                    &[&LatexEditorResultBoxed(LatexEditorResult::Compiled(
+                        svg_code, text,
+                    ))],
+                );
+                // obj.close();
+            }
+            Err(error_message) => {
+                latex_editor
+                    .error_message
+                    .get()
+                    .set_text(error_message.as_str());
+                latex_editor
+                    .compilation_failed_toast_overlay
+                    .add_toast(latex_editor.compilation_failed_toast.get());
+            }
+        }
     }
 
     fn compile_equation(&self, code: &String) -> Result<String, String> {

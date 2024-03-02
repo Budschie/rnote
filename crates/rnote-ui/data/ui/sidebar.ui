@@ -65,6 +65,17 @@
                 </property>
               </object>
             </child>
+			<!-- equations editor -->
+            <child>
+              <object class="AdwViewStackPage">
+                <property name="name">equations_page</property>
+                <property name="title" translatable="yes">Equations</property>
+                <property name="icon-name">pen-latex-symbolic</property>
+                <property name="child">
+                  <object class="RnLatexEditor" id="latex_editor"></object>
+                </property>
+              </object>
+            </child>
           </object>
         </property>
       </object>
