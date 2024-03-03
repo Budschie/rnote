@@ -8,8 +8,8 @@
         <file compressed="true" preprocess="xml-stripblanks">ui/groupediconpicker/groupediconpickergroup.ui</file>
         <file compressed="true" preprocess="xml-stripblanks">ui/penssidebar/brushpage.ui</file>
         <file compressed="true" preprocess="xml-stripblanks">ui/penssidebar/eraserpage.ui</file>
-		<file compressed="true" preprocess="xml-stripblanks">ui/penssidebar/latexpage.ui</file>
-		<file compressed="true" preprocess="xml-stripblanks">ui/latexeditor.ui</file>
+		<file compressed="true" preprocess="xml-stripblanks">ui/penssidebar/equationpage.ui</file>
+		<file compressed="true" preprocess="xml-stripblanks">ui/equationeditor.ui</file>
         <file compressed="true" preprocess="xml-stripblanks">ui/penssidebar/penssidebar.ui</file>
         <file compressed="true" preprocess="xml-stripblanks">ui/penssidebar/selectorpage.ui</file>
         <file compressed="true" preprocess="xml-stripblanks">ui/penssidebar/shaperpage.ui</file>

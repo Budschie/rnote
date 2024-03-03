@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Created with Cambalache 0.16.0 -->
 <interface>
-  <!-- interface-name latexeditor.ui -->
+  <!-- interface-name equationeditor.ui -->
   <requires lib="gtk" version="4.12"/>
   <requires lib="libadwaita" version="1.4"/>
-  <template class="RnLatexEditor" parent="GtkWidget">
+  <template class="RnEquationEditor" parent="GtkWidget">
 	<property name="layout-manager">
       <object class="GtkBinLayout"></object>
     </property>
@@ -54,7 +54,7 @@
                         <child>
                           <object class="GtkTextView">
                             <property name="buffer">
-                              <object class="GtkTextBuffer" id="latex_code"/>
+                              <object class="GtkTextBuffer" id="equation_code"/>
                             </property>
                             <property name="hscroll-policy">natural</property>
                             <property name="left-margin">12</property>

@@ -45,9 +45,9 @@
           </object>
         </child>
 		<child>
-          <object class="GtkToggleButton" id="latex_toggle">
+          <object class="GtkToggleButton" id="equation_toggle">
             <property name="icon_name">pen-latex-symbolic</property>
-            <property name="tooltip_text" translatable="yes">Latex</property>
+            <property name="tooltip_text" translatable="yes">Equation</property>
             <property name="hexpand">true</property>
             <property name="group">brush_toggle</property>
             <style>

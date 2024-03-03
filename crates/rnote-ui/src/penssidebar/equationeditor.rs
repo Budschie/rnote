@@ -6,51 +6,51 @@ use gtk4::ffi::GtkWindow;
 use gtk4::{glib, glib::clone, subclass::prelude::*, CompositeTemplate, ToggleButton};
 
 #[derive(Debug, Clone)]
-pub enum LatexEditorResult {
+pub enum EquationEditorResult {
     Skip,
     Compiled(String, String),
 }
 
 #[derive(Clone, Debug, glib::Boxed)]
-#[boxed_type(name = "LatexCodeCompilationResult")]
-pub struct LatexCodeCompilationResult(Result<String, String>);
+#[boxed_type(name = "EquationCodeCompilationResult")]
+pub struct EquationCodeCompilationResult(Result<String, String>);
 
-impl From<Result<String, String>> for LatexCodeCompilationResult {
+impl From<Result<String, String>> for EquationCodeCompilationResult {
     fn from(value: Result<String, String>) -> Self {
         Self(value)
     }
 }
 
-impl From<LatexCodeCompilationResult> for Result<String, String> {
-    fn from(value: LatexCodeCompilationResult) -> Self {
+impl From<EquationCodeCompilationResult> for Result<String, String> {
+    fn from(value: EquationCodeCompilationResult) -> Self {
         value.0
     }
 }
 
-impl LatexCodeCompilationResult {
+impl EquationCodeCompilationResult {
     pub(crate) fn inner(self) -> Result<String, String> {
         self.0
     }
 }
 
 #[derive(Clone, Debug, glib::Boxed)]
-#[boxed_type(name = "LatexEditorResultBoxed")]
-pub struct LatexEditorResultBoxed(LatexEditorResult);
+#[boxed_type(name = "EquationEditorResultBoxed")]
+pub struct EquationEditorResultBoxed(EquationEditorResult);
 
-impl From<LatexEditorResult> for LatexEditorResultBoxed {
-    fn from(value: LatexEditorResult) -> Self {
+impl From<EquationEditorResult> for EquationEditorResultBoxed {
+    fn from(value: EquationEditorResult) -> Self {
         Self(value)
     }
 }
 
-impl From<LatexEditorResultBoxed> for LatexEditorResult {
-    fn from(value: LatexEditorResultBoxed) -> Self {
+impl From<EquationEditorResultBoxed> for EquationEditorResult {
+    fn from(value: EquationEditorResultBoxed) -> Self {
         value.0
     }
 }
 
-impl LatexEditorResultBoxed {
-    pub(crate) fn inner(self) -> LatexEditorResult {
+impl EquationEditorResultBoxed {
+    pub(crate) fn inner(self) -> EquationEditorResult {
         self.0
     }
 }
@@ -68,10 +68,10 @@ mod imp {
 
     use super::*;
     #[derive(Default, Debug, CompositeTemplate)]
-    #[template(resource = "/com/github/flxzt/rnote/ui/latexeditor.ui")]
-    pub(crate) struct RnLatexEditor {
+    #[template(resource = "/com/github/flxzt/rnote/ui/equationeditor.ui")]
+    pub(crate) struct RnEquationEditor {
         #[template_child]
-        pub(crate) latex_code: TemplateChild<TextBuffer>,
+        pub(crate) equation_code: TemplateChild<TextBuffer>,
         #[template_child]
         pub(crate) error_message: TemplateChild<TextBuffer>,
         #[template_child]
@@ -85,9 +85,9 @@ mod imp {
     }
 
     #[glib::object_subclass]
-    impl ObjectSubclass for RnLatexEditor {
-        const NAME: &'static str = "RnLatexEditor";
-        type Type = super::RnLatexEditor;
+    impl ObjectSubclass for RnEquationEditor {
+        const NAME: &'static str = "RnEquationEditor";
+        type Type = super::RnEquationEditor;
         type ParentType = gtk4::Widget;
 
         fn class_init(klass: &mut Self::Class) {
@@ -100,18 +100,18 @@ mod imp {
     }
 
     /*
-        impl WindowImpl for RnLatexEditor {
+        impl WindowImpl for RnEquationEditor {
             fn close_request(&self) -> glib::Propagation {
                 self.obj().emit_by_name::<()>(
-                    "latex-editor-compiled",
-                    &[&LatexEditorResultBoxed(LatexEditorResult::Skip)],
+                    "equation-editor-compiled",
+                    &[&EquationEditorResultBoxed(EquationEditorResult::Skip)],
                 );
                 glib::Propagation::Proceed
             }
     }
         */
 
-    impl ObjectImpl for RnLatexEditor {
+    impl ObjectImpl for RnEquationEditor {
         fn constructed(&self) {
             self.parent_constructed();
 
@@ -134,19 +134,19 @@ mod imp {
 
             SIGNALS.get_or_init(|| {
                 vec![
-                    Signal::builder("latex-editor-compiled")
-                        .param_types([LatexEditorResultBoxed::static_type()])
+                    Signal::builder("equation-editor-compiled")
+                        .param_types([EquationEditorResultBoxed::static_type()])
                         .build(),
-                    Signal::builder("latex-editor-request-compilation")
+                    Signal::builder("equation-editor-request-compilation")
                         .param_types([String::static_type()])
-                        .return_type_from(LatexCodeCompilationResult::static_type())
+                        .return_type_from(EquationCodeCompilationResult::static_type())
                         .build(),
                 ]
             })
         }
     }
 
-    impl WidgetImpl for RnLatexEditor {
+    impl WidgetImpl for RnEquationEditor {
         fn size_allocate(&self, width: i32, height: i32, baseline: i32) {
             self.parent_size_allocate(width, height, baseline);
         }
@@ -154,26 +154,26 @@ mod imp {
 }
 
 glib::wrapper! {
-    pub(crate) struct RnLatexEditor(ObjectSubclass<imp::RnLatexEditor>)
+    pub(crate) struct RnEquationEditor(ObjectSubclass<imp::RnEquationEditor>)
         @extends gtk4::Widget,
     @implements gtk4::Buildable;
 }
 
-impl RnLatexEditor {
-    pub(crate) fn new(initial_latex_code: &String) -> Self {
+impl RnEquationEditor {
+    pub(crate) fn new(initial_equation_code: &String) -> Self {
         glib::Object::new()
     }
 
-    pub fn set_latex_code(&self, latex_code: &String) {
-        self.imp().latex_code.set_text(latex_code.as_str());
+    pub fn set_equation_code(&self, equation_code: &String) {
+        self.imp().equation_code.set_text(equation_code.as_str());
     }
 
     pub fn request_compilation(&mut self) {
-        let latex_editor = self.imp();
-        let latex_code = &latex_editor.latex_code;
+        let equation_editor = self.imp();
+        let equation_code = &equation_editor.equation_code;
         let text = String::from_utf8(
-            latex_code
-                .text(&latex_code.start_iter(), &latex_code.end_iter(), true)
+            equation_code
+                .text(&equation_code.start_iter(), &equation_code.end_iter(), true)
                 .as_bytes()
                 .to_vec(),
         )
@@ -184,28 +184,28 @@ impl RnLatexEditor {
         match result {
             Ok(svg_code) => {
                 self.emit_by_name::<()>(
-                    "latex-editor-compiled",
-                    &[&LatexEditorResultBoxed(LatexEditorResult::Compiled(
+                    "equation-editor-compiled",
+                    &[&EquationEditorResultBoxed(EquationEditorResult::Compiled(
                         svg_code, text,
                     ))],
                 );
                 // obj.close();
             }
             Err(error_message) => {
-                latex_editor
+                equation_editor
                     .error_message
                     .get()
                     .set_text(error_message.as_str());
-                latex_editor
+                equation_editor
                     .compilation_failed_toast_overlay
-                    .add_toast(latex_editor.compilation_failed_toast.get());
+                    .add_toast(equation_editor.compilation_failed_toast.get());
             }
         }
     }
 
     fn compile_equation(&self, code: &String) -> Result<String, String> {
-        let emitted_result: LatexCodeCompilationResult =
-            self.emit_by_name("latex-editor-request-compilation", &[code]);
+        let emitted_result: EquationCodeCompilationResult =
+            self.emit_by_name("equation-editor-request-compilation", &[code]);
         emitted_result.inner()
     }
 }

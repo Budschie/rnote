@@ -2,8 +2,8 @@
 use super::penmode::PenModeState;
 use super::shortcuts::ShortcutMode;
 use super::{
-    Brush, Eraser, Latex, Pen, PenBehaviour, PenMode, PenStyle, Selector, Shaper, Shortcuts, Tools,
-    Typewriter,
+    Brush, Equation, Eraser, Pen, PenBehaviour, PenMode, PenStyle, Selector, Shaper, Shortcuts,
+    Tools, Typewriter,
 };
 use crate::camera::NudgeDirection;
 use crate::engine::{EngineView, EngineViewMut};
@@ -493,7 +493,7 @@ impl PenHolder {
             PenStyle::Brush => BacklogPolicy::Limit(Duration::from_millis(4)),
             PenStyle::Shaper => BacklogPolicy::Limit(Duration::from_millis(8)),
             PenStyle::Typewriter => BacklogPolicy::Limit(Duration::from_millis(33)),
-            PenStyle::Latex => BacklogPolicy::Limit(Duration::from_millis(33)),
+            PenStyle::Equation => BacklogPolicy::Limit(Duration::from_millis(33)),
             PenStyle::Eraser => BacklogPolicy::Limit(Duration::from_millis(33)),
             PenStyle::Selector => BacklogPolicy::Limit(Duration::from_millis(33)),
             PenStyle::Tools => BacklogPolicy::DisableBacklog,
@@ -530,7 +530,7 @@ fn new_pen(pen_style: PenStyle) -> Pen {
         PenStyle::Brush => Pen::Brush(Brush::default()),
         PenStyle::Shaper => Pen::Shaper(Shaper::default()),
         PenStyle::Typewriter => Pen::Typewriter(Typewriter::default()),
-        PenStyle::Latex => Pen::Latex(Latex::default()),
+        PenStyle::Equation => Pen::Equation(Equation::default()),
         PenStyle::Eraser => Pen::Eraser(Eraser::default()),
         PenStyle::Selector => Pen::Selector(Selector::default()),
         PenStyle::Tools => Pen::Tools(Tools::default()),

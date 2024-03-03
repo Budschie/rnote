@@ -15,7 +15,7 @@ pub mod width_picker;
 
 // Re-exports
 pub use brush::Brush;
-pub use equation::Latex;
+pub use equation::Equation;
 pub use eraser::Eraser;
 pub use penbehaviour::PenBehaviour;
 pub use penholder::PenHolder;
@@ -43,7 +43,7 @@ pub enum Pen {
     Brush(Brush),
     Shaper(Shaper),
     Typewriter(Typewriter),
-    Latex(Latex),
+    Equation(Equation),
     Eraser(Eraser),
     Selector(Selector),
     Tools(Tools),
@@ -61,7 +61,7 @@ impl PenBehaviour for Pen {
             Pen::Brush(brush) => brush.init(engine_view),
             Pen::Shaper(shaper) => shaper.init(engine_view),
             Pen::Typewriter(typewriter) => typewriter.init(engine_view),
-            Pen::Latex(latex) => latex.init(engine_view),
+            Pen::Equation(equation) => equation.init(engine_view),
             Pen::Eraser(eraser) => eraser.init(engine_view),
             Pen::Selector(selector) => selector.init(engine_view),
             Pen::Tools(tools) => tools.init(engine_view),
@@ -73,7 +73,7 @@ impl PenBehaviour for Pen {
             Pen::Brush(brush) => brush.deinit(),
             Pen::Shaper(shaper) => shaper.deinit(),
             Pen::Typewriter(typewriter) => typewriter.deinit(),
-            Pen::Latex(latex) => latex.deinit(),
+            Pen::Equation(equation) => equation.deinit(),
             Pen::Eraser(eraser) => eraser.deinit(),
             Pen::Selector(selector) => selector.deinit(),
             Pen::Tools(tools) => tools.deinit(),
@@ -85,7 +85,7 @@ impl PenBehaviour for Pen {
             Pen::Brush(brush) => brush.style(),
             Pen::Shaper(shaper) => shaper.style(),
             Pen::Typewriter(typewriter) => typewriter.style(),
-            Pen::Latex(latex) => latex.style(),
+            Pen::Equation(equation) => equation.style(),
             Pen::Eraser(eraser) => eraser.style(),
             Pen::Selector(selector) => selector.style(),
             Pen::Tools(tools) => tools.style(),
@@ -97,7 +97,7 @@ impl PenBehaviour for Pen {
             Pen::Brush(brush) => brush.update_state(engine_view),
             Pen::Shaper(shaper) => shaper.update_state(engine_view),
             Pen::Typewriter(typewriter) => typewriter.update_state(engine_view),
-            Pen::Latex(latex) => latex.update_state(engine_view),
+            Pen::Equation(equation) => equation.update_state(engine_view),
             Pen::Eraser(eraser) => eraser.update_state(engine_view),
             Pen::Selector(selector) => selector.update_state(engine_view),
             Pen::Tools(tools) => tools.update_state(engine_view),
@@ -114,7 +114,7 @@ impl PenBehaviour for Pen {
             Pen::Brush(brush) => brush.handle_event(event, now, engine_view),
             Pen::Shaper(shaper) => shaper.handle_event(event, now, engine_view),
             Pen::Typewriter(typewriter) => typewriter.handle_event(event, now, engine_view),
-            Pen::Latex(latex) => latex.handle_event(event, now, engine_view),
+            Pen::Equation(equation) => equation.handle_event(event, now, engine_view),
             Pen::Eraser(eraser) => eraser.handle_event(event, now, engine_view),
             Pen::Selector(selector) => selector.handle_event(event, now, engine_view),
             Pen::Tools(tools) => tools.handle_event(event, now, engine_view),
@@ -129,7 +129,7 @@ impl PenBehaviour for Pen {
             Pen::Brush(brush) => brush.fetch_clipboard_content(engine_view),
             Pen::Shaper(shaper) => shaper.fetch_clipboard_content(engine_view),
             Pen::Typewriter(typewriter) => typewriter.fetch_clipboard_content(engine_view),
-            Pen::Latex(latex) => latex.fetch_clipboard_content(engine_view),
+            Pen::Equation(equation) => equation.fetch_clipboard_content(engine_view),
             Pen::Eraser(eraser) => eraser.fetch_clipboard_content(engine_view),
             Pen::Selector(selector) => selector.fetch_clipboard_content(engine_view),
             Pen::Tools(tools) => tools.fetch_clipboard_content(engine_view),
@@ -144,7 +144,7 @@ impl PenBehaviour for Pen {
             Pen::Brush(brush) => brush.cut_clipboard_content(engine_view),
             Pen::Shaper(shaper) => shaper.cut_clipboard_content(engine_view),
             Pen::Typewriter(typewriter) => typewriter.cut_clipboard_content(engine_view),
-            Pen::Latex(latex) => latex.cut_clipboard_content(engine_view),
+            Pen::Equation(equation) => equation.cut_clipboard_content(engine_view),
             Pen::Eraser(eraser) => eraser.cut_clipboard_content(engine_view),
             Pen::Selector(selector) => selector.cut_clipboard_content(engine_view),
             Pen::Tools(tools) => tools.cut_clipboard_content(engine_view),
@@ -158,7 +158,7 @@ impl DrawableOnDoc for Pen {
             Pen::Brush(brush) => brush.bounds_on_doc(engine_view),
             Pen::Shaper(shaper) => shaper.bounds_on_doc(engine_view),
             Pen::Typewriter(typewriter) => typewriter.bounds_on_doc(engine_view),
-            Pen::Latex(latex) => latex.bounds_on_doc(engine_view),
+            Pen::Equation(equation) => equation.bounds_on_doc(engine_view),
             Pen::Eraser(eraser) => eraser.bounds_on_doc(engine_view),
             Pen::Selector(selector) => selector.bounds_on_doc(engine_view),
             Pen::Tools(tools) => tools.bounds_on_doc(engine_view),
@@ -174,7 +174,7 @@ impl DrawableOnDoc for Pen {
             Pen::Brush(brush) => brush.draw_on_doc(cx, engine_view),
             Pen::Shaper(shaper) => shaper.draw_on_doc(cx, engine_view),
             Pen::Typewriter(typewriter) => typewriter.draw_on_doc(cx, engine_view),
-            Pen::Latex(latex) => latex.draw_on_doc(cx, engine_view),
+            Pen::Equation(equation) => equation.draw_on_doc(cx, engine_view),
             Pen::Eraser(eraser) => eraser.draw_on_doc(cx, engine_view),
             Pen::Selector(selector) => selector.draw_on_doc(cx, engine_view),
             Pen::Tools(tools) => tools.draw_on_doc(cx, engine_view),
@@ -205,7 +205,7 @@ pub enum PenStyle {
     #[serde(rename = "typewriter")]
     Typewriter,
     #[serde(rename = "equation")]
-    Latex,
+    Equation,
     #[serde(rename = "eraser")]
     Eraser,
     #[serde(rename = "selector")]
@@ -237,7 +237,7 @@ impl std::str::FromStr for PenStyle {
             "brush" => Ok(Self::Brush),
             "shaper" => Ok(Self::Shaper),
             "typewriter" => Ok(Self::Typewriter),
-            "latex" => Ok(Self::Latex),
+            "equation" => Ok(Self::Equation),
             "eraser" => Ok(Self::Eraser),
             "selector" => Ok(Self::Selector),
             "tools" => Ok(Self::Tools),
@@ -254,7 +254,7 @@ impl std::string::ToString for PenStyle {
             PenStyle::Brush => String::from("brush"),
             PenStyle::Shaper => String::from("shaper"),
             PenStyle::Typewriter => String::from("typewriter"),
-            PenStyle::Latex => String::from("latex"),
+            PenStyle::Equation => String::from("equation"),
             PenStyle::Eraser => String::from("eraser"),
             PenStyle::Selector => String::from("selector"),
             PenStyle::Tools => String::from("tools"),
@@ -268,7 +268,7 @@ impl PenStyle {
             Self::Brush => String::from("pen-brush-symbolic"),
             Self::Shaper => String::from("pen-shaper-symbolic"),
             Self::Typewriter => String::from("pen-typewriter-symbolic"),
-            Self::Latex => String::from("pen-eraser-symbolic"),
+            Self::Equation => String::from("pen-eraser-symbolic"),
             Self::Eraser => String::from("pen-eraser-symbolic"),
             Self::Selector => String::from("pen-selector-symbolic"),
             Self::Tools => String::from("pen-tools-symbolic"),

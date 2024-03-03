@@ -4,7 +4,7 @@ mod appactions;
 // Imports
 use crate::{
     colorpicker::RnColorPad, colorpicker::RnColorSetter, config, penssidebar::RnBrushPage,
-    penssidebar::RnEraserPage, penssidebar::RnLatexPage, penssidebar::RnSelectorPage,
+    penssidebar::RnEquationPage, penssidebar::RnEraserPage, penssidebar::RnSelectorPage,
     penssidebar::RnShaperPage, penssidebar::RnToolsPage, penssidebar::RnTypewriterPage,
     settingspanel::RnPenShortcutRow, strokewidthpicker::RnStrokeWidthPreview,
     strokewidthpicker::RnStrokeWidthSetter, strokewidthpicker::StrokeWidthPreviewStyle,
@@ -18,7 +18,7 @@ use adw::subclass::prelude::AdwApplicationImpl;
 use gtk4::{gio, glib, glib::clone, prelude::*, subclass::prelude::*};
 
 mod imp {
-    use crate::penssidebar::RnLatexEditor;
+    use crate::penssidebar::RnEquationEditor;
 
     use super::*;
 
@@ -111,7 +111,7 @@ mod imp {
             RnEraserPage::static_type();
             RnSelectorPage::static_type();
             RnTypewriterPage::static_type();
-            RnLatexPage::static_type();
+            RnEquationPage::static_type();
             RnToolsPage::static_type();
             RnWorkspaceBrowser::static_type();
             RnWorkspacesBar::static_type();
@@ -127,7 +127,7 @@ mod imp {
             RnStrokeContentPreview::static_type();
             RnSidebar::static_type();
             RnPenPicker::static_type();
-            RnLatexEditor::static_type();
+            RnEquationEditor::static_type();
         }
 
         /// Initializes and shows a new app window

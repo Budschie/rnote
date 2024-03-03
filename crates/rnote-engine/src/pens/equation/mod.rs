@@ -16,7 +16,7 @@ use crate::{
     document::format::MeasureUnit,
     engine::{EngineView, EngineViewMut},
     store::StrokeKey,
-    strokes::{latexstroke::LatexImage, Stroke, VectorImage},
+    strokes::{equationstroke::EquationImage, Stroke, VectorImage},
     DrawableOnDoc, WidgetFlags,
 };
 
@@ -31,66 +31,66 @@ pub struct EquationInitialWidthPick {
 }
 
 #[derive(Debug, Clone)]
-pub struct LatexCompiledInstruction {
+pub struct EquationCompiledInstruction {
     pub equation_code: String,
     pub svg_code: String,
     pub position: Vector2<f64>,
 }
 
 #[derive(Debug, Clone)]
-pub struct LatexDrawInstruction {
+pub struct EquationDrawInstruction {
     pub initial_code: String,
     pub position: Vector2<f64>,
 }
 
 #[derive(Debug, Clone)]
-pub struct LatexUpdateData {
-    pub old_latex_key: StrokeKey,
+pub struct EquationUpdateData {
+    pub old_equation_key: StrokeKey,
 }
 
 #[derive(Debug, Clone)]
-pub enum LatexState {
+pub enum EquationState {
     Idle,
     InitialWidthPick(EquationInitialWidthPick),
-    ExpectingCode(LatexDrawInstruction),
-    Finished(LatexCompiledInstruction),
+    ExpectingCode(EquationDrawInstruction),
+    Finished(EquationCompiledInstruction),
 }
 
-// CreateNew means that a new latex object will be created; UpdateOld will update an already existing one
+// CreateNew means that a new equation object will be created; UpdateOld will update an already existing one
 #[derive(Debug, Clone)]
-pub enum LatexReference {
+pub enum EquationReference {
     CreateNew,
-    UpdateOld(LatexUpdateData),
+    UpdateOld(EquationUpdateData),
 }
 
 #[derive(Debug, Clone)]
-pub struct Latex {
-    pub state: LatexState,
-    pub reference: LatexReference,
+pub struct Equation {
+    pub state: EquationState,
+    pub reference: EquationReference,
     pub equation_width: Option<WidthPickerContext>,
 }
 
-impl Default for Latex {
+impl Default for Equation {
     fn default() -> Self {
         Self {
-            state: LatexState::Idle,
-            reference: LatexReference::CreateNew,
+            state: EquationState::Idle,
+            reference: EquationReference::CreateNew,
             equation_width: None,
         }
     }
 }
 
-impl Latex {
+impl Equation {
     fn get_widget_flags_update() -> WidgetFlags {
         let mut default_widget_flags = WidgetFlags::default();
         default_widget_flags.refresh_ui = true;
         default_widget_flags
     }
 
-    fn determine_latex_reference(
+    fn determine_equation_reference(
         element: &Element,
         engine_view: &mut EngineViewMut,
-    ) -> LatexReference {
+    ) -> EquationReference {
         if let Some(&stroke_key) = engine_view
             .store
             .stroke_hitboxes_contain_coord(engine_view.camera.viewport(), element.pos)
@@ -99,33 +99,33 @@ impl Latex {
             let resolved = engine_view.store.get_stroke_ref(stroke_key);
 
             if let Some(stroke) = resolved {
-                if let Stroke::LatexImage(_) = stroke {
-                    return LatexReference::UpdateOld(LatexUpdateData {
-                        old_latex_key: stroke_key,
+                if let Stroke::EquationImage(_) = stroke {
+                    return EquationReference::UpdateOld(EquationUpdateData {
+                        old_equation_key: stroke_key,
                     });
                 }
             }
         }
 
-        LatexReference::CreateNew
+        EquationReference::CreateNew
     }
 
     fn determine_initial_code(
-        latex_reference: &LatexReference,
+        equation_reference: &EquationReference,
         engine_view: &mut EngineViewMut,
     ) -> String {
-        match latex_reference {
-            LatexReference::CreateNew => String::from(""),
-            LatexReference::UpdateOld(update_data) => {
+        match equation_reference {
+            EquationReference::CreateNew => String::from(""),
+            EquationReference::UpdateOld(update_data) => {
                 let stroke = engine_view
                     .store
-                    .get_stroke_ref(update_data.old_latex_key)
+                    .get_stroke_ref(update_data.old_equation_key)
                     .unwrap();
 
-                if let Stroke::LatexImage(latex_image) = stroke {
-                    latex_image.equation_code.clone()
+                if let Stroke::EquationImage(equation_image) = stroke {
+                    equation_image.equation_code.clone()
                 } else {
-                    // TODO: Warn about the fact that the LatexReference is not valid here
+                    // TODO: Warn about the fact that the EquationReference is not valid here
                     String::from("")
                 }
             }
@@ -133,7 +133,7 @@ impl Latex {
     }
 }
 
-impl PenBehaviour for Latex {
+impl PenBehaviour for Equation {
     fn init(&mut self, _engine_view: &EngineView) -> WidgetFlags {
         WidgetFlags::default()
     }
@@ -143,25 +143,27 @@ impl PenBehaviour for Latex {
     }
 
     fn style(&self) -> PenStyle {
-        PenStyle::Latex
+        PenStyle::Equation
     }
 
     fn update_state(&mut self, engine_view: &mut EngineViewMut) -> WidgetFlags {
-        let mut done_data: Option<(LatexState, LatexReference)> = None;
+        let mut done_data: Option<(EquationState, EquationReference)> = None;
 
         match &self.state {
-            LatexState::Finished(compile_instructions) => {
+            EquationState::Finished(compile_instructions) => {
                 let mut stroke: Option<Stroke> = None;
-                let draw_instruction = LatexDrawInstruction {
+                let draw_instruction = EquationDrawInstruction {
                     initial_code: compile_instructions.equation_code.clone(),
                     position: compile_instructions.position,
                 };
 
-                if let LatexReference::UpdateOld(update_data) = &self.reference {
-                    stroke = engine_view.store.remove_stroke(update_data.old_latex_key);
+                if let EquationReference::UpdateOld(update_data) = &self.reference {
+                    stroke = engine_view
+                        .store
+                        .remove_stroke(update_data.old_equation_key);
                 }
 
-                let mut equation_image = LatexImage::new(
+                let mut equation_image = EquationImage::new(
                     &compile_instructions.equation_code,
                     &compile_instructions.svg_code,
                     &engine_view.pens_config.equation_config,
@@ -170,14 +172,14 @@ impl PenBehaviour for Latex {
                 );
 
                 if let Some(some_stroke) = stroke {
-                    if let Stroke::LatexImage(old_latex_image) = some_stroke {
-                        equation_image.copy_transform_preserve_position(&old_latex_image);
+                    if let Stroke::EquationImage(old_equation_image) = some_stroke {
+                        equation_image.copy_transform_preserve_position(&old_equation_image);
                     }
                 }
 
-                let latex_key = engine_view
+                let equation_key = engine_view
                     .store
-                    .insert_stroke(Stroke::LatexImage(equation_image), None);
+                    .insert_stroke(Stroke::EquationImage(equation_image), None);
 
                 engine_view.store.record(Instant::now());
 
@@ -189,19 +191,19 @@ impl PenBehaviour for Latex {
                 );
 
                 done_data = Some((
-                    LatexState::ExpectingCode(draw_instruction),
-                    LatexReference::UpdateOld(LatexUpdateData {
-                        old_latex_key: latex_key,
+                    EquationState::ExpectingCode(draw_instruction),
+                    EquationReference::UpdateOld(EquationUpdateData {
+                        old_equation_key: equation_key,
                     }),
                 ));
             }
             _ => {}
         }
 
-        if let Some((new_latex_state, new_latex_reference)) = done_data {
-            self.state = new_latex_state;
-            self.reference = new_latex_reference;
-            Latex::get_widget_flags_update()
+        if let Some((new_equation_state, new_equation_reference)) = done_data {
+            self.state = new_equation_state;
+            self.reference = new_equation_reference;
+            Equation::get_widget_flags_update()
         } else {
             WidgetFlags::default()
         }
@@ -227,31 +229,33 @@ impl PenBehaviour for Latex {
         let result = match (&event, &self.state, initial_event_propagation) {
             (
                 PenEvent::Down { element, .. },
-                LatexState::Idle | LatexState::ExpectingCode(..),
+                EquationState::Idle | EquationState::ExpectingCode(..),
                 EventPropagation::Proceed,
             ) => {
-                self.reference = Latex::determine_latex_reference(element, engine_view);
+                self.reference = Equation::determine_equation_reference(element, engine_view);
 
                 // When updating, immediately open editor and skip dragging step
                 let widget_flags = match &self.reference {
-                    LatexReference::UpdateOld(old) => {
+                    EquationReference::UpdateOld(old) => {
                         // Determine scale and rotation of current equation to accurately place the width picker widget.
                         // TODO: Make this a separate function
-                        let position = if let Stroke::LatexImage(latex) =
-                            engine_view.store.get_stroke_mut(old.old_latex_key).unwrap()
+                        let position = if let Stroke::EquationImage(equation) = engine_view
+                            .store
+                            .get_stroke_mut(old.old_equation_key)
+                            .unwrap()
                         {
-                            let transformed_vector = latex
+                            let transformed_vector = equation
                                 .access_rectangle()
                                 .transform
                                 .transform_vec(Vector2::new(1.0, 0.0));
                             let scale = transformed_vector.magnitude();
                             let direction = transformed_vector.normalize();
                             // Get upper left corner of rectangle
-                            let upper_left = latex.access_rectangle().outline_lines()[0].start;
+                            let upper_left = equation.access_rectangle().outline_lines()[0].start;
                             let transformed_position = Vector2::from(upper_left);
 
                             let px_value = MeasureUnit::convert_measurement(
-                                latex.equation_config.page_width,
+                                equation.equation_config.page_width,
                                 MeasureUnit::Mm,
                                 engine_view.document.format.dpi(),
                                 MeasureUnit::Px,
@@ -265,24 +269,25 @@ impl PenBehaviour for Latex {
                                 WidthPickerState::Idle,
                             ));
 
-                            engine_view.pens_config.equation_config = latex.equation_config.clone();
+                            engine_view.pens_config.equation_config =
+                                equation.equation_config.clone();
 
-                            Some(latex.pos())
+                            Some(equation.pos())
                         } else {
                             None
                         };
 
-                        self.state = LatexState::ExpectingCode(LatexDrawInstruction {
-                            initial_code: Latex::determine_initial_code(
+                        self.state = EquationState::ExpectingCode(EquationDrawInstruction {
+                            initial_code: Equation::determine_initial_code(
                                 &self.reference,
                                 engine_view,
                             ),
                             position: position.unwrap(),
                         });
 
-                        Latex::get_widget_flags_update()
+                        Equation::get_widget_flags_update()
                     }
-                    LatexReference::CreateNew => {
+                    EquationReference::CreateNew => {
                         self.equation_width = Some(WidthPickerContext::new(
                             element.pos,
                             element.pos,
@@ -290,7 +295,7 @@ impl PenBehaviour for Latex {
                             Vector2::new(1.0, 0.0),
                             WidthPickerState::Dragging,
                         ));
-                        self.state = LatexState::InitialWidthPick(EquationInitialWidthPick {
+                        self.state = EquationState::InitialWidthPick(EquationInitialWidthPick {
                             position: element.pos,
                         });
 
@@ -309,11 +314,11 @@ impl PenBehaviour for Latex {
             }
             (
                 PenEvent::Up { element, .. },
-                LatexState::InitialWidthPick(pos),
+                EquationState::InitialWidthPick(pos),
                 EventPropagation::Proceed,
             ) => {
-                self.state = LatexState::ExpectingCode(LatexDrawInstruction {
-                    initial_code: Latex::determine_initial_code(&self.reference, engine_view),
+                self.state = EquationState::ExpectingCode(EquationDrawInstruction {
+                    initial_code: Equation::determine_initial_code(&self.reference, engine_view),
                     position: pos.position,
                 });
 
@@ -323,7 +328,7 @@ impl PenBehaviour for Latex {
                         propagate: EventPropagation::Stop,
                         progress: PenProgress::InProgress,
                     },
-                    Latex::get_widget_flags_update(),
+                    Equation::get_widget_flags_update(),
                 )
             }
             (_, _, _) => (
@@ -343,12 +348,12 @@ impl PenBehaviour for Latex {
             // If that is the case, the equation width will be scaled by (1 / <scale of the transform of the widget>).
             // TODO: Make this a separate function
             let magnitude = match &self.reference {
-                LatexReference::CreateNew => equation_width_some.length(),
-                LatexReference::UpdateOld(old) => {
-                    match engine_view.store.get_stroke_ref(old.old_latex_key) {
+                EquationReference::CreateNew => equation_width_some.length(),
+                EquationReference::UpdateOld(old) => {
+                    match engine_view.store.get_stroke_ref(old.old_equation_key) {
                         Some(data) => {
-                            if let Stroke::LatexImage(latex_image) = data {
-                                let transformed_vector = latex_image
+                            if let Stroke::EquationImage(equation_image) = data {
+                                let transformed_vector = equation_image
                                     .access_rectangle()
                                     .transform
                                     .transform_vec(Vector2::new(1.0, 0.0));
@@ -378,7 +383,7 @@ impl PenBehaviour for Latex {
     }
 }
 
-impl DrawableOnDoc for Latex {
+impl DrawableOnDoc for Equation {
     fn bounds_on_doc(&self, engine_view: &EngineView) -> Option<Aabb> {
         match &self.equation_width {
             Some(equation_width_some) => {
@@ -396,7 +401,7 @@ impl DrawableOnDoc for Latex {
         cx.save().map_err(|e| anyhow::anyhow!("{e:?}"))?;
 
         match &self.state {
-            LatexState::Idle => {}
+            EquationState::Idle => {}
             _ => {}
         }
 

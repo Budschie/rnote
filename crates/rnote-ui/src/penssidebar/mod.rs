@@ -1,8 +1,8 @@
 // Modules
 mod brushpage;
+mod equationeditor;
+mod equationpage;
 mod eraserpage;
-mod latexeditor;
-mod latexpage;
 mod selectorpage;
 mod shaperpage;
 mod toolspage;
@@ -10,9 +10,9 @@ mod typewriterpage;
 
 // Re-exports
 pub(crate) use brushpage::RnBrushPage;
+pub(crate) use equationeditor::RnEquationEditor;
+pub(crate) use equationpage::RnEquationPage;
 pub(crate) use eraserpage::RnEraserPage;
-pub(crate) use latexeditor::RnLatexEditor;
-pub(crate) use latexpage::RnLatexPage;
 use rnote_engine::pens::PenStyle;
 pub(crate) use selectorpage::RnSelectorPage;
 pub(crate) use shaperpage::RnShaperPage;
@@ -27,7 +27,7 @@ use gtk4::{
 };
 
 mod imp {
-    use self::latexpage::RnLatexPage;
+    use self::equationpage::RnEquationPage;
 
     use super::*;
 
@@ -49,9 +49,9 @@ mod imp {
         #[template_child]
         pub(crate) typewriter_page: TemplateChild<RnTypewriterPage>,
         #[template_child]
-        pub(crate) latex_stackpage: TemplateChild<StackPage>,
+        pub(crate) equation_stackpage: TemplateChild<StackPage>,
         #[template_child]
-        pub(crate) latex_page: TemplateChild<RnLatexPage>,
+        pub(crate) equation_page: TemplateChild<RnEquationPage>,
         #[template_child]
         pub(crate) eraser_stackpage: TemplateChild<StackPage>,
         #[template_child]
@@ -128,8 +128,8 @@ impl RnPensSideBar {
         self.imp().typewriter_page.get()
     }
 
-    pub(crate) fn latex_page(&self) -> RnLatexPage {
-        self.imp().latex_page.get()
+    pub(crate) fn equation_page(&self) -> RnEquationPage {
+        self.imp().equation_page.get()
     }
 
     pub(crate) fn eraser_page(&self) -> RnEraserPage {
@@ -163,9 +163,9 @@ impl RnPensSideBar {
                             adw::prelude::ActionGroupExt::activate_action(&appwindow, "pen-style",
                                 Some(&PenStyle::Typewriter.to_string().to_variant()));
                         },
-                        "latex_page" => {
+                        "equation_page" => {
                             adw::prelude::ActionGroupExt::activate_action(&appwindow, "pen-style",
-                                Some(&PenStyle::Latex.to_string().to_variant()))
+                                Some(&PenStyle::Equation.to_string().to_variant()))
                         }
                         "eraser_page" => {
                             adw::prelude::ActionGroupExt::activate_action(&appwindow, "pen-style",

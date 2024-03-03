@@ -58,13 +58,13 @@
           </object>
         </child>
 
-		<!-- Latex Page -->
+		<!-- Equation Page -->
 		<child>
-		  <object class="GtkStackPage" id="latex_stackpage">
-			<property name="name">latex_page</property>
-            <property name="title" translatable="yes">LaTeX</property>
+		  <object class="GtkStackPage" id="equation_stackpage">
+			<property name="name">equation_page</property>
+            <property name="title" translatable="yes">Equation</property>
 			<property name="child">
-              <object class="RnLatexPage" id="latex_page">
+              <object class="RnEquationPage" id="equation_page">
                 <property name="margin_top">6</property>
                 <property name="margin_bottom">6</property>
                 <property name="margin_start">6</property>

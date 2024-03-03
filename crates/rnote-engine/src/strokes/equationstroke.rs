@@ -12,7 +12,7 @@ use super::{content::GeneratedContentImages, Content, VectorImage};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(default, rename = "vectorimage")]
-pub struct LatexImage {
+pub struct EquationImage {
     #[serde(rename = "equation_code")]
     pub equation_code: String,
     #[serde(default, rename = "equation_config")]
@@ -21,7 +21,7 @@ pub struct LatexImage {
     pub vector_image: Option<VectorImage>,
 }
 
-impl Default for LatexImage {
+impl Default for EquationImage {
     fn default() -> Self {
         Self {
             equation_code: String::default(),
@@ -31,7 +31,7 @@ impl Default for LatexImage {
     }
 }
 
-impl Content for LatexImage {
+impl Content for EquationImage {
     fn gen_svg(&self) -> Result<render::Svg, anyhow::Error> {
         self.vector_image.as_ref().unwrap().gen_svg()
     }
@@ -54,7 +54,7 @@ impl Content for LatexImage {
 // overwritten and called in `draw()` and `draw_to_cairo()`. There the rsvg renderer is used to generate bitmap
 // images. This way it is ensured that an actual Svg is generated when calling `gen_svg()`, but it is also possible to
 // to be drawn to piet.
-impl Drawable for LatexImage {
+impl Drawable for EquationImage {
     fn draw(&self, cx: &mut impl piet::RenderContext, image_scale: f64) -> anyhow::Result<()> {
         self.vector_image.as_ref().unwrap().draw(cx, image_scale)
     }
@@ -67,7 +67,7 @@ impl Drawable for LatexImage {
     }
 }
 
-impl Shapeable for LatexImage {
+impl Shapeable for EquationImage {
     fn bounds(&self) -> Aabb {
         self.vector_image.as_ref().unwrap().bounds()
     }
@@ -81,7 +81,7 @@ impl Shapeable for LatexImage {
     }
 }
 
-impl Transformable for LatexImage {
+impl Transformable for EquationImage {
     fn translate(&mut self, offset: na::Vector2<f64>) {
         self.vector_image.as_mut().unwrap().translate(offset);
     }
@@ -95,7 +95,7 @@ impl Transformable for LatexImage {
     }
 }
 
-impl LatexImage {
+impl EquationImage {
     pub fn new(
         equation_code: &String,
         svg_code: &String,
@@ -116,8 +116,8 @@ impl LatexImage {
         &self.vector_image.as_ref().unwrap().rectangle
     }
 
-    pub fn copy_transform_preserve_position(&mut self, latex_image: &LatexImage) {
-        self.vector_image.as_mut().unwrap().rectangle.transform = latex_image
+    pub fn copy_transform_preserve_position(&mut self, equation_image: &EquationImage) {
+        self.vector_image.as_mut().unwrap().rectangle.transform = equation_image
             .vector_image
             .as_ref()
             .unwrap()
@@ -126,7 +126,7 @@ impl LatexImage {
             .clone();
 
         let self_upper_left = self.access_rectangle().outline_lines()[0].start;
-        let other_upper_left = latex_image.access_rectangle().outline_lines()[0].start;
+        let other_upper_left = equation_image.access_rectangle().outline_lines()[0].start;
         self.vector_image
             .as_mut()
             .unwrap()

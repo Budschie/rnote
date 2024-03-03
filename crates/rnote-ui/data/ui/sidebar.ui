@@ -72,7 +72,7 @@
                 <property name="title" translatable="yes">Equations</property>
                 <property name="icon-name">pen-latex-symbolic</property>
                 <property name="child">
-                  <object class="RnLatexEditor" id="latex_editor"></object>
+                  <object class="RnEquationEditor" id="equation_editor"></object>
                 </property>
               </object>
             </child>

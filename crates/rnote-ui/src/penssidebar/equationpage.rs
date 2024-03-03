@@ -1,8 +1,8 @@
 use std::borrow::Borrow;
 use std::thread::panicking;
 
-use crate::penssidebar::latexeditor::{
-    LatexCodeCompilationResult, LatexEditorResultBoxed, RnLatexEditor,
+use crate::penssidebar::equationeditor::{
+    EquationCodeCompilationResult, EquationEditorResultBoxed, RnEquationEditor,
 };
 // Imports
 use crate::{RnAppWindow, RnCanvasWrapper};
@@ -12,11 +12,11 @@ use gtk4::{glib, glib::clone, subclass::prelude::*, CompositeTemplate};
 use gtk4::{SpinButton, Widget, Window};
 use rnote_engine::pens::equation::equation_provider::EquationProvider;
 use rnote_engine::pens::equation::latex_equation_provider::LatexEquationProvider;
-use rnote_engine::pens::equation::{LatexCompiledInstruction, LatexReference, LatexState};
+use rnote_engine::pens::equation::{EquationCompiledInstruction, EquationReference, EquationState};
 use rnote_engine::pens::pensconfig::equationconfig::EquationConfig;
 use rnote_engine::pens::Pen;
 
-use super::latexeditor::LatexEditorResult;
+use super::equationeditor::EquationEditorResult;
 
 mod imp {
     use adw::{glib::WeakRef, ActionRow, OverlaySplitView};
@@ -27,8 +27,8 @@ mod imp {
     use super::*;
 
     #[derive(Default, Debug, CompositeTemplate)]
-    #[template(resource = "/com/github/flxzt/rnote/ui/penssidebar/latexpage.ui")]
-    pub(crate) struct RnLatexPage {
+    #[template(resource = "/com/github/flxzt/rnote/ui/penssidebar/equationpage.ui")]
+    pub(crate) struct RnEquationPage {
         #[template_child]
         pub(crate) equationtype_popover: TemplateChild<Popover>,
         #[template_child]
@@ -46,15 +46,15 @@ mod imp {
         #[template_child]
         pub(crate) compile_equation: TemplateChild<Button>,
         // TODO: Condense to one weak ref
-        pub(crate) latex_editor: WeakRef<RnLatexEditor>,
+        pub(crate) equation_editor: WeakRef<RnEquationEditor>,
         pub(crate) sidebar: WeakRef<RnSidebar>,
         pub(crate) split_view: WeakRef<OverlaySplitView>,
     }
 
     #[glib::object_subclass]
-    impl ObjectSubclass for RnLatexPage {
-        const NAME: &'static str = "RnLatexPage";
-        type Type = super::RnLatexPage;
+    impl ObjectSubclass for RnEquationPage {
+        const NAME: &'static str = "RnEquationPage";
+        type Type = super::RnEquationPage;
         type ParentType = gtk4::Widget;
 
         fn class_init(klass: &mut Self::Class) {
@@ -66,7 +66,7 @@ mod imp {
         }
     }
 
-    impl ObjectImpl for RnLatexPage {
+    impl ObjectImpl for RnEquationPage {
         fn constructed(&self) {
             self.parent_constructed();
         }
@@ -79,15 +79,15 @@ mod imp {
         }
     }
 
-    impl WidgetImpl for RnLatexPage {}
+    impl WidgetImpl for RnEquationPage {}
 }
 
 glib::wrapper! {
-    pub(crate) struct RnLatexPage(ObjectSubclass<imp::RnLatexPage>)
+    pub(crate) struct RnEquationPage(ObjectSubclass<imp::RnEquationPage>)
         @extends gtk4::Widget;
 }
 
-impl Default for RnLatexPage {
+impl Default for RnEquationPage {
     fn default() -> Self {
         Self::new()
     }
@@ -99,13 +99,16 @@ pub struct TargetState {
 }
 
 impl TargetState {
-    fn apply(&self, latex: &RnLatexPage) {
-        latex.imp().font_size_spinbutton.set_value(self.font_size);
-        latex.read_equation_type(&self.equation_provider);
+    fn apply(&self, equation: &RnEquationPage) {
+        equation
+            .imp()
+            .font_size_spinbutton
+            .set_value(self.font_size);
+        equation.read_equation_type(&self.equation_provider);
     }
 }
 
-impl RnLatexPage {
+impl RnEquationPage {
     pub(crate) fn new() -> Self {
         glib::Object::new()
     }
@@ -167,49 +170,49 @@ impl RnLatexPage {
             }),
         );
 
-        imp.font_size_spinbutton.connect_value_changed(clone!(@weak self as latexpage, @weak appwindow => move |spin_button| {
-			appwindow.active_tab_wrapper().canvas().engine_mut().pens_config.equation_config.font_size = u32::try_from(latexpage.imp().font_size_spinbutton.value_as_int()).unwrap();
+        imp.font_size_spinbutton.connect_value_changed(clone!(@weak self as equationpage, @weak appwindow => move |spin_button| {
+			appwindow.active_tab_wrapper().canvas().engine_mut().pens_config.equation_config.font_size = u32::try_from(equationpage.imp().font_size_spinbutton.value_as_int()).unwrap();
 		}));
-        imp.equationtype_listbox.connect_row_selected(clone!(@weak self as latexpage, @weak appwindow => move |_, _| {
-			if let Some(equation_type) = latexpage.equation_type() {
+        imp.equationtype_listbox.connect_row_selected(clone!(@weak self as equationpage, @weak appwindow => move |_, _| {
+			if let Some(equation_type) = equationpage.equation_type() {
 				let icon_name = match equation_type {
 					EquationProvider::LatexEquationProvider(_) => {
 						"face-cool"
 					}
 				};
 
-				latexpage.imp().equationtype_menubutton.set_icon_name(icon_name);
+				equationpage.imp().equationtype_menubutton.set_icon_name(icon_name);
 				appwindow.active_tab_wrapper().canvas().engine_mut().pens_config.equation_config.equation_provider = equation_type;
 			}
 		}));
 
         imp.edit_equation.connect_clicked(
-            clone!(@weak self as latexpage, @weak appwindow => move |_| {
-                latexpage.show_equation_editor();
+            clone!(@weak self as equationpage, @weak appwindow => move |_| {
+                equationpage.show_equation_editor();
             }),
         );
 
-        imp.compile_equation.connect_clicked(clone!(@weak self as latexpage, @weak appwindow => move |_| {
+        imp.compile_equation.connect_clicked(clone!(@weak self as equationpage, @weak appwindow => move |_| {
 			let mut request_compilation = false;
 
-			if let Pen::Latex(latex) = appwindow.active_tab_wrapper().canvas().engine_mut().penholder.current_pen_ref() {
-				if let LatexState::ExpectingCode(..) = &latex.state {
+			if let Pen::Equation(equation) = appwindow.active_tab_wrapper().canvas().engine_mut().penholder.current_pen_ref() {
+				if let EquationState::ExpectingCode(..) = &equation.state {
 					request_compilation = true;
 				}
 			}
 
 			if request_compilation {
-				appwindow.sidebar().latex_editor().request_compilation();
+				appwindow.sidebar().equation_editor().request_compilation();
 			}
 		}));
 
-        appwindow.sidebar().latex_editor().connect_closure(
-            "latex-editor-compiled",
+        appwindow.sidebar().equation_editor().connect_closure(
+            "equation-editor-compiled",
             false,
-            closure_local!(@weak-allow-none appwindow => move |_latex: &RnLatexEditor, result: &LatexEditorResultBoxed| {
+            closure_local!(@weak-allow-none appwindow => move |_equation: &RnEquationEditor, result: &EquationEditorResultBoxed| {
 				let appwindow_resolved = appwindow.unwrap();
 
-                RnLatexPage::apply_result_to_pen(
+                RnEquationPage::apply_result_to_pen(
                     appwindow_resolved.active_tab_wrapper().canvas().engine_mut().penholder.current_pen_mut(),
                     result,
                 );
@@ -217,11 +220,11 @@ impl RnLatexPage {
             })
         );
 
-        appwindow.sidebar().latex_editor().connect_closure(
-            "latex-editor-request-compilation",
+        appwindow.sidebar().equation_editor().connect_closure(
+            "equation-editor-request-compilation",
             false,
-            closure_local!(@weak-allow-none appwindow => move |_latex: &RnLatexEditor, equation_code: String| {
-                LatexCodeCompilationResult::from(RnLatexPage::compile_equation_code(
+            closure_local!(@weak-allow-none appwindow => move |_equation: &RnEquationEditor, equation_code: String| {
+                EquationCodeCompilationResult::from(RnEquationPage::compile_equation_code(
                     &equation_code,
                     &appwindow.unwrap().active_tab_wrapper().canvas()
                         .engine_ref()
@@ -233,24 +236,24 @@ impl RnLatexPage {
 
         // TODO: Move as much as possible into the appwindow so that weak references don't have to be stored here...
         self.imp()
-            .latex_editor
-            .set(Some(&appwindow.sidebar().latex_editor()));
+            .equation_editor
+            .set(Some(&appwindow.sidebar().equation_editor()));
         self.imp().sidebar.set(Some(&appwindow.sidebar()));
         self.imp().split_view.set(Some(&appwindow.split_view()));
     }
 
-    fn apply_result_to_pen(current_pen: &mut Pen, result: &LatexEditorResultBoxed) {
-        if let Pen::Latex(latex) = current_pen {
-            if let LatexState::ExpectingCode(draw_instructions) = latex.state.clone() {
+    fn apply_result_to_pen(current_pen: &mut Pen, result: &EquationEditorResultBoxed) {
+        if let Pen::Equation(equation) = current_pen {
+            if let EquationState::ExpectingCode(draw_instructions) = equation.state.clone() {
                 match result.clone().inner() {
-                    LatexEditorResult::Compiled(svg, code) => {
-                        latex.state = LatexState::Finished(LatexCompiledInstruction {
+                    EquationEditorResult::Compiled(svg, code) => {
+                        equation.state = EquationState::Finished(EquationCompiledInstruction {
                             equation_code: code,
                             svg_code: svg,
                             position: draw_instructions.position,
                         });
                     }
-                    LatexEditorResult::Skip => latex.state = LatexState::Idle,
+                    EquationEditorResult::Skip => equation.state = EquationState::Idle,
                 }
             }
         }
@@ -274,28 +277,30 @@ impl RnLatexPage {
             .upgrade()
             .unwrap()
             .sidebar_stack()
-            .set_visible_child(&self.imp().latex_editor.upgrade().unwrap());
+            .set_visible_child(&self.imp().equation_editor.upgrade().unwrap());
     }
 
     pub(crate) fn refresh_ui(&self, active_tab: &RnCanvasWrapper) {
         // println!("Refreshing UI");
 
         let mut editor_update_text: Option<String> = None;
-        if let Pen::Latex(latex) = active_tab.canvas().engine_mut().penholder.current_pen_mut() {
-            if let LatexState::ExpectingCode(expecting_code) = latex.state.clone() {
-                // let editor = RnLatexEditor::new(&expecting_code.initial_code.clone());
+        if let Pen::Equation(equation) =
+            active_tab.canvas().engine_mut().penholder.current_pen_mut()
+        {
+            if let EquationState::ExpectingCode(expecting_code) = equation.state.clone() {
+                // let editor = RnEquationEditor::new(&expecting_code.initial_code.clone());
                 // TODO: Find better way of determining parent window.
                 // I am not using the main window from the init function because GObjects
                 // are ref-counted and I fear that this would introduce a reference cycle
                 /*
-                    editor.set_transient_for(Some(&RnLatexPage::determine_window_of_widget(
+                    editor.set_transient_for(Some(&RnEquationPage::determine_window_of_widget(
                         active_tab.upcast_ref::<Widget>().clone(),
                 )));
                      */
 
                 // Open code window if Creating new stuff
 
-                if let LatexReference::CreateNew = &latex.reference {
+                if let EquationReference::CreateNew = &equation.reference {
                     self.show_equation_editor();
                 }
 
@@ -307,9 +312,10 @@ impl RnLatexPage {
             .read_settings_from_pen(&active_tab.canvas().engine_mut().pens_config.equation_config);
         target_state.apply(self);
 
-        if let Some(new_latex_code) = editor_update_text {
-            let latex_editor_resolved: RnLatexEditor = self.imp().latex_editor.upgrade().unwrap();
-            latex_editor_resolved.set_latex_code(&new_latex_code)
+        if let Some(new_equation_code) = editor_update_text {
+            let equation_editor_resolved: RnEquationEditor =
+                self.imp().equation_editor.upgrade().unwrap();
+            equation_editor_resolved.set_equation_code(&new_equation_code)
         }
     }
 }
