@@ -2,6 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use super::latex_equation_provider::LatexEquationProvider;
 
+/// An equation provider compiles equations such as LaTeX and returns SVG code.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename = "equation_provider")]
 pub enum EquationProvider {
@@ -30,8 +31,9 @@ impl EquationProviderTrait for EquationProvider {
     }
 }
 
+/// The equation provider trait is an interface which defines how equations should be processed.
 pub trait EquationProviderTrait {
-    // Generates a preview svg and returns either the SVG or an error output.
+    /// Generates a preview svg and returns either the SVG or an error output.
     fn generate_svg(
         &self,
         code: &String,
