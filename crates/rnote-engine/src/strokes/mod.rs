@@ -8,6 +8,8 @@ pub mod stroke;
 pub mod textstroke;
 pub mod vectorimage;
 
+pub mod equationstrokedefault;
+
 // Re-exports
 pub use bitmapimage::BitmapImage;
 pub use brushstroke::BrushStroke;

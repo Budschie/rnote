@@ -1,22 +1,22 @@
-use std::borrow::Borrow;
-use std::thread::panicking;
+use std::borrow::BorrowMut;
+use std::cell::{Ref, RefMut};
+use std::ops::DerefMut;
 
-use crate::penssidebar::equationeditor::{
-    EquationCodeCompilationResult, EquationEditorResultBoxed, RnEquationEditor,
-};
+use crate::penssidebar::equationeditor::{EquationCodeCompilationResult, RnEquationEditor};
 // Imports
-use crate::{RnAppWindow, RnCanvasWrapper};
+use crate::{RnAppWindow, RnCanvas, RnCanvasWrapper};
+use adw::glib::GString;
 use adw::prelude::*;
 use cairo::glib::closure_local;
 use gtk4::{glib, glib::clone, subclass::prelude::*, CompositeTemplate};
-use gtk4::{SpinButton, Widget, Window};
+use gtk4::{Widget, Window};
 use rnote_engine::pens::equation::equation_provider::EquationProvider;
 use rnote_engine::pens::equation::latex_equation_provider::LatexEquationProvider;
-use rnote_engine::pens::equation::{EquationCompiledInstruction, EquationReference, EquationState};
+use rnote_engine::pens::equation::{EquationCompilationPolicy, EquationState};
 use rnote_engine::pens::pensconfig::equationconfig::EquationConfig;
-use rnote_engine::pens::Pen;
-
-use super::equationeditor::EquationEditorResult;
+use rnote_engine::pens::{Equation, Pen};
+use rnote_engine::store::StrokeKey;
+use rnote_engine::Engine;
 
 mod imp {
     use adw::{glib::WeakRef, ActionRow, OverlaySplitView};
@@ -45,10 +45,6 @@ mod imp {
         pub(crate) edit_equation: TemplateChild<Button>,
         #[template_child]
         pub(crate) compile_equation: TemplateChild<Button>,
-        // TODO: Condense to one weak ref
-        pub(crate) equation_editor: WeakRef<RnEquationEditor>,
-        pub(crate) sidebar: WeakRef<RnSidebar>,
-        pub(crate) split_view: WeakRef<OverlaySplitView>,
     }
 
     #[glib::object_subclass]
@@ -119,7 +115,7 @@ impl RnEquationPage {
         if let Some(some_row) = currently_selected_row {
             return Some(match some_row.index() {
                 0 => EquationProvider::LatexEquationProvider(LatexEquationProvider {}),
-                _ => panic!("More than two rows are currently not implemented yet."),
+                _ => panic!("More than one row is currently not implemented yet."),
             });
         }
 
@@ -143,20 +139,20 @@ impl RnEquationPage {
         }
     }
 
-    // TODO: Not elegant at all, find a way to remove this later
-    fn determine_window_of_widget(widget: Widget) -> Window {
-        let mut current_widget = widget;
+    fn update_penconfig(&self, appwindow: &RnAppWindow) {
+        appwindow
+            .active_tab_wrapper()
+            .canvas()
+            .engine_mut()
+            .mark_updated_penconfig();
+    }
 
-        loop {
-            let parent_widget = current_widget.parent();
-
-            match parent_widget {
-                Some(parent_widget_some) => current_widget = parent_widget_some.clone(),
-                None => break,
-            }
-        }
-
-        current_widget.downcast_ref::<Window>().unwrap().clone()
+    fn update_text(&self, appwindow: &RnAppWindow, new_equation_code: String) {
+        appwindow
+            .active_tab_wrapper()
+            .canvas()
+            .engine_mut()
+            .mark_updated_text(new_equation_code);
     }
 
     pub(crate) fn init(&self, appwindow: &RnAppWindow) {
@@ -172,6 +168,7 @@ impl RnEquationPage {
 
         imp.font_size_spinbutton.connect_value_changed(clone!(@weak self as equationpage, @weak appwindow => move |spin_button| {
 			appwindow.active_tab_wrapper().canvas().engine_mut().pens_config.equation_config.font_size = u32::try_from(equationpage.imp().font_size_spinbutton.value_as_int()).unwrap();
+			equationpage.update_penconfig(&appwindow);
 		}));
         imp.equationtype_listbox.connect_row_selected(clone!(@weak self as equationpage, @weak appwindow => move |_, _| {
 			if let Some(equation_type) = equationpage.equation_type() {
@@ -183,139 +180,72 @@ impl RnEquationPage {
 
 				equationpage.imp().equationtype_menubutton.set_icon_name(icon_name);
 				appwindow.active_tab_wrapper().canvas().engine_mut().pens_config.equation_config.equation_provider = equation_type;
+
+				equationpage.update_penconfig(&appwindow);
 			}
 		}));
 
         imp.edit_equation.connect_clicked(
             clone!(@weak self as equationpage, @weak appwindow => move |_| {
-                equationpage.show_equation_editor();
+                appwindow.show_equation_sidebar();
             }),
         );
 
-        imp.compile_equation.connect_clicked(clone!(@weak self as equationpage, @weak appwindow => move |_| {
-			let mut request_compilation = false;
+        imp.compile_equation.connect_clicked(clone!(@weak self as equationpage, @weak appwindow => move |button| {
+			if let Some(some_policy) = appwindow.active_tab_wrapper().canvas().engine_mut().toggle_equation_compilation() {
+				match some_policy {
+					EquationCompilationPolicy::Allow => {
+						equationpage.display_pause_compilation_graphics();
+					}
 
-			if let Pen::Equation(equation) = appwindow.active_tab_wrapper().canvas().engine_mut().penholder.current_pen_ref() {
-				if let EquationState::ExpectingCode(..) = &equation.state {
-					request_compilation = true;
+					EquationCompilationPolicy::Deny => {
+						equationpage.display_play_compilation_graphics();
+					}
 				}
-			}
-
-			if request_compilation {
-				appwindow.sidebar().equation_editor().request_compilation();
 			}
 		}));
 
         appwindow.sidebar().equation_editor().connect_closure(
-            "equation-editor-compiled",
-            false,
-            closure_local!(@weak-allow-none appwindow => move |_equation: &RnEquationEditor, result: &EquationEditorResultBoxed| {
-				let appwindow_resolved = appwindow.unwrap();
-
-                RnEquationPage::apply_result_to_pen(
-                    appwindow_resolved.active_tab_wrapper().canvas().engine_mut().penholder.current_pen_mut(),
-                    result,
-                );
-                let _ = appwindow_resolved.active_tab_wrapper().canvas().engine_mut().current_pen_update_state();
-            })
-        );
-
-        appwindow.sidebar().equation_editor().connect_closure(
             "equation-editor-request-compilation",
             false,
-            closure_local!(@weak-allow-none appwindow => move |_equation: &RnEquationEditor, equation_code: String| {
-                EquationCodeCompilationResult::from(RnEquationPage::compile_equation_code(
-                    &equation_code,
-                    &appwindow.unwrap().active_tab_wrapper().canvas()
-                        .engine_ref()
-                        .pens_config
-                        .equation_config,
-                ))
+            closure_local!(@weak-allow-none appwindow, @weak-allow-none self as equationpage => move |_equation: &RnEquationEditor, equation_code: String| {
+                equationpage.unwrap().update_text(&appwindow.unwrap(), equation_code);
+
+				EquationCodeCompilationResult::from(Result::Ok(String::from("nothing")))
             }),
         );
-
-        // TODO: Move as much as possible into the appwindow so that weak references don't have to be stored here...
-        self.imp()
-            .equation_editor
-            .set(Some(&appwindow.sidebar().equation_editor()));
-        self.imp().sidebar.set(Some(&appwindow.sidebar()));
-        self.imp().split_view.set(Some(&appwindow.split_view()));
     }
 
-    fn apply_result_to_pen(current_pen: &mut Pen, result: &EquationEditorResultBoxed) {
-        if let Pen::Equation(equation) = current_pen {
-            if let EquationState::ExpectingCode(draw_instructions) = equation.state.clone() {
-                match result.clone().inner() {
-                    EquationEditorResult::Compiled(svg, code) => {
-                        equation.state = EquationState::Finished(EquationCompiledInstruction {
-                            equation_code: code,
-                            svg_code: svg,
-                            position: draw_instructions.position,
-                        });
-                    }
-                    EquationEditorResult::Skip => equation.state = EquationState::Idle,
-                }
-            }
-        }
+    fn display_pause_compilation_graphics(&self) {
+        self.display_compilation_graphics(
+            "media-playback-pause",
+            &["destructive-action", "sidebar_action_button"],
+        );
     }
 
-    fn compile_equation_code(
-        equation_code: &String,
-        equation_config: &EquationConfig,
-    ) -> Result<String, String> {
-        equation_config.generate_svg(equation_code)
+    fn display_play_compilation_graphics(&self) {
+        self.display_compilation_graphics(
+            "media-playback-start",
+            &["suggested-action", "sidebar_action_button"],
+        );
     }
 
-    fn show_equation_editor(&self) {
-        self.imp()
-            .split_view
-            .upgrade()
-            .unwrap()
-            .set_show_sidebar(true);
-        self.imp()
-            .sidebar
-            .upgrade()
-            .unwrap()
-            .sidebar_stack()
-            .set_visible_child(&self.imp().equation_editor.upgrade().unwrap());
+    fn display_compilation_graphics(&self, icon_name: &str, classes: &[&str]) {
+        self.imp().compile_equation.set_icon_name(icon_name);
+        self.imp().compile_equation.css_classes().clear();
+        self.imp().compile_equation.set_css_classes(classes);
     }
 
     pub(crate) fn refresh_ui(&self, active_tab: &RnCanvasWrapper) {
-        // println!("Refreshing UI");
-
-        let mut editor_update_text: Option<String> = None;
-        if let Pen::Equation(equation) =
-            active_tab.canvas().engine_mut().penholder.current_pen_mut()
-        {
-            if let EquationState::ExpectingCode(expecting_code) = equation.state.clone() {
-                // let editor = RnEquationEditor::new(&expecting_code.initial_code.clone());
-                // TODO: Find better way of determining parent window.
-                // I am not using the main window from the init function because GObjects
-                // are ref-counted and I fear that this would introduce a reference cycle
-                /*
-                    editor.set_transient_for(Some(&RnEquationPage::determine_window_of_widget(
-                        active_tab.upcast_ref::<Widget>().clone(),
-                )));
-                     */
-
-                // Open code window if Creating new stuff
-
-                if let EquationReference::CreateNew = &equation.reference {
-                    self.show_equation_editor();
-                }
-
-                editor_update_text = Some(expecting_code.initial_code.clone());
-            }
-        };
-
         let target_state = self
-            .read_settings_from_pen(&active_tab.canvas().engine_mut().pens_config.equation_config);
-        target_state.apply(self);
+            .read_settings_from_pen(&active_tab.canvas().engine_ref().pens_config.equation_config);
 
-        if let Some(new_equation_code) = editor_update_text {
-            let equation_editor_resolved: RnEquationEditor =
-                self.imp().equation_editor.upgrade().unwrap();
-            equation_editor_resolved.set_equation_code(&new_equation_code)
-        }
+        self.read_equation_type(&target_state.equation_provider);
+        self.imp()
+            .font_size_spinbutton
+            .set_value(target_state.font_size);
+
+        // TODO: Replace this with more direct logic to directly retrieve the compilation policy
+        self.display_play_compilation_graphics();
     }
 }

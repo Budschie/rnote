@@ -13,10 +13,14 @@ use gettextrs::gettext;
 use gtk4::{gdk, gio, glib, Application, IconTheme};
 use rnote_compose::Color;
 use rnote_engine::ext::GdkRGBAExt;
+use rnote_engine::pens::equation::EquationState;
 use rnote_engine::pens::pensconfig::brushconfig::BrushStyle;
 use rnote_engine::pens::pensconfig::shaperconfig::ShaperStyle;
-use rnote_engine::pens::PenStyle;
+use rnote_engine::pens::{Equation, Pen, PenStyle};
+use rnote_engine::store::StrokeKey;
+use rnote_engine::Engine;
 use rnote_engine::{engine::EngineTask, WidgetFlags};
+use std::cell::RefMut;
 use std::path::Path;
 
 glib::wrapper! {
@@ -183,11 +187,95 @@ impl RnAppWindow {
         self.destroy();
     }
 
+    /// Displays the equation sidebar
+    pub(crate) fn show_equation_sidebar(&self) {
+        self.split_view().set_show_sidebar(true);
+        self.sidebar()
+            .sidebar_stack()
+            .set_visible_child(&self.sidebar().equation_editor());
+    }
+
+    /// Looks up and sets equation compilation errors, if there are any
+    pub(crate) fn update_equation_error(&self) {
+        let mut stroke_key_to_look_up: Option<StrokeKey> = None;
+
+        if let Pen::Equation(equation) = &self
+            .active_tab_wrapper()
+            .canvas()
+            .engine_mut()
+            .penholder
+            .current_pen_ref()
+        {
+            if let EquationState::AwaitCompilation(info) = &equation.state {
+                stroke_key_to_look_up = Some(info.stroke_key.clone());
+            }
+        }
+
+        if let Some(some_stroke_key) = stroke_key_to_look_up {
+            self.sidebar().equation_editor().set_equation_error(
+                self.active_tab_wrapper()
+                    .canvas()
+                    .engine_ref()
+                    .retrieve_equation_compilation_error(&some_stroke_key),
+            );
+        }
+    }
+
+    /// Refreshes the equation UI
+    pub(crate) fn refresh_equation_ui(&self) {
+        let mut currently_selected_stroke: Option<StrokeKey> = None;
+
+        // If the current pen is an equation pen, retrieve a reference to it
+        if let Pen::Equation(equation) = &self
+            .active_tab_wrapper()
+            .canvas()
+            .engine_mut()
+            .penholder
+            .current_pen_ref()
+        {
+            // If this equation pen is currently selecting something, it will return the code of the equation in question
+            if let EquationState::AwaitCompilation(compilation_info) = &equation.state {
+                currently_selected_stroke = Some(compilation_info.stroke_key);
+            }
+        }
+
+        if let Some(some_stroke_key) = currently_selected_stroke {
+            let equation_code: Option<String> = Equation::get_current_equation_code(
+                some_stroke_key,
+                &self.active_tab_wrapper().canvas().engine_mut().store,
+            );
+
+            if let Some(some_code) = equation_code {
+                self.sidebar()
+                    .equation_editor()
+                    .set_equation_code(&some_code);
+            }
+        }
+
+        self.overlays()
+            .penssidebar()
+            .equation_page()
+            .refresh_ui(&self.active_tab_wrapper());
+    }
+
     // Returns true if the flags indicate that any loop that handles the flags should be quit. (usually an async event loop)
     pub(crate) fn handle_widget_flags(&self, widget_flags: WidgetFlags, canvas: &RnCanvas) {
         if widget_flags.redraw {
             canvas.queue_draw();
         }
+
+        if widget_flags.show_equation_sidebar_ui {
+            self.show_equation_sidebar();
+        }
+
+        if widget_flags.refresh_equation_ui {
+            self.refresh_equation_ui();
+        }
+
+        if widget_flags.update_equation_error {
+            self.update_equation_error();
+        }
+
         if widget_flags.resize {
             canvas.queue_resize();
         }
@@ -811,10 +899,6 @@ impl RnAppWindow {
             .refresh_ui(active_tab);
         self.overlays()
             .penssidebar()
-            .equation_page()
-            .refresh_ui(active_tab);
-        self.overlays()
-            .penssidebar()
             .eraser_page()
             .refresh_ui(active_tab);
         self.overlays()
@@ -825,6 +909,9 @@ impl RnAppWindow {
             .penssidebar()
             .tools_page()
             .refresh_ui(active_tab);
+
+        self.refresh_equation_ui();
+
         self.sidebar().settings_panel().refresh_ui(active_tab);
         self.refresh_titles(active_tab);
     }

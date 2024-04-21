@@ -16,12 +16,15 @@ pub use strokecontent::StrokeContent;
 
 // Imports
 use crate::document::Layout;
+use crate::pens::equation::equation_compiler::EquationCompilerTask;
+use crate::pens::equation::EquationCompilationPolicy;
 use crate::pens::{Pen, PenStyle};
 use crate::pens::{PenMode, PensConfig};
 use crate::store::render_comp::{self, RenderCompState};
 use crate::store::StrokeKey;
 use crate::strokes::content::GeneratedContentImages;
 use crate::strokes::textstroke::{TextAttribute, TextStyle};
+use crate::strokes::Stroke;
 use crate::{render, AudioPlayer, CloneConfig, SelectionCollision, WidgetFlags};
 use crate::{Camera, Document, PenHolder, StrokeStore};
 use futures::channel::{mpsc, oneshot};
@@ -32,6 +35,8 @@ use rnote_compose::penevent::{PenEvent, ShortcutKey};
 use rnote_compose::shapes::Shapeable;
 use rnote_compose::{Color, SplitOrder};
 use serde::{Deserialize, Serialize};
+use std::borrow::BorrowMut;
+use std::collections::HashMap;
 use std::path::PathBuf;
 use std::sync::Arc;
 use std::time::Instant;
@@ -101,8 +106,23 @@ pub enum EngineTask {
     },
     /// Requests that the typewriter cursor should be blinked/toggled
     BlinkTypewriterCursor,
+    /// Request that it should be checked whether an equation needs to be compiled
+    CheckEquationCompilation,
     /// Change the permanent zoom to the given value
     Zoom(f64),
+    /// Updates the SVG code of the given equation
+    UpdateEquation {
+        /// The stroke key.
+        key: StrokeKey,
+        /// The SVG code which was obtained from the equation compilation process.
+        svg_code: String,
+    },
+    UpdateError {
+        /// The stroke key
+        key: StrokeKey,
+        /// The compilation error
+        error: Option<String>,
+    },
     /// Indicates that the application is quitting. Sent to quit the handler which receives the tasks.
     Quit,
 }
@@ -185,6 +205,8 @@ pub struct Engine {
     #[cfg(feature = "ui")]
     #[serde(skip)]
     background_rendernodes: Vec<gtk4::gsk::RenderNode>,
+    #[serde(skip)]
+    equation_compilation_errors: HashMap<StrokeKey, String>,
 }
 
 impl Default for Engine {
@@ -208,6 +230,7 @@ impl Default for Engine {
             background_tile_image: None,
             #[cfg(feature = "ui")]
             background_rendernodes: Vec::default(),
+            equation_compilation_errors: HashMap::new(),
         }
     }
 }
@@ -224,7 +247,7 @@ impl Engine {
     }
 
     #[allow(unused)]
-    pub(crate) fn view(&self) -> EngineView {
+    pub fn view(&self) -> EngineView {
         EngineView {
             tasks_tx: self.tasks_tx.clone(),
             pens_config: &self.pens_config,
@@ -236,7 +259,7 @@ impl Engine {
     }
 
     #[allow(unused)]
-    pub(crate) fn view_mut(&mut self) -> EngineViewMut {
+    pub fn view_mut(&mut self) -> EngineViewMut {
         EngineViewMut {
             tasks_tx: self.tasks_tx.clone(),
             pens_config: &mut self.pens_config,
@@ -438,6 +461,11 @@ impl Engine {
                     widget_flags.redraw = true;
                 }
             }
+            EngineTask::CheckEquationCompilation => {
+                if let Pen::Equation(equation) = self.penholder.current_pen_ref() {
+                    equation.check_equation_compilation(&self.store);
+                }
+            }
             EngineTask::Zoom(zoom) => {
                 widget_flags |= self.camera.zoom_temporarily_to(1.0) | self.camera.zoom_to(zoom);
 
@@ -447,6 +475,27 @@ impl Engine {
                     | self.background_regenerate_pattern()
                     | self.update_rendering_current_viewport();
             }
+            EngineTask::UpdateEquation { key, svg_code } => {
+                if let Some(stroke_some) = self.store.get_stroke_mut(key) {
+                    if let Stroke::EquationImage(equation_stroke) = stroke_some {
+                        equation_stroke.update_svg_code(&svg_code);
+                        self.store.update_geometry_for_stroke(key);
+                        self.store.regenerate_rendering_in_viewport_threaded(
+                            self.tasks_tx.clone(),
+                            true,
+                            self.camera.viewport(),
+                            self.camera.image_scale(),
+                        );
+                    }
+                }
+            }
+            EngineTask::UpdateError { key, error } => {
+                self.record_equation_compilation_error(&key, error);
+
+                let mut appended_widget_flags = WidgetFlags::default();
+                appended_widget_flags.update_equation_error = true;
+                widget_flags |= appended_widget_flags;
+            }
             EngineTask::Quit => {
                 widget_flags |= self.set_active(false);
                 quit = true;
@@ -454,6 +503,41 @@ impl Engine {
         }
 
         (widget_flags, quit)
+    }
+
+    pub fn retrieve_equation_compilation_error(&self, stroke_key: &StrokeKey) -> Option<String> {
+        self.equation_compilation_errors.get(stroke_key).cloned()
+    }
+
+    fn record_equation_compilation_error(&mut self, stroke_key: &StrokeKey, error: Option<String>) {
+        if let Some(some_error) = error {
+            self.equation_compilation_errors
+                .insert(stroke_key.clone(), some_error);
+        } else {
+            self.equation_compilation_errors.remove(stroke_key);
+        }
+    }
+
+    // TODO: Remove return type
+    pub fn toggle_equation_compilation(&mut self) -> Option<EquationCompilationPolicy> {
+        if let Pen::Equation(equation) = self.penholder.current_pen_mut() {
+            return equation.toggle_compilation(&mut self.store);
+        }
+
+        None
+    }
+
+    pub fn mark_updated_text(&mut self, new_code: String) {
+        if let Pen::Equation(equation) = self.penholder.current_pen_mut() {
+            equation.mark_updated_text(&mut self.store, new_code);
+        }
+    }
+
+    pub fn mark_updated_penconfig(&mut self) {
+        if let Pen::Equation(equation) = self.penholder.current_pen_mut() {
+            // equation.mark_updated_penconfig(&mut engine_mut.view_mut());
+            equation.mark_updated_penconfig(&mut self.store, &mut self.pens_config);
+        }
     }
 
     /// Handle a pen event.

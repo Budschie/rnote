@@ -99,18 +99,6 @@ mod imp {
         }
     }
 
-    /*
-        impl WindowImpl for RnEquationEditor {
-            fn close_request(&self) -> glib::Propagation {
-                self.obj().emit_by_name::<()>(
-                    "equation-editor-compiled",
-                    &[&EquationEditorResultBoxed(EquationEditorResult::Skip)],
-                );
-                glib::Propagation::Proceed
-            }
-    }
-        */
-
     impl ObjectImpl for RnEquationEditor {
         fn constructed(&self) {
             self.parent_constructed();
@@ -121,6 +109,12 @@ mod imp {
                     error_code_split.set_show_sidebar(!error_code_split.shows_sidebar());
                 }),
             );
+
+            self.equation_code
+                .connect_changed(clone!(@weak self as equation_editor => move |_| {
+                    // equation_editor.request_compilation();
+                    equation_editor.obj().request_compilation();
+                }));
         }
 
         fn dispose(&self) {
@@ -133,15 +127,10 @@ mod imp {
             static SIGNALS: OnceLock<Vec<Signal>> = OnceLock::new();
 
             SIGNALS.get_or_init(|| {
-                vec![
-                    Signal::builder("equation-editor-compiled")
-                        .param_types([EquationEditorResultBoxed::static_type()])
-                        .build(),
-                    Signal::builder("equation-editor-request-compilation")
-                        .param_types([String::static_type()])
-                        .return_type_from(EquationCodeCompilationResult::static_type())
-                        .build(),
-                ]
+                vec![Signal::builder("equation-editor-request-compilation")
+                    .param_types([String::static_type()])
+                    .return_type_from(EquationCodeCompilationResult::static_type())
+                    .build()]
             })
         }
     }
@@ -168,7 +157,18 @@ impl RnEquationEditor {
         self.imp().equation_code.set_text(equation_code.as_str());
     }
 
-    pub fn request_compilation(&mut self) {
+    pub fn set_equation_error(&self, equation_error: Option<String>) {
+        if let Some(some_equation_error) = equation_error {
+            self.imp()
+                .compilation_failed_toast_overlay
+                .add_toast(self.imp().compilation_failed_toast.get());
+            self.imp().error_message.set_text(&some_equation_error);
+        } else {
+            self.imp().error_message.set_text("");
+        }
+    }
+
+    fn request_compilation(&self) {
         let equation_editor = self.imp();
         let equation_code = &equation_editor.equation_code;
         let text = String::from_utf8(
@@ -179,33 +179,9 @@ impl RnEquationEditor {
         )
         .unwrap();
 
-        let result = self.compile_equation(&text);
-
-        match result {
-            Ok(svg_code) => {
-                self.emit_by_name::<()>(
-                    "equation-editor-compiled",
-                    &[&EquationEditorResultBoxed(EquationEditorResult::Compiled(
-                        svg_code, text,
-                    ))],
-                );
-                // obj.close();
-            }
-            Err(error_message) => {
-                equation_editor
-                    .error_message
-                    .get()
-                    .set_text(error_message.as_str());
-                equation_editor
-                    .compilation_failed_toast_overlay
-                    .add_toast(equation_editor.compilation_failed_toast.get());
-            }
-        }
-    }
-
-    fn compile_equation(&self, code: &String) -> Result<String, String> {
-        let emitted_result: EquationCodeCompilationResult =
-            self.emit_by_name("equation-editor-request-compilation", &[code]);
-        emitted_result.inner()
+        self.emit_by_name::<EquationCodeCompilationResult>(
+            "equation-editor-request-compilation",
+            &[&text],
+        );
     }
 }

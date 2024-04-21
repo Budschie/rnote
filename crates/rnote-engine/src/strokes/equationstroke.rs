@@ -1,12 +1,16 @@
+use nalgebra::Vector2;
 use p2d::bounding_volume::Aabb;
 use rnote_compose::{
     shapes::{Rectangle, Shapeable},
     transform::Transformable,
     Transform,
 };
+use roxmltree::Error;
 use serde::{Deserialize, Serialize};
 
 use crate::{pens::pensconfig::equationconfig::EquationConfig, render, Drawable};
+
+pub(crate) use super::equationstrokedefault::DEFAULT_SVG_CODE;
 
 use super::{content::GeneratedContentImages, Content, VectorImage};
 
@@ -47,6 +51,7 @@ impl Content for EquationImage {
             .gen_images(viewport, image_scale)
     }
 
+    // TODO: Image scale has to be adjusted somehow else, maybe by doing something with the vector image
     fn update_geometry(&mut self) {}
 }
 
@@ -97,40 +102,47 @@ impl Transformable for EquationImage {
 
 impl EquationImage {
     pub fn new(
-        equation_code: &String,
-        svg_code: &String,
+        equation_code: &str,
         equation_config: &EquationConfig,
         pos: na::Vector2<f64>,
         size: Option<na::Vector2<f64>>,
     ) -> Self {
-        let vector_image = VectorImage::from_svg_str(svg_code, pos, size).unwrap();
+        let vector_image = VectorImage::from_svg_str(DEFAULT_SVG_CODE, pos, size).unwrap();
 
         Self {
-            equation_code: equation_code.clone(),
+            equation_code: String::from(equation_code),
             vector_image: Option::Some(vector_image),
             equation_config: equation_config.clone(),
         }
+    }
+
+    pub fn update_svg_code(&mut self, svg_code: &str) {
+        let mut vector_image =
+            VectorImage::from_svg_str(svg_code, self.access_rectangle().pos(), None);
+        if let Ok(mut some_vector_image) = vector_image {
+            EquationImage::copy_transform_preserve_position(
+                &mut some_vector_image.rectangle,
+                self.access_rectangle(),
+            );
+            self.vector_image = Some(some_vector_image);
+        }
+
+        // TODO: Print error out instead of ignoring it
     }
 
     pub fn access_rectangle(&self) -> &Rectangle {
         &self.vector_image.as_ref().unwrap().rectangle
     }
 
-    pub fn copy_transform_preserve_position(&mut self, equation_image: &EquationImage) {
-        self.vector_image.as_mut().unwrap().rectangle.transform = equation_image
-            .vector_image
-            .as_ref()
-            .unwrap()
-            .rectangle
-            .transform
-            .clone();
+    fn copy_transform_preserve_position(
+        this_rectangle: &mut Rectangle,
+        other_rectangle: &Rectangle,
+    ) {
+        this_rectangle.transform = other_rectangle.transform.clone();
 
-        let self_upper_left = self.access_rectangle().outline_lines()[0].start;
-        let other_upper_left = equation_image.access_rectangle().outline_lines()[0].start;
-        self.vector_image
-            .as_mut()
-            .unwrap()
-            .rectangle
+        let self_upper_left = this_rectangle.outline_lines()[0].start;
+        let other_upper_left = other_rectangle.outline_lines()[0].start;
+        this_rectangle
             .transform
             .translate(other_upper_left - self_upper_left);
     }

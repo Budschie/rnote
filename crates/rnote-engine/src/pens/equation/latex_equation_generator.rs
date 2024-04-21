@@ -55,7 +55,10 @@ pub fn create_svg_from_latex(
         .unwrap();
 
     if !output_latex.status.success() {
-        return Result::Err(String::from_utf8(output_latex.stdout).unwrap());
+        // Stdout might contain non-UTF8 characters due to latex sometimes having issues when
+        // creating a command at the beginning of the file which starts with some special characters,
+        // so this is needed
+        return Result::Err(String::from_utf8_lossy(output_latex.stdout.as_slice()).to_string());
     }
 
     // ezlatex.dvi will have been created
@@ -67,7 +70,7 @@ pub fn create_svg_from_latex(
         .unwrap();
 
     if !output_svg.status.success() {
-        return Result::Err(String::from_utf8(output_latex.stderr).unwrap());
+        return Result::Err(String::from_utf8_lossy(output_latex.stderr.as_slice()).to_string());
     }
 
     // ezlatex.svg will have been created

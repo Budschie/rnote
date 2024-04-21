@@ -6,8 +6,14 @@ pub struct WidgetFlags {
     pub redraw: bool,
     /// Needs surface resizing.
     pub resize: bool,
+    /// Opens the sidebar with the equation window
+    pub show_equation_sidebar_ui: bool,
+    /// Updates the equation error displayed in the equation sidebar
+    pub update_equation_error: bool,
     /// Refresh the UI with the engine state.
     pub refresh_ui: bool,
+    /// Refreshes only the equation UI
+    pub refresh_equation_ui: bool,
     /// Indicates that the store was modified, i.e. new strokes inserted, modified, etc. .
     pub store_modified: bool,
     /// Update the current view offsets and size.
@@ -33,7 +39,10 @@ impl Default for WidgetFlags {
         Self {
             redraw: false,
             resize: false,
+            show_equation_sidebar_ui: false,
+            update_equation_error: false,
             refresh_ui: false,
+            refresh_equation_ui: false,
             store_modified: false,
             view_modified: false,
             zoomed_temporarily: false,
@@ -59,7 +68,10 @@ impl std::ops::BitOrAssign for WidgetFlags {
     fn bitor_assign(&mut self, rhs: Self) {
         self.redraw |= rhs.redraw;
         self.resize |= rhs.resize;
+        self.show_equation_sidebar_ui |= rhs.show_equation_sidebar_ui;
+        self.update_equation_error |= rhs.update_equation_error;
         self.refresh_ui |= rhs.refresh_ui;
+        self.refresh_equation_ui |= rhs.refresh_equation_ui;
         self.store_modified |= rhs.store_modified;
         self.view_modified |= rhs.view_modified;
         self.zoomed_temporarily |= rhs.zoomed_temporarily;
