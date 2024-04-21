@@ -1,6 +1,8 @@
 // Imports
 use crate::{config, dialogs, RnAppWindow, RnCanvas};
+use adw::glib::subclass::types::ObjectSubclassIsExt;
 use gettextrs::gettext;
+use gtk4::TextView;
 use gtk4::{
     gdk, gio, glib, glib::clone, prelude::*, PrintOperation, PrintOperationAction, Unit,
     UriLauncher, Window,
@@ -19,6 +21,25 @@ use std::time::Instant;
 const CLIPBOARD_INPUT_STREAM_BUFSIZE: usize = 4096;
 
 impl RnAppWindow {
+    /// Small helper function to do stuff with the currently selected equation editor
+    /// Returns true when something has actually been done
+    fn peform_input_action_with_equation_stuff(
+        app_window: &RnAppWindow,
+        function: fn(&TextView),
+    ) -> bool {
+        let equation_editor_ref = app_window.sidebar().equation_editor().clone();
+
+        if equation_editor_ref.imp().equation_code_view.has_focus() {
+            function(&equation_editor_ref.imp().equation_code_view.get());
+            true
+        } else if equation_editor_ref.imp().error_message_view.has_focus() {
+            function(&equation_editor_ref.imp().error_message_view.get());
+            true
+        } else {
+            false
+        }
+    }
+
     /// Boolean actions have no target, and a boolean state. They have a default implementation for the activate signal,
     /// which requests the state to be inverted, and the default implementation for change_state, which sets the state
     /// to the request.
@@ -700,6 +721,12 @@ impl RnAppWindow {
         // Clipboard copy
         action_clipboard_copy.connect_activate(clone!(@weak self as appwindow => move |_, _| {
             glib::spawn_future_local(clone!(@weak appwindow => async move {
+				if Self::peform_input_action_with_equation_stuff(&appwindow, |text_view| {
+					text_view.emit_copy_clipboard();
+				}) {
+					return;
+				}
+
                 let canvas = appwindow.active_tab_wrapper().canvas();
                 let receiver = canvas.engine_ref().fetch_clipboard_content();
                 let (content, widget_flags) = match receiver.await {
@@ -728,6 +755,13 @@ impl RnAppWindow {
         // Clipboard cut
         action_clipboard_cut.connect_activate(clone!(@weak self as appwindow => move |_, _| {
             glib::spawn_future_local(clone!(@weak appwindow => async move {
+				// Cut if focus is on one of the equation editor elements
+				if Self::peform_input_action_with_equation_stuff(&appwindow, |text_view| {
+					text_view.emit_cut_clipboard();
+				}) {
+					return;
+				}
+
                 let canvas = appwindow.active_tab_wrapper().canvas();
                 let receiver = canvas.engine_mut().cut_clipboard_content();
                 let (content, widget_flags) = match receiver.await {
@@ -755,6 +789,12 @@ impl RnAppWindow {
 
         // Clipboard paste
         action_clipboard_paste.connect_activate(clone!(@weak self as appwindow => move |_, _| {
+			if Self::peform_input_action_with_equation_stuff(&appwindow, |text_view| {
+				text_view.emit_paste_clipboard();
+			}) {
+				return;
+			}
+
             let canvas = appwindow.active_tab_wrapper().canvas();
             let content_formats = appwindow.clipboard().formats();
 

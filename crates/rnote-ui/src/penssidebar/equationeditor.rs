@@ -73,7 +73,11 @@ mod imp {
         #[template_child]
         pub(crate) equation_code: TemplateChild<TextBuffer>,
         #[template_child]
+        pub(crate) equation_code_view: TemplateChild<TextView>,
+        #[template_child]
         pub(crate) error_message: TemplateChild<TextBuffer>,
+        #[template_child]
+        pub(crate) error_message_view: TemplateChild<TextView>,
         #[template_child]
         pub(crate) show_errors_button: TemplateChild<Button>,
         #[template_child]
