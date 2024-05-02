@@ -1,5 +1,8 @@
 use std::{io::Write, path::Path, process::Command};
 
+#[cfg(target_os = "windows")]
+use std::os::windows::process::CommandExt;
+
 #[derive(Debug, Clone)]
 pub struct Environment {
     pub pre_preamble: String,
@@ -25,6 +28,17 @@ impl LatexContext {
     }
 }
 
+fn create_command(name: &str) -> Command {
+    let mut command = Command::new(name);
+
+    #[cfg(target_os = "windows")]
+    const CREATE_NO_WINDOW: i32 = 0x08000000;
+    #[cfg(target_os = "windows")]
+    command.creation_flags(CREATE_NO_WINDOW);
+
+    command
+}
+
 pub fn create_svg_from_latex(
     latex_code: &String,
     context: &LatexContext,
@@ -48,7 +62,7 @@ pub fn create_svg_from_latex(
     // Compile and convert to DVI
 
     // TODO: Wrap command calls in fn
-    let output_latex = Command::new("latex")
+    let output_latex = create_command("latex")
         .current_dir(tmpdir.path())
         .arg(&tex_path)
         .output()
@@ -62,7 +76,7 @@ pub fn create_svg_from_latex(
     }
 
     // ezlatex.dvi will have been created
-    let output_svg = Command::new("dvisvgm")
+    let output_svg = create_command("dvisvgm")
         .current_dir(tmpdir.path())
         .arg("-n")
         .arg(&dvi_path)
