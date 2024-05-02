@@ -32,7 +32,7 @@ fn create_command(name: &str) -> Command {
     let mut command = Command::new(name);
 
     #[cfg(target_os = "windows")]
-    const CREATE_NO_WINDOW: i32 = 0x08000000;
+    const CREATE_NO_WINDOW: u32 = 0x08000000;
     #[cfg(target_os = "windows")]
     command.creation_flags(CREATE_NO_WINDOW);
 
