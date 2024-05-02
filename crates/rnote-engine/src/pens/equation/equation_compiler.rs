@@ -1,4 +1,4 @@
-use std::{collections::HashMap, future::IntoFuture, rc::Rc, sync::Arc, thread};
+use std::{collections::HashMap, future::IntoFuture, rc::Rc, sync::Arc, thread, time::Duration};
 
 use futures::{
     channel::mpsc::{self, UnboundedReceiver},
@@ -62,7 +62,7 @@ impl EquationCompilerTaskReceiver {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct EquationCompilerMainThread {
     pub tx: Option<EquationCompilerTaskSender>,
 }
@@ -153,8 +153,8 @@ impl EquationCompilerWorkerThread {
         }
     }
 
-    fn receive_message_async(&mut self) -> Option<EquationCompilerTask> {
-        self.rx.recv().now_or_never()?
+    fn receive_message_async(&mut self) -> Option<Option<EquationCompilerTask>> {
+        self.rx.recv().now_or_never()
     }
 
     fn receive_message_blocking(&mut self) -> Option<EquationCompilerTask> {
@@ -164,17 +164,33 @@ impl EquationCompilerWorkerThread {
     fn receive_all_messages(&mut self, allow_block: bool) -> bool {
         let mut quit = false;
 
+        // First, check if we may block
+        // 1. Try to receive data async
+        // 2. If that failed, try to receive data by blocking if it is allowed
+        //
+        // Why? If we still have data to compile, we should not wait by blocking
+        // Async data acquiration between compilations as this ensures
+        // that the compilation result does not severely lack behind on weaker computing devices.
+
+        let mut found_data = false;
+
         // If one of the message receiving functions return an empty option, the compiler quits execution.
-        if self.current_compilation_tasks.len() > 0 {
-            // Loop until every message is handled
-            while self.current_compilation_tasks.len() > 0 {
-                if let Some(message) = self.receive_message_async() {
+        loop {
+            // Handling no case is questionable
+            // TODO: Evaluate if this exits immediately
+            if let Some(not_pending) = self.receive_message_async() {
+                if let Some(message) = not_pending {
                     quit |= self.handle_message(message);
+                    found_data = true;
                 } else {
                     return true;
                 }
+            } else {
+                break;
             }
-        } else if allow_block {
+        }
+
+        if !found_data && allow_block {
             if let Some(message) = self.receive_message_blocking() {
                 quit |= self.handle_message(message);
             } else {
