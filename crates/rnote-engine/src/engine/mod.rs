@@ -16,7 +16,9 @@ pub use strokecontent::StrokeContent;
 
 // Imports
 use crate::document::Layout;
-use crate::pens::equation::equation_compiler::EquationCompilerTask;
+use crate::pens::equation::equation_compiler::{
+    EquationCompilerMainThread, EquationCompilerTask, EquationCompilerTaskSender,
+};
 use crate::pens::equation::EquationCompilationPolicy;
 use crate::pens::{Pen, PenStyle};
 use crate::pens::{PenMode, PensConfig};
@@ -50,6 +52,7 @@ pub struct EngineView<'a> {
     pub store: &'a StrokeStore,
     pub camera: &'a Camera,
     pub audioplayer: &'a Option<AudioPlayer>,
+    pub equation_compiler: &'a Option<EquationCompilerMainThread>,
 }
 
 /// A mutable view into the engine, excluding the penholder.
@@ -61,6 +64,7 @@ pub struct EngineViewMut<'a> {
     pub store: &'a mut StrokeStore,
     pub camera: &'a mut Camera,
     pub audioplayer: &'a mut Option<AudioPlayer>,
+    pub equation_compiler: &'a mut Option<EquationCompilerMainThread>,
 }
 
 impl<'a> EngineViewMut<'a> {
@@ -73,6 +77,7 @@ impl<'a> EngineViewMut<'a> {
             store: self.store,
             camera: self.camera,
             audioplayer: self.audioplayer,
+            equation_compiler: self.equation_compiler,
         }
     }
 }
@@ -207,6 +212,8 @@ pub struct Engine {
     background_rendernodes: Vec<gtk4::gsk::RenderNode>,
     #[serde(skip)]
     equation_compilation_errors: HashMap<StrokeKey, String>,
+    #[serde(skip)]
+    equation_compiler: Option<EquationCompilerMainThread>,
 }
 
 impl Default for Engine {
@@ -231,6 +238,7 @@ impl Default for Engine {
             #[cfg(feature = "ui")]
             background_rendernodes: Vec::default(),
             equation_compilation_errors: HashMap::new(),
+            equation_compiler: None,
         }
     }
 }
@@ -255,6 +263,7 @@ impl Engine {
             store: &self.store,
             camera: &self.camera,
             audioplayer: &self.audioplayer,
+            equation_compiler: &self.equation_compiler,
         }
     }
 
@@ -267,6 +276,7 @@ impl Engine {
             store: &mut self.store,
             camera: &mut self.camera,
             audioplayer: &mut self.audioplayer,
+            equation_compiler: &mut self.equation_compiler,
         }
     }
 
@@ -558,6 +568,7 @@ impl Engine {
                 store: &mut self.store,
                 camera: &mut self.camera,
                 audioplayer: &mut self.audioplayer,
+                equation_compiler: &mut self.equation_compiler,
             },
         )
     }
@@ -578,6 +589,7 @@ impl Engine {
                 store: &mut self.store,
                 camera: &mut self.camera,
                 audioplayer: &mut self.audioplayer,
+                equation_compiler: &mut self.equation_compiler,
             },
         )
     }
@@ -593,6 +605,7 @@ impl Engine {
                 store: &mut self.store,
                 camera: &mut self.camera,
                 audioplayer: &mut self.audioplayer,
+                equation_compiler: &mut self.equation_compiler,
             },
         )
     }
@@ -611,6 +624,7 @@ impl Engine {
                 store: &mut self.store,
                 camera: &mut self.camera,
                 audioplayer: &mut self.audioplayer,
+                equation_compiler: &mut self.equation_compiler,
             },
         )
     }
@@ -626,6 +640,7 @@ impl Engine {
                 store: &mut self.store,
                 camera: &mut self.camera,
                 audioplayer: &mut self.audioplayer,
+                equation_compiler: &mut self.equation_compiler,
             },
         )
     }
@@ -640,6 +655,7 @@ impl Engine {
                 store: &mut self.store,
                 camera: &mut self.camera,
                 audioplayer: &mut self.audioplayer,
+                equation_compiler: &mut self.equation_compiler,
             })
     }
 
@@ -651,7 +667,14 @@ impl Engine {
                 | self.background_regenerate_pattern()
                 | self.update_content_rendering_current_viewport();
             widget_flags.view_modified = true;
+
+            self.equation_compiler = Some(EquationCompilerMainThread::new());
+            self.equation_compiler
+                .as_mut()
+                .unwrap()
+                .spawn_thread_and_run(&self.tasks_tx);
         } else {
+            self.equation_compiler = None;
             widget_flags |= self.clear_rendering() | self.penholder.deinit_current_pen();
         }
         widget_flags
@@ -839,6 +862,7 @@ impl Engine {
             store: &mut self.store,
             camera: &mut self.camera,
             audioplayer: &mut self.audioplayer,
+            equation_compiler: &mut self.equation_compiler,
         })
     }
 
@@ -854,6 +878,7 @@ impl Engine {
             store: &self.store,
             camera: &self.camera,
             audioplayer: &self.audioplayer,
+            equation_compiler: &self.equation_compiler,
         })
     }
 
@@ -869,6 +894,7 @@ impl Engine {
             store: &mut self.store,
             camera: &mut self.camera,
             audioplayer: &mut self.audioplayer,
+            equation_compiler: &mut self.equation_compiler,
         })
     }
 
@@ -978,6 +1004,7 @@ impl Engine {
                     store: &mut self.store,
                     camera: &mut self.camera,
                     audioplayer: &mut self.audioplayer,
+                    equation_compiler: &mut self.equation_compiler,
                 },
             )
         }
@@ -995,6 +1022,7 @@ impl Engine {
                     store: &mut self.store,
                     camera: &mut self.camera,
                     audioplayer: &mut self.audioplayer,
+                    equation_compiler: &mut self.equation_compiler,
                 })
         }
         widget_flags
@@ -1015,6 +1043,7 @@ impl Engine {
                     store: &mut self.store,
                     camera: &mut self.camera,
                     audioplayer: &mut self.audioplayer,
+                    equation_compiler: &mut self.equation_compiler,
                 },
             )
         }
@@ -1033,6 +1062,7 @@ impl Engine {
                     store: &mut self.store,
                     camera: &mut self.camera,
                     audioplayer: &mut self.audioplayer,
+                    equation_compiler: &mut self.equation_compiler,
                 },
             )
         }

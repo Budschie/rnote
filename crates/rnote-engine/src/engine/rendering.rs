@@ -148,6 +148,7 @@ impl Engine {
                 store: &self.store,
                 camera: &self.camera,
                 audioplayer: &self.audioplayer,
+                equation_compiler: &self.equation_compiler,
             },
         )?;
 

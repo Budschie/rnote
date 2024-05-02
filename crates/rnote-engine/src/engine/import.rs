@@ -166,6 +166,7 @@ impl Engine {
                 store: &mut self.store,
                 camera: &mut self.camera,
                 audioplayer: &mut self.audioplayer,
+                equation_compiler: &mut self.equation_compiler,
             });
         widget_flags |= self.doc_resize_to_fit_content();
         widget_flags.redraw = true;
@@ -344,6 +345,7 @@ impl Engine {
                     store: &mut self.store,
                     camera: &mut self.camera,
                     audioplayer: &mut self.audioplayer,
+                    equation_compiler: &mut self.equation_compiler,
                 },
             );
         }
@@ -384,6 +386,7 @@ impl Engine {
             store: &mut self.store,
             camera: &mut self.camera,
             audioplayer: &mut self.audioplayer,
+            equation_compiler: &mut self.equation_compiler,
         });
 
         widget_flags |= self.store.record(Instant::now());

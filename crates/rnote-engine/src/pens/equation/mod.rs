@@ -28,7 +28,9 @@ use crate::{
     DrawableOnDoc, StrokeStore, WidgetFlags,
 };
 
-use self::equation_compiler::{CompilationTask, EquationCompilerMainThread, EquationCompilerTask};
+use self::equation_compiler::{
+    CompilationTask, EquationCompilerMainThread, EquationCompilerTask, EquationCompilerTaskSender,
+};
 
 use super::{
     width_picker::{WidthPickerContext, WidthPickerState},
@@ -60,8 +62,8 @@ pub const COMPILATION_DURATION: Duration = Duration::from_millis(1000);
 pub struct Equation {
     pub state: EquationState,
     pub equation_width: Option<WidthPickerContext>,
-    equation_compiler: Option<EquationCompilerMainThread>,
     equation_compiler_handle: Option<PeriodicTaskHandle>,
+    equation_compiler: Option<EquationCompilerMainThread>,
     last_widget_event_propagation: EventPropagation,
 }
 
@@ -70,8 +72,8 @@ impl Default for Equation {
         Self {
             state: EquationState::Idle,
             equation_width: None,
-            equation_compiler: None,
             equation_compiler_handle: None,
+            equation_compiler: None,
             last_widget_event_propagation: EventPropagation::Proceed,
         }
     }
@@ -272,12 +274,6 @@ impl Equation {
 
 impl PenBehaviour for Equation {
     fn init(&mut self, engine_view: &EngineView) -> WidgetFlags {
-        self.equation_compiler = Some(EquationCompilerMainThread::new());
-        self.equation_compiler
-            .as_mut()
-            .unwrap()
-            .spawn_thread_and_run(&engine_view.tasks_tx);
-
         let tasks_tx = engine_view.tasks_tx.clone();
         let compile_task = move || -> crate::tasks::PeriodicTaskResult {
             tasks_tx.send(crate::engine::EngineTask::CheckEquationCompilation);
@@ -288,11 +284,12 @@ impl PenBehaviour for Equation {
             COMPILATION_DURATION,
         ));
 
+        self.equation_compiler = engine_view.equation_compiler.clone();
+
         WidgetFlags::default()
     }
 
     fn deinit(&mut self) -> WidgetFlags {
-        self.equation_compiler = None;
         self.equation_compiler_handle = None;
 
         WidgetFlags::default()
