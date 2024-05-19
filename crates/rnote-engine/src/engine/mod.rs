@@ -6,6 +6,7 @@ pub mod snapshot;
 pub mod strokecontent;
 pub mod visual_debug;
 
+use anyhow::anyhow;
 // Re-exports
 pub use export::ExportPrefs;
 use futures::channel::mpsc::UnboundedReceiver;
@@ -42,6 +43,15 @@ use std::collections::HashMap;
 use std::path::PathBuf;
 use std::sync::Arc;
 use std::time::Instant;
+
+#[derive(Debug)]
+pub struct WrongPenError;
+
+impl std::fmt::Display for WrongPenError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "Wrong pen selected")
+    }
+}
 
 /// An immutable view into the engine, excluding the penholder.
 #[derive(Debug)]
@@ -528,13 +538,23 @@ impl Engine {
         }
     }
 
-    // TODO: Remove return type
-    pub fn toggle_equation_compilation(&mut self) -> Option<EquationCompilationPolicy> {
+    pub fn get_equation_compilation_policy(&mut self) -> anyhow::Result<EquationCompilationPolicy> {
         if let Pen::Equation(equation) = self.penholder.current_pen_mut() {
-            return equation.toggle_compilation(&mut self.store);
+            return equation.get_compilation_policy();
         }
 
-        None
+        Err(anyhow!(WrongPenError))
+    }
+
+    pub fn set_equation_compilation_policy(
+        &mut self,
+        compilation_policy: EquationCompilationPolicy,
+    ) -> anyhow::Result<()> {
+        if let Pen::Equation(equation) = self.penholder.current_pen_mut() {
+            return equation.set_compilation_policy(compilation_policy.clone(), &mut self.store);
+        }
+
+        Err(anyhow!(WrongPenError))
     }
 
     pub fn mark_updated_text(&mut self, new_code: String) {

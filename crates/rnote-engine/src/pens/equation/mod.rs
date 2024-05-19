@@ -5,6 +5,7 @@ pub mod latex_equation_provider;
 
 use std::{sync::Arc, thread, time::Duration};
 
+use anyhow::anyhow;
 use nalgebra::Vector2;
 use p2d::bounding_volume::Aabb;
 use piet::RenderContext;
@@ -56,6 +57,15 @@ pub enum EquationCompilationPolicy {
     Deny,
 }
 
+impl EquationCompilationPolicy {
+    pub fn invert(policy: Self) -> Self {
+        match policy {
+            Self::Allow => Self::Deny,
+            Self::Deny => Self::Allow,
+        }
+    }
+}
+
 pub const COMPILATION_DURATION: Duration = Duration::from_millis(1000);
 
 #[derive(Debug)]
@@ -65,6 +75,17 @@ pub struct Equation {
     equation_compiler_handle: Option<PeriodicTaskHandle>,
     equation_compiler: Option<EquationCompilerMainThread>,
     last_widget_event_propagation: EventPropagation,
+}
+
+/// This error indicates that an operation could not be finished due to the operation target being in the right state.
+/// For instance, this occours when a compilation is requested when there is no equation object selected.
+#[derive(Debug)]
+pub struct WrongStateError;
+
+impl std::fmt::Display for WrongStateError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "Wrong state; operation could not be finished.")
+    }
 }
 
 impl Default for Equation {
@@ -226,7 +247,7 @@ impl Equation {
     }
 
     /// Sets the equation compilation policy
-    fn enable_compilation(&mut self, stroke_store: &mut StrokeStore) {
+    fn enable_compilation(&mut self, stroke_store: &mut StrokeStore) -> anyhow::Result<()> {
         if let EquationState::AwaitCompilation(compilation_info) = &mut self.state {
             if let EquationCompilationPolicy::Deny =
                 compilation_info.equation_compilation_policy.clone()
@@ -234,41 +255,41 @@ impl Equation {
                 compilation_info.equation_compilation_policy = EquationCompilationPolicy::Allow;
                 self.check_equation_compilation(&stroke_store);
             }
+
+            return Ok(());
         }
+
+        Err(anyhow!(WrongStateError))
     }
 
     /// Disables compilation of the equation
-    fn disable_compilation(&mut self, stroke_store: &mut StrokeStore) {
+    fn disable_compilation(&mut self, stroke_store: &mut StrokeStore) -> anyhow::Result<()> {
         if let EquationState::AwaitCompilation(compilation_info) = &mut self.state {
             compilation_info.equation_compilation_policy = EquationCompilationPolicy::Deny;
+
+            return Ok(());
+        }
+
+        Err(anyhow!(WrongStateError))
+    }
+
+    pub(crate) fn set_compilation_policy(
+        &mut self,
+        compilation_policy: EquationCompilationPolicy,
+        stroke_store: &mut StrokeStore,
+    ) -> anyhow::Result<()> {
+        match compilation_policy {
+            EquationCompilationPolicy::Allow => self.enable_compilation(stroke_store),
+            EquationCompilationPolicy::Deny => self.disable_compilation(stroke_store),
         }
     }
 
-    /// Toggles the compilation of the equation. Returns whether the equation may be compiled after the compilation has been toggled.
-    pub fn toggle_compilation(
-        &mut self,
-        stroke_store: &mut StrokeStore,
-    ) -> Option<EquationCompilationPolicy> {
-        let should_enable =
-            if let EquationState::AwaitCompilation(compilation_info) = &mut self.state {
-                match compilation_info.equation_compilation_policy {
-                    EquationCompilationPolicy::Allow => false,
-                    EquationCompilationPolicy::Deny => true,
-                }
-            } else {
-                return None;
-            };
-
-        match should_enable {
-            true => {
-                self.enable_compilation(stroke_store);
-                Some(EquationCompilationPolicy::Allow)
-            }
-            false => {
-                self.disable_compilation(stroke_store);
-                Some(EquationCompilationPolicy::Deny)
-            }
+    pub(crate) fn get_compilation_policy(&self) -> anyhow::Result<EquationCompilationPolicy> {
+        if let EquationState::AwaitCompilation(compilation_info) = &self.state {
+            return Ok(compilation_info.equation_compilation_policy.clone());
         }
+
+        Err(anyhow!(WrongStateError))
     }
 }
 

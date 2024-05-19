@@ -10,6 +10,7 @@ use adw::prelude::*;
 use cairo::glib::closure_local;
 use gtk4::{glib, glib::clone, subclass::prelude::*, CompositeTemplate};
 use gtk4::{Widget, Window};
+use rnote_engine::engine::EngineViewMut;
 use rnote_engine::pens::equation::equation_provider::EquationProvider;
 use rnote_engine::pens::equation::latex_equation_provider::LatexEquationProvider;
 use rnote_engine::pens::equation::{EquationCompilationPolicy, EquationState};
@@ -192,15 +193,17 @@ impl RnEquationPage {
         );
 
         imp.compile_equation.connect_clicked(clone!(@weak self as equationpage, @weak appwindow => move |button| {
-			if let Some(some_policy) = appwindow.active_tab_wrapper().canvas().engine_mut().toggle_equation_compilation() {
-				match some_policy {
-					EquationCompilationPolicy::Allow => {
-						equationpage.display_pause_compilation_graphics();
-					}
+			let mut inverted_option: Option<EquationCompilationPolicy> = None;
 
-					EquationCompilationPolicy::Deny => {
-						equationpage.display_play_compilation_graphics();
-					}
+			if let Ok(policy) = appwindow.active_tab_wrapper().canvas().engine_mut().get_equation_compilation_policy() {
+				inverted_option = Some(EquationCompilationPolicy::invert(policy.clone()));
+			}
+
+			if let Some(inverted) = inverted_option {
+				let result = appwindow.active_tab_wrapper().canvas().engine_mut().set_equation_compilation_policy(inverted);
+
+				if let Ok(_) = result {
+					equationpage.adjust_compilation_graphics(&mut appwindow.active_tab_wrapper().canvas().engine_mut());
 				}
 			}
 		}));
@@ -214,6 +217,19 @@ impl RnEquationPage {
 				EquationCodeCompilationResult::from(Result::Ok(String::from("nothing")))
             }),
         );
+    }
+
+    fn set_compilation_graphics(&self, compilation_policy: EquationCompilationPolicy) {
+        match compilation_policy {
+            EquationCompilationPolicy::Allow => self.display_pause_compilation_graphics(),
+            EquationCompilationPolicy::Deny => self.display_play_compilation_graphics(),
+        }
+    }
+
+    fn adjust_compilation_graphics(&self, engine: &mut RefMut<Engine>) {
+        if let Ok(policy) = engine.get_equation_compilation_policy() {
+            self.set_compilation_graphics(policy.clone());
+        }
     }
 
     fn display_pause_compilation_graphics(&self) {
