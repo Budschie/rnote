@@ -1,5 +1,6 @@
 pub mod equation_compiler;
 pub mod equation_provider;
+pub mod executable_checks;
 pub mod latex_equation_generator;
 pub mod latex_equation_provider;
 

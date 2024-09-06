@@ -12,6 +12,7 @@ use gtk4::{glib, glib::clone, subclass::prelude::*, CompositeTemplate};
 use gtk4::{Widget, Window};
 use rnote_engine::engine::EngineViewMut;
 use rnote_engine::pens::equation::equation_provider::EquationProvider;
+use rnote_engine::pens::equation::executable_checks::LatexExecutableChecker;
 use rnote_engine::pens::equation::latex_equation_provider::LatexEquationProvider;
 use rnote_engine::pens::equation::{EquationCompilationPolicy, EquationState};
 use rnote_engine::pens::pensconfig::equationconfig::EquationConfig;
@@ -115,7 +116,10 @@ impl RnEquationPage {
 
         if let Some(some_row) = currently_selected_row {
             return Some(match some_row.index() {
-                0 => EquationProvider::LatexEquationProvider(LatexEquationProvider {}),
+                0 => EquationProvider::LatexEquationProvider(
+                    LatexEquationProvider {},
+                    LatexExecutableChecker {},
+                ),
                 _ => panic!("More than one row is currently not implemented yet."),
             });
         }
