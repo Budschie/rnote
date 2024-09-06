@@ -1,7 +1,8 @@
 // Imports
 use crate::Drawable;
 use anyhow::Context;
-use image::io::Reader;
+use core::fmt::Debug;
+use image::ImageReader;
 use once_cell::sync::Lazy;
 use p2d::bounding_volume::{Aabb, BoundingVolume};
 use piet::RenderContext;
@@ -10,14 +11,14 @@ use rnote_compose::shapes::{Rectangle, Shapeable};
 use rnote_compose::transform::Transformable;
 use serde::{Deserialize, Serialize};
 use std::io::{self, Cursor};
+use std::sync::Arc;
 use svg::Node;
-use usvg::{TreeParsing, TreeTextToPath, TreeWriting};
 
 /// Usvg font database
-pub static USVG_FONTDB: Lazy<usvg::fontdb::Database> = Lazy::new(|| {
+pub static USVG_FONTDB: Lazy<Arc<usvg::fontdb::Database>> = Lazy::new(|| {
     let mut db = usvg::fontdb::Database::new();
     db.load_system_fonts();
-    db
+    Arc::new(db)
 });
 
 /// Px unit (96 DPI ) to Point unit ( 72 DPI ) conversion factor.
@@ -77,7 +78,7 @@ impl From<ImageMemoryFormat> for piet::ImageFormat {
 }
 
 /// A bitmap image.
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize)]
 #[serde(default, rename = "image")]
 pub struct Image {
     /// The image data.
@@ -97,6 +98,18 @@ pub struct Image {
     /// Memory format.
     #[serde(rename = "memory_format")]
     pub memory_format: ImageMemoryFormat,
+}
+
+impl Debug for Image {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("Image")
+            .field("data", &String::from("- no debug impl -"))
+            .field("rect", &self.rect)
+            .field("pixel_width", &self.pixel_width)
+            .field("pixel_height", &self.pixel_height)
+            .field("memory_format", &self.memory_format)
+            .finish()
+    }
 }
 
 impl Default for Image {
@@ -192,7 +205,7 @@ impl Image {
     }
 
     pub fn try_from_encoded_bytes(bytes: &[u8]) -> Result<Self, anyhow::Error> {
-        let reader = Reader::new(io::Cursor::new(bytes)).with_guessed_format()?;
+        let reader = ImageReader::new(io::Cursor::new(bytes)).with_guessed_format()?;
         Ok(Image::from(reader.decode()?))
     }
 
@@ -232,19 +245,37 @@ impl Image {
         }
     }
 
+    /// Encodes the image into the provided format.
+    ///
+    /// When the format is `Jpeg`, the quality should be provided, but falls back to 93 if it is None.
     pub fn into_encoded_bytes(
         self,
-        format: image::ImageOutputFormat,
+        format: image::ImageFormat,
+        quality: Option<u8>,
     ) -> Result<Vec<u8>, anyhow::Error> {
+        const QUALITY_FALLBACK: u8 = 93;
+
         self.assert_valid()?;
         let mut bytes_buf: Cursor<Vec<u8>> = Cursor::new(Vec::new());
         let dynamic_image = image::DynamicImage::ImageRgba8(
             self.into_imgbuf()
                 .context("Converting image to image::ImageBuffer failed.")?,
         );
-        dynamic_image
-            .write_to(&mut bytes_buf, format)
-            .context("Writing dynamic image to bytes buffer failed.")?;
+        match format {
+            image::ImageFormat::Jpeg => {
+                image::codecs::jpeg::JpegEncoder::new_with_quality(
+                    &mut bytes_buf,
+                    quality.map(|q| q.clamp(0, 100)).unwrap_or(QUALITY_FALLBACK),
+                )
+                .encode_image(&dynamic_image)
+                .context("Encode dynamic image to jpeg failed.")?;
+            }
+            format => {
+                dynamic_image
+                    .write_to(&mut bytes_buf, format)
+                    .context("Encode dynamic image to format '{format}' failed.")?;
+            }
+        }
 
         Ok(bytes_buf.into_inner())
     }
@@ -420,15 +451,14 @@ impl Svg {
         const COORDINATES_PREC: u8 = 3;
         const TRANSFORMS_PREC: u8 = 4;
 
-        let xml_options = usvg::XmlOptions {
+        let xml_options = usvg::WriteOptions {
             id_prefix: Some(rnote_compose::utils::svg_random_id_prefix()),
+            preserve_text: true,
             coordinates_precision: COORDINATES_PREC,
             transforms_precision: TRANSFORMS_PREC,
-            writer_opts: xmlwriter::Options {
-                use_single_quote: false,
-                indent: xmlwriter::Indent::None,
-                attributes_indent: xmlwriter::Indent::None,
-            },
+            use_single_quote: false,
+            indent: xmlwriter::Indent::None,
+            attributes_indent: xmlwriter::Indent::None,
         };
         let bounds_simplified = Aabb::new(na::point![0.0, 0.0], self.bounds.extents().into());
         let svg_data_wrapped = rnote_compose::utils::wrap_svg_root(
@@ -438,9 +468,15 @@ impl Svg {
             false,
         );
 
-        let mut usvg_tree = usvg::Tree::from_str(&svg_data_wrapped, &usvg::Options::default())?;
-        usvg_tree.convert_text(&USVG_FONTDB);
-        self.svg_data = rnote_compose::utils::remove_xml_header(&usvg_tree.to_string(&xml_options));
+        let usvg_tree = usvg::Tree::from_str(
+            &svg_data_wrapped,
+            &usvg::Options {
+                fontdb: Arc::clone(&USVG_FONTDB),
+                ..Default::default()
+            },
+        )?;
+
+        self.svg_data = usvg_tree.to_string(&xml_options);
         self.bounds = bounds_simplified;
 
         Ok(())
@@ -484,7 +520,7 @@ impl Svg {
                 })?,
         )?;
         let svg_data = rnote_compose::utils::remove_xml_header(&content);
-        let mut group = svg::node::element::Group::new().add(svg::node::Text::new(svg_data));
+        let mut group = svg::node::element::Group::new().add(svg::node::Blob::new(svg_data));
         // translate the content back to it's original position
         group.assign(
             "transform",
@@ -526,7 +562,8 @@ impl Svg {
         );
         let stream = gio::MemoryInputStream::from_bytes(&glib::Bytes::from(svg_data.as_bytes()));
         let handle = rsvg::Loader::new()
-            .read_stream::<gio::MemoryInputStream, gio::File, gio::Cancellable>(&stream, None, None)
+            .with_unlimited_size(true)
+            .read_stream(&stream, None::<&gio::File>, None::<&gio::Cancellable>)
             .context("reading stream to rsvg loader failed.")?;
         let renderer = rsvg::CairoRenderer::new(&handle);
         renderer
@@ -582,6 +619,7 @@ impl Svg {
                 gio::MemoryInputStream::from_bytes(&glib::Bytes::from(svg_data.as_bytes()));
 
             let handle = rsvg::Loader::new()
+                .with_unlimited_size(true)
                 .read_stream::<gio::MemoryInputStream, gio::File, gio::Cancellable>(
                     &stream, None, None,
                 )

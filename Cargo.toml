@@ -8,92 +8,96 @@ members = [
 resolver = "2"
 
 [workspace.package]
-version = "0.9.4"
-edition = "2021"
-rust-version = "1.70"
 authors = ["The Rnote Authors"]
-license = "GPL-3.0-or-later"
+edition = "2021"
 homepage = "https://rnote.flxzt.net"
+license = "GPL-3.0-or-later"
 repository = "https://github.com/flxzt/rnote"
+rust-version = "1.74"
+version = "0.11.0"
 
 [workspace.dependencies]
-rnote-compose = { version="0.9.4", path = "crates/rnote-compose" }
-rnote-engine = { version="0.9.4", path = "crates/rnote-engine" }
+rnote-compose = { version = "0.11.0", path = "crates/rnote-compose" }
+rnote-engine = { version = "0.11.0", path = "crates/rnote-engine" }
 
-tracing = "0.1"
-tracing-subscriber = {version = "0.3", features = ["env-filter"] }
-anyhow = "1"
-thiserror = "1"
+adw = { version = "0.6.0", package = "libadwaita", features = ["v1_5"] }
+anyhow = "1.0"
 approx = "0.5.1"
-num-derive = "0.4"
-num-traits = "0.2"
-itertools = "0.12"
-once_cell = "1"
-futures = "0.3"
-rayon = "1"
-serde = { version = "1", features = ["derive", "rc"] }
-serde_json = "1"
-ijson = "0.1"
-nalgebra = { version = "0.32", features = ["serde-serialize"] }
-parry2d-f64 = { version = "0.13", features = ["serde-serialize"] }
-rand = "0.8"
-rand_pcg = "0.3"
-rand_distr = "0.4"
-slotmap = { version = "1", features = ["serde"] }
-rstar = "0.12"
-geo = "0.27"
-flate2 = "1"
-chrono = "0.4.33"
-base64 = "0.21"
-semver = { version = "1", features = ["serde"]}
+async-fs = "2.1"
+base64 = "0.22.1"
+cairo-rs = { version = "0.19.4", features = ["v1_18", "png", "svg", "pdf"] }
+chrono = "0.4.38"
+clap = { version = "4.5", features = ["derive"] }
+dialoguer = "0.11.0"
+flate2 = "1.0"
+fs_extra = "1.3"
+futures = "0.3.30"
+geo = "0.28.0"
+gettext-rs = { version = "0.7.1", features = ["gettext-system"] }
+gio = "0.19.5"
+glib = "0.19.7"
+glib-build-tools = "0.19.0"
+gtk4 = { version = "0.8.2", features = ["v4_12"] }
+ijson = "0.1.3"
+image = "0.25.2"
+indicatif = "0.17.8"
+ink-stroke-modeler-rs = { git = "https://github.com/flxzt/ink-stroke-modeler-rs", rev = "84d311e9b0d034dcd955a1f353d37f54b2bda70f" }
+itertools = "0.13.0"
+kurbo = "0.10.4"
+librsvg = "2.58.2"
+nalgebra = { version = "0.33.0", features = ["serde-serialize"] }
+notify-debouncer-full = "0.3.1"
+num-derive = "0.4.2"
+num-traits = "0.2.19"
+numeric-sort = "0.1.1"
+once_cell = "1.19"
+open = "5.3"
+palette = "0.7.6"
+parry2d-f64 = { version = "0.17.0", features = ["serde-serialize"] }
+path-absolutize = "3.1"
+piet = "0.6.2"
+piet-cairo = "0.6.2"
+rand = "0.8.5"
+rand_distr = "0.4.3"
+rand_pcg = "0.3.1"
+rayon = "1.10"
 regex = "1.10"
-url = "2"
-fs_extra = "1"
-same-file = "1"
-unicode-segmentation = "1"
-roxmltree = "0.19"
-xmlwriter = "0.1"
-usvg = "0.36"
-svg = "0.14"
-image = "0.24"
-kurbo = "0.10"
-piet = "0.6"
-piet-cairo = "0.6"
-roughr = "0.6"
-rough_piet = "0.6"
-palette = "0.7.4"
-rodio = { version = "0.17", default-features = false, features = ["symphonia-wav"] }
-winresource = "0.1"
-smol = "2"
-clap = { version = "4", features = ["derive"] }
-indicatif = "0.17"
-dialoguer = "0.11"
-open = "5"
-atty = "0.2"
-gettext-rs = { version = "0.7", features = ["gettext-system"] }
-glib = "0.18.5"
-glib-build-tools = "0.18.0"
-gio = "0.18.4"
-cairo-rs = { version = "0.18", features = ["png", "svg", "pdf"] }
-librsvg = "2.57"
-# newest poppler feature ("v21_12") is causing linking errors when building in mingw for some reason.
-poppler-rs = { version = "0.22", features = ["v20_9"] }
-gtk4 = { version = "0.7.3", features = ["v4_12"] }
-adw = { version = "0.5.3", package="libadwaita", features = ["v1_4"] }
-numeric-sort = "0.1"
+rodio = { version = "0.19.0", default-features = false, features = [
+    "symphonia-wav",
+] }
+rough_piet = "0.6.0"
+roughr = "0.6.0"
+roxmltree = "0.20.0"
+rstar = "0.12.0"
+semver = { version = "1.0", features = ["serde"] }
+serde = { version = "1.0", features = ["derive", "rc"] }
+serde_json = "1.0"
+slotmap = { version = "1.0", features = ["serde"] }
+smol = "2.0"
+svg = "0.17.0"
+thiserror = "1.0"
+tracing = "0.1.40"
+tracing-subscriber = { version = "0.3.18", features = ["env-filter"] }
+unicode-segmentation = "1.11"
+url = "2.5"
+usvg = "0.43.0"
+winresource = "0.1.17"
+xmlwriter = "0.1.0"
+# Enabling feature > v20_9 causes linker errors on mingw
+poppler-rs = { version = "0.23.0", features = ["v20_9"] }
 
 [patch.crates-io]
-# once a new piet (current v0.6.2) is released with updated cairo and kurbo deps, this can be removed
-piet = { git = "https://github.com/linebender/piet", rev = "e78a787403c08dfe7655356d4065f00eeeaed97d" }
-piet-cairo = { git = "https://github.com/linebender/piet", rev = "e78a787403c08dfe7655356d4065f00eeeaed97d" }
+# once a new piet (current v0.6.2) is released with updated cairo and kurbo deps, this can be removed.
+piet = { git = "https://github.com/linebender/piet", rev = "02eb5f0152e893626c43980bf37eeb0ccb1acb46" }
+piet-cairo = { git = "https://github.com/linebender/piet", rev = "02eb5f0152e893626c43980bf37eeb0ccb1acb46" }
 
 [profile.dev]
-opt-level = 2
 debug = true
+opt-level = 2
 
 [profile.release]
-opt-level = 3
-lto = "fat"
 codegen-units = 1
+lto = "fat"
+opt-level = 3
 # We want to be able to debug in the release build as well
 debug = true

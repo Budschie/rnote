@@ -129,13 +129,13 @@ impl RnWorkspaceListEntry {
 
     pub(crate) fn new(inner: RnWorkspaceListEntryInner) -> Self {
         glib::Object::builder()
-            .property("dir", &inner.dir.to_string_lossy().to_string().to_value())
-            .property("icon", &inner.icon.to_value())
+            .property("dir", inner.dir.to_string_lossy().to_string().to_value())
+            .property("icon", inner.icon.to_value())
             .property(
                 "color",
-                &gdk::RGBA::from_compose_color(rnote_compose::Color::from(inner.color)).to_value(),
+                gdk::RGBA::from_compose_color(rnote_compose::Color::from(inner.color)).to_value(),
             )
-            .property("name", &inner.name.to_value())
+            .property("name", inner.name.to_value())
             .build()
     }
 
@@ -185,7 +185,7 @@ impl RnWorkspaceListEntry {
     }
 }
 
-impl glib::StaticVariantType for RnWorkspaceListEntry {
+impl glib::variant::StaticVariantType for RnWorkspaceListEntry {
     fn static_variant_type() -> std::borrow::Cow<'static, glib::VariantTy> {
         let ty = RnWorkspaceListEntryInner::static_variant_type();
         let variant_type = glib::VariantType::new(ty.as_str()).unwrap();
@@ -193,13 +193,13 @@ impl glib::StaticVariantType for RnWorkspaceListEntry {
     }
 }
 
-impl glib::ToVariant for RnWorkspaceListEntry {
+impl glib::variant::ToVariant for RnWorkspaceListEntry {
     fn to_variant(&self) -> glib::Variant {
         self.imp().inner.borrow().to_variant()
     }
 }
 
-impl glib::FromVariant for RnWorkspaceListEntry {
+impl glib::variant::FromVariant for RnWorkspaceListEntry {
     fn from_variant(variant: &glib::Variant) -> Option<Self> {
         Some(Self::new(RnWorkspaceListEntryInner::from_variant(variant)?))
     }

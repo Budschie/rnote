@@ -1,7 +1,10 @@
 #![warn(missing_debug_implementations)]
 #![allow(clippy::single_match)]
-// Hides console window on windows
-#![windows_subsystem = "windows"]
+// Turns off console window on Windows, but not when building with dev profile.
+#![cfg_attr(
+    all(not(debug_assertions), target_os = "windows"),
+    windows_subsystem = "windows"
+)]
 
 // Modules
 pub(crate) mod app;
@@ -12,6 +15,7 @@ pub(crate) mod canvasmenu;
 pub(crate) mod canvaswrapper;
 pub(crate) mod colorpicker;
 pub(crate) mod config;
+pub(crate) mod contextmenu;
 pub(crate) mod dialogs;
 pub(crate) mod env;
 pub(crate) mod filetype;
@@ -39,6 +43,7 @@ pub(crate) use canvas::RnCanvas;
 pub(crate) use canvasmenu::RnCanvasMenu;
 pub(crate) use canvaswrapper::RnCanvasWrapper;
 pub(crate) use colorpicker::RnColorPicker;
+pub(crate) use contextmenu::RnContextMenu;
 pub(crate) use filetype::FileType;
 pub(crate) use groupediconpicker::RnGroupedIconPicker;
 pub(crate) use iconpicker::RnIconPicker;
@@ -61,6 +66,7 @@ extern crate parry2d_f64 as p2d;
 // Imports
 use anyhow::Context;
 use gtk4::{gio, glib, prelude::*};
+use tracing::debug;
 
 fn main() -> glib::ExitCode {
     if let Err(e) = setup_tracing() {
@@ -81,11 +87,15 @@ fn main() -> glib::ExitCode {
 }
 
 fn setup_tracing() -> anyhow::Result<()> {
+    let timer = tracing_subscriber::fmt::time::Uptime::default();
+
     tracing_subscriber::fmt()
+        .compact()
         .with_env_filter(tracing_subscriber::EnvFilter::from_default_env())
+        .with_timer(timer)
         .try_init()
         .map_err(|e| anyhow::anyhow!(e))?;
-    tracing::debug!(".. tracing subscriber initialized.");
+    debug!(".. tracing subscriber initialized.");
     Ok(())
 }
 

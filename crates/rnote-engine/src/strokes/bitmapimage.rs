@@ -1,4 +1,5 @@
 // Imports
+use super::resize::{calculate_resize_ratio, ImageSizeOption};
 use super::{Content, Stroke};
 use crate::document::Format;
 use crate::engine::import::{PdfImportPageSpacing, PdfImportPrefs};
@@ -100,15 +101,27 @@ impl BitmapImage {
     pub fn from_image_bytes(
         bytes: &[u8],
         pos: na::Vector2<f64>,
-        size: Option<na::Vector2<f64>>,
+        size_option: ImageSizeOption,
     ) -> Result<Self, anyhow::Error> {
         let image = render::Image::try_from_encoded_bytes(bytes)?;
-        let size = size.unwrap_or_else(|| {
-            na::vector![f64::from(image.pixel_width), f64::from(image.pixel_height)]
-        });
+
+        let initial_size = na::vector![f64::from(image.pixel_width), f64::from(image.pixel_height)];
+
+        let (size, resize_ratio) = match size_option {
+            ImageSizeOption::RespectOriginalSize => (initial_size, 1.0f64),
+            ImageSizeOption::ImposeSize(given_size) => (given_size, 1.0f64),
+            ImageSizeOption::ResizeImage(resize_struct) => (
+                initial_size,
+                calculate_resize_ratio(resize_struct, initial_size, pos),
+            ),
+        };
+
+        let mut transform = Transform::default();
+        transform.append_scale_mut(na::Vector2::new(resize_ratio, resize_ratio));
+        transform.append_translation_mut(pos + size * resize_ratio * 0.5);
         let rectangle = Rectangle {
             cuboid: p2d::shape::Cuboid::new(size * 0.5),
-            transform: Transform::new_w_isometry(na::Isometry2::new(pos + size * 0.5, 0.0)),
+            transform,
         };
         Ok(Self { image, rectangle })
     }
@@ -122,7 +135,11 @@ impl BitmapImage {
     ) -> Result<Vec<Self>, anyhow::Error> {
         let doc = poppler::Document::from_bytes(&glib::Bytes::from(to_be_read), None)?;
         let page_range = page_range.unwrap_or(0..doc.n_pages() as u32);
-        let page_width = format.width() * (pdf_import_prefs.page_width_perc / 100.0);
+        let page_width = if pdf_import_prefs.adjust_document {
+            format.width()
+        } else {
+            format.width() * (pdf_import_prefs.page_width_perc / 100.0)
+        };
         // calculate the page zoom based on the width of the first page.
         let page_zoom = if let Some(first_page) = doc.page(0) {
             page_width / first_page.size().0
@@ -149,7 +166,7 @@ impl BitmapImage {
                 )
                 .map_err(|e| {
                     anyhow::anyhow!(
-                        "Creating image surface while importing bitmapimage failed, {e:?}"
+                        "Creating image surface while importing bitmapimage failed, Err: {e:?}"
                     )
                 })?;
 
@@ -195,19 +212,25 @@ impl BitmapImage {
                 let image_pos = na::vector![x, y];
                 let image_size = na::vector![width, height];
 
-                y += match pdf_import_prefs.page_spacing {
-                    PdfImportPageSpacing::Continuous => {
-                        height + Stroke::IMPORT_OFFSET_DEFAULT[1] * 0.5
-                    }
-                    PdfImportPageSpacing::OnePerDocumentPage => format.height(),
-                };
+                if pdf_import_prefs.adjust_document {
+                    y += height
+                } else {
+                    y += match pdf_import_prefs.page_spacing {
+                        PdfImportPageSpacing::Continuous => {
+                            height + Stroke::IMPORT_OFFSET_DEFAULT[1] * 0.5
+                        }
+                        PdfImportPageSpacing::OnePerDocumentPage => format.height(),
+                    };
+                }
 
                 Ok((png_data, image_pos, image_size))
             })
             .collect::<anyhow::Result<Vec<(Vec<u8>, na::Vector2<f64>, na::Vector2<f64>)>>>()?;
 
         pngs.into_par_iter()
-            .map(|(png_data, pos, size)| Self::from_image_bytes(&png_data, pos, Some(size)))
+            .map(|(png_data, pos, size)| {
+                Self::from_image_bytes(&png_data, pos, ImageSizeOption::ImposeSize(size))
+            })
             .collect()
     }
 }

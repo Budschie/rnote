@@ -1,16 +1,15 @@
 project(
     'rnote',
     ['rust', 'cpp'],
-    version: '0.9.4',
+    version: '0.11.0',
     meson_version: '>= 1.0',
 )
-# add a patch suffix for alpha or beta version, starting with a dash.
+# add a patch suffix for alpha or beta versions in format '-<alpha|beta>.<x>'.
 patch = ''
 
 # Modules
 i18n = import('i18n')
 gnome = import('gnome')
-fs = import('fs')
 
 # Options
 prefix = get_option('prefix')
@@ -22,6 +21,7 @@ sysconfdir = prefix / get_option('sysconfdir')
 profile = get_option('profile')
 build_ui = get_option('ui')
 build_cli = get_option('cli')
+ci = get_option('ci')
 win_build_environment_path = get_option('win-build-environment-path')
 win_installer_name = get_option('win-installer-name')
 
@@ -69,17 +69,18 @@ cpp_compiler = meson.get_compiler('cpp')
 #cpp_compiler.find_library('clang')
 dependency('glib-2.0', version: '>= 2.76')
 dependency('gio-2.0', version: '>= 2.76')
-dependency('cairo', version: '>= 1.17')
+dependency('cairo', version: '>= 1.18')
 
 cargo = find_program('cargo', required: true)
 # cmake is needed by the "ink-stroke-modeler-rs" bindings crate to build the C++ library
-cmake = find_program('cmake', required: true)
-glib_compile_resources = find_program('glib-compile-resources', required: true)
+find_program('cmake', required: true)
+find_program('glib-compile-resources', required: true)
+cargo_nextest = find_program('cargo-nextest', required: false)
 glib_compile_schemas = find_program('glib-compile-schemas', required: true)
 desktop_file_validate = find_program('desktop-file-validate', required: false)
-appstream_util = find_program('appstream-util', required: false)
-fc_cache = find_program('fc-cache', required: false)
-update_mime_database = find_program('update-mime-database', required: false)
+appstreamcli = find_program('appstreamcli', required: false)
+find_program('fc-cache', required: false)
+find_program('update-mime-database', required: false)
 cargo_build_script = find_program('build-aux/cargo_build.py', required: true)
 inno_build_script = find_program('build-aux/inno_build.py', required: true)
 
@@ -119,26 +120,39 @@ run_target(
             'fmt',
             '--all',
             '--check',
-            '--manifest-path', cargo_manifest_path,
+            '--manifest-path',
+            cargo_manifest_path,
         ],
     ],
     env: cargo_env,
 )
 
-# cargo test
-run_target(
-    'cargo-test',
-    command: [
-        cargo,
-        [
-            'test',
-            '--workspace',
-            '--manifest-path', cargo_manifest_path,
-            '--target-dir', cargo_target_dir,
+# cargo tests
+if cargo_nextest.found()
+    nextest_args = [
+        'nextest',
+        '--manifest-path',
+        cargo_manifest_path,
+        'run',
+        '--workspace',
+        '--target-dir',
+        cargo_target_dir,
+    ]
+    if ci == true
+        nextest_args += [
+            '--profile',
+            'ci',
+        ]
+    endif
+    run_target(
+        'cargo-test',
+        command: [
+            cargo,
+            nextest_args
         ],
-    ],
-    env: cargo_env,
-)
+        env: cargo_env,
+    )
+endif
 
 # cargo clean
 run_target(
@@ -147,8 +161,10 @@ run_target(
         cargo,
         [
             'clean',
-            '--manifest-path', cargo_manifest_path,
-            '--target-dir', cargo_target_dir,
+            '--manifest-path',
+            cargo_manifest_path,
+            '--target-dir',
+            cargo_target_dir,
         ],
     ],
     env: cargo_env,
@@ -157,9 +173,10 @@ run_target(
 # build/install the ui
 if build_ui == true
     # ui dependencies
+    dependency('appstream')
+    dependency('poppler-glib', version: '>= 22.02')
     dependency('gtk4', version: '>= 4.12')
     dependency('libadwaita-1', version: '>= 1.4')
-    dependency('poppler-glib', version: '>= 22.07')
 
     # ui crate
     subdir('crates/rnote-ui')
@@ -264,7 +281,7 @@ if build_ui == true
     # Windows installer
     message('Configuring Inno-Setup installer script file')
 
-    installer_output= win_installer_name + '.exe'
+    installer_output = win_installer_name + '.exe'
 
     inno_script_conf = configuration_data()
     inno_script_conf.set_quoted('MESON_SOURCE_ROOT', meson.project_source_root())
@@ -292,10 +309,11 @@ if build_ui == true
 
     if host_machine.system() == 'windows'
         # build installer
-        custom_target('build-installer',
-            input : inno_script,
-            output : installer_output,
-            command : [
+        custom_target(
+            'build-installer',
+            input: inno_script,
+            output: installer_output,
+            command: [
                 inno_build_script,
                 meson.project_source_root(),
                 meson.project_build_root(),

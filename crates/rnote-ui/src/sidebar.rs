@@ -15,6 +15,8 @@ mod imp {
     #[template(resource = "/com/github/flxzt/rnote/ui/sidebar.ui")]
     pub(crate) struct RnSidebar {
         #[template_child]
+        pub(crate) headerbar: TemplateChild<adw::HeaderBar>,
+        #[template_child]
         pub(crate) left_close_button: TemplateChild<Button>,
         #[template_child]
         pub(crate) right_close_button: TemplateChild<Button>,
@@ -76,6 +78,10 @@ impl Default for RnSidebar {
 impl RnSidebar {
     pub(crate) fn new() -> Self {
         glib::Object::new()
+    }
+
+    pub(crate) fn headerbar(&self) -> adw::HeaderBar {
+        self.imp().headerbar.get()
     }
 
     pub(crate) fn left_close_button(&self) -> Button {

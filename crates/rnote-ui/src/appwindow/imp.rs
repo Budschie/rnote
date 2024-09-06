@@ -9,6 +9,7 @@ use gtk4::{
 use once_cell::sync::Lazy;
 use std::cell::{Cell, RefCell};
 use std::rc::Rc;
+use tracing::{error, trace};
 
 #[derive(Debug, CompositeTemplate)]
 #[template(resource = "/com/github/flxzt/rnote/ui/appwindow.ui")]
@@ -17,12 +18,16 @@ pub(crate) struct RnAppWindow {
     pub(crate) autosave_source_id: RefCell<Option<glib::SourceId>>,
     pub(crate) periodic_configsave_source_id: RefCell<Option<glib::SourceId>>,
 
+    pub(crate) save_in_progress: Cell<bool>,
+    pub(crate) save_in_progress_toast: RefCell<Option<adw::Toast>>,
     pub(crate) autosave: Cell<bool>,
     pub(crate) autosave_interval_secs: Cell<u32>,
     pub(crate) righthanded: Cell<bool>,
     pub(crate) block_pinch_zoom: Cell<bool>,
+    pub(crate) respect_borders: Cell<bool>,
     pub(crate) touch_drawing: Cell<bool>,
     pub(crate) focus_mode: Cell<bool>,
+    pub(crate) close_in_progress: Cell<bool>,
 
     #[template_child]
     pub(crate) main_header: TemplateChild<RnMainHeader>,
@@ -43,12 +48,16 @@ impl Default for RnAppWindow {
             autosave_source_id: RefCell::new(None),
             periodic_configsave_source_id: RefCell::new(None),
 
+            save_in_progress: Cell::new(false),
+            save_in_progress_toast: RefCell::new(None),
             autosave: Cell::new(true),
             autosave_interval_secs: Cell::new(super::RnAppWindow::AUTOSAVE_INTERVAL_DEFAULT),
             righthanded: Cell::new(true),
             block_pinch_zoom: Cell::new(false),
+            respect_borders: Cell::new(false),
             touch_drawing: Cell::new(false),
             focus_mode: Cell::new(false),
+            close_in_progress: Cell::new(false),
 
             main_header: TemplateChild::<RnMainHeader>::default(),
             split_view: TemplateChild::<adw::OverlaySplitView>::default(),
@@ -110,6 +119,9 @@ impl ObjectImpl for RnAppWindow {
     fn properties() -> &'static [glib::ParamSpec] {
         static PROPERTIES: Lazy<Vec<glib::ParamSpec>> = Lazy::new(|| {
             vec![
+                glib::ParamSpecBoolean::builder("save-in-progress")
+                    .default_value(false)
+                    .build(),
                 glib::ParamSpecBoolean::builder("autosave")
                     .default_value(false)
                     .build(),
@@ -127,6 +139,9 @@ impl ObjectImpl for RnAppWindow {
                 glib::ParamSpecBoolean::builder("touch-drawing")
                     .default_value(false)
                     .build(),
+                glib::ParamSpecBoolean::builder("respect-borders")
+                    .default_value(false)
+                    .build(),
                 glib::ParamSpecBoolean::builder("focus-mode")
                     .default_value(false)
                     .build(),
@@ -137,10 +152,12 @@ impl ObjectImpl for RnAppWindow {
 
     fn property(&self, _id: usize, pspec: &glib::ParamSpec) -> glib::Value {
         match pspec.name() {
+            "save-in-progress" => self.save_in_progress.get().to_value(),
             "autosave" => self.autosave.get().to_value(),
             "autosave-interval-secs" => self.autosave_interval_secs.get().to_value(),
             "righthanded" => self.righthanded.get().to_value(),
             "block-pinch-zoom" => self.block_pinch_zoom.get().to_value(),
+            "respect-borders" => self.respect_borders.get().to_value(),
             "touch-drawing" => self.touch_drawing.get().to_value(),
             "focus-mode" => self.focus_mode.get().to_value(),
             _ => unimplemented!(),
@@ -149,6 +166,12 @@ impl ObjectImpl for RnAppWindow {
 
     fn set_property(&self, _id: usize, value: &glib::Value, pspec: &glib::ParamSpec) {
         match pspec.name() {
+            "save-in-progress" => {
+                let save_in_progress = value
+                    .get::<bool>()
+                    .expect("The value needs to be of type `bool`");
+                self.save_in_progress.replace(save_in_progress);
+            }
             "autosave" => {
                 let autosave = value
                     .get::<bool>()
@@ -188,6 +211,11 @@ impl ObjectImpl for RnAppWindow {
                     value.get().expect("The value needs to be of type `bool`");
                 self.block_pinch_zoom.replace(block_pinch_zoom);
             }
+            "respect-borders" => {
+                let respect_borders: bool =
+                    value.get().expect("The value needs to be of type `bool`");
+                self.respect_borders.replace(respect_borders);
+            }
             "touch-drawing" => {
                 let touch_drawing: bool =
                     value.get().expect("The value needs to be of type `bool`");
@@ -209,14 +237,42 @@ impl ObjectImpl for RnAppWindow {
 impl WidgetImpl for RnAppWindow {}
 
 impl WindowImpl for RnAppWindow {
-    // Save window state right before the window will be closed
     fn close_request(&self) -> glib::Propagation {
         let obj = self.obj().to_owned();
+        if self.close_in_progress.get() {
+            return glib::Propagation::Stop;
+        }
 
-        // Save current doc
-        if obj.tabs_any_unsaved_changes() {
+        if obj.tabs_any_saves_in_progress() {
+            obj.connect_notify_local(Some("save-in-progress"), move |appwindow, _| {
+                if !appwindow.save_in_progress() {
+                    if appwindow.tabs_any_unsaved_changes() {
+                        appwindow.imp().close_in_progress.set(false);
+                        appwindow.main_header().headerbar().set_sensitive(true);
+                        appwindow.sidebar().headerbar().set_sensitive(true);
+                        if let Some(toast) = appwindow.imp().save_in_progress_toast.take() {
+                            toast.dismiss();
+                        }
+
+                        glib::spawn_future_local(clone!(@weak appwindow => async move {
+                            dialogs::dialog_close_window(&appwindow).await;
+                        }));
+                    } else {
+                        appwindow.close_force();
+                    }
+                }
+            });
+            self.close_in_progress.set(true);
+            self.main_header.headerbar().set_sensitive(false);
+            self.sidebar.headerbar().set_sensitive(false);
+            obj.overlays().dispatch_toast_text_singleton(
+                &gettext("Saves are in progress, waiting before closing.."),
+                None,
+                &mut self.save_in_progress_toast.borrow_mut(),
+            );
+        } else if obj.tabs_any_unsaved_changes() {
             glib::spawn_future_local(clone!(@weak obj as appwindow => async move {
-                dialogs::dialog_close_window(&obj).await;
+                dialogs::dialog_close_window(&appwindow).await;
             }));
         } else {
             obj.close_force();
@@ -235,26 +291,39 @@ impl RnAppWindow {
     fn update_autosave_handler(&self) {
         let obj = self.obj();
 
-        if let Some(removed_id) = self.autosave_source_id.borrow_mut().replace(glib::source::timeout_add_seconds_local(self.autosave_interval_secs.get(),
+        if let Some(removed_id) = self.autosave_source_id.borrow_mut().replace(
+            glib::source::timeout_add_seconds_local(
+                self.autosave_interval_secs.get(),
                 clone!(@weak obj as appwindow => @default-return glib::ControlFlow::Break, move || {
-                    let canvas = appwindow.active_tab_wrapper().canvas();
+                    // save for all tabs opened in the current window that have unsaved changes
+                    let tabs = appwindow.get_all_tabs();
 
-                    if let Some(output_file) = canvas.output_file() {
-                        glib::spawn_future_local(clone!(@weak canvas, @weak appwindow => async move {
-                            if let Err(e) = canvas.save_document_to_file(&output_file).await {
-                                canvas.set_output_file(None);
-
-                                tracing::error!("Saving document failed, Err: `{e:?}`");
-                                appwindow.overlays().dispatch_toast_error(&gettext("Saving document failed"));
+                    for (i, tab) in tabs.iter().enumerate() {
+                        let canvas = tab.canvas();
+                        if canvas.unsaved_changes() {
+                            if let Some(output_file) = canvas.output_file() {
+                                trace!(
+                                    "there are unsaved changes on the tab {:?} with a file on disk, saving",i
+                                );
+                                glib::spawn_future_local(clone!(@weak canvas, @weak appwindow => async move {
+                                    if let Err(e) = canvas.save_document_to_file(&output_file).await {
+                                        error!("Saving document failed, Err: `{e:?}`");
+                                        canvas.set_output_file(None);
+                                        appwindow
+                                            .overlays()
+                                            .dispatch_toast_error(&gettext("Saving document failed"));
+                                    };
+                                }));
                             }
                         }
-                    ));
-                }
+                    }
 
-                glib::ControlFlow::Continue
-            }))) {
-                removed_id.remove();
-            }
+                    glib::ControlFlow::Continue
+                }),
+            ),
+        ) {
+            removed_id.remove();
+        }
     }
 
     fn setup_input(&self) {
@@ -532,6 +601,11 @@ impl RnAppWindow {
                 .eraser_page()
                 .stroke_width_picker()
                 .set_position(PositionType::Left);
+            obj.overlays()
+                .penssidebar()
+                .tools_page()
+                .verticalspace_menubutton()
+                .set_direction(ArrowType::Right);
         } else {
             obj.split_view().set_sidebar_position(PackType::End);
             obj.main_header()
@@ -654,6 +728,11 @@ impl RnAppWindow {
                 .eraser_page()
                 .stroke_width_picker()
                 .set_position(PositionType::Right);
+            obj.overlays()
+                .penssidebar()
+                .tools_page()
+                .verticalspace_menubutton()
+                .set_direction(ArrowType::Left);
         }
     }
 }

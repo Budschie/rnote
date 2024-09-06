@@ -14,6 +14,7 @@ use rnote_compose::style::Composer;
 use rnote_compose::transform::Transformable;
 use rnote_compose::{PenPath, Style};
 use serde::{Deserialize, Serialize};
+use tracing::error;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename = "brushstroke")]
@@ -74,9 +75,7 @@ impl Content for BrushStroke {
                     match image {
                         Ok(image) => vec![image],
                         Err(e) => {
-                            tracing::error!(
-                                "Generating images for brushstroke failed , Err: {e:?}"
-                            );
+                            error!("Generating images for brushstroke failed , Err: {e:?}");
                             vec![]
                         }
                     }
@@ -98,9 +97,7 @@ impl Content for BrushStroke {
                     match image {
                         Ok(image) => vec![image],
                         Err(e) => {
-                            tracing::error!(
-                                "Generating images for brushstroke failed , Err: {e:?}"
-                            );
+                            error!("Generating images for brushstroke failed , Err: {e:?}");
                             vec![]
                         }
                     }
@@ -114,20 +111,18 @@ impl Content for BrushStroke {
                     let mut prev = self.path.start;
                     for seg in self.path.segments.iter() {
                         let seg_path = PenPath::new_w_segments(prev, [*seg]);
-
-                        match render::Image::gen_with_piet(
+                        let image = render::Image::gen_with_piet(
                             |piet_cx| {
                                 seg_path.draw_composed(piet_cx, options);
                                 Ok(())
                             },
                             seg_path.composed_bounds(options),
                             image_scale,
-                        ) {
+                        );
+                        match image {
                             Ok(image) => images.push(image),
                             Err(e) => {
-                                tracing::error!(
-                                    "generating images for brushstroke failed , Err: {e:?}"
-                                );
+                                error!("generating images for brushstroke failed , Err: {e:?}");
                             }
                         }
 
@@ -147,20 +142,18 @@ impl Content for BrushStroke {
                     let mut prev = self.path.start;
                     for seg in self.path.segments.iter() {
                         let seg_path = PenPath::new_w_segments(prev, [*seg]);
-
-                        match render::Image::gen_with_piet(
+                        let image = render::Image::gen_with_piet(
                             |piet_cx| {
                                 seg_path.draw_composed(piet_cx, &options);
                                 Ok(())
                             },
                             seg_path.composed_bounds(&options),
                             image_scale,
-                        ) {
+                        );
+                        match image {
                             Ok(image) => images.push(image),
                             Err(e) => {
-                                tracing::error!(
-                                    "generating images for brushstroke failed , Err: {e:?}"
-                                );
+                                error!("generating images for brushstroke failed , Err: {e:?}");
                             }
                         }
 
@@ -257,9 +250,10 @@ impl Transformable for BrushStroke {
     }
     fn scale(&mut self, scale: na::Vector2<f64>) {
         self.path.scale(scale);
-        let scale_uniform = (scale[0] + scale[1]) / 2.;
+        // Using the geometric mean behaves the best when scaling non-uniformly.
+        let scale_scalar = (scale[0] * scale[1]).sqrt();
         self.style
-            .set_stroke_width(self.style.stroke_width() * scale_uniform);
+            .set_stroke_width(self.style.stroke_width() * scale_scalar);
     }
 }
 

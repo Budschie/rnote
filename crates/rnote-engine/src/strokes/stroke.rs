@@ -19,6 +19,7 @@ use rnote_compose::transform::Transform;
 use rnote_compose::transform::Transformable;
 use rnote_compose::{Color, PenPath, Style};
 use serde::{Deserialize, Serialize};
+use tracing::error;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename = "stroke")]
@@ -522,12 +523,12 @@ impl Stroke {
             }
             Stroke::ShapeStroke(shapestroke) => {
                 let png_data = match shapestroke.export_to_bitmap_image_bytes(
-                    image::ImageOutputFormat::Png,
+                    image::ImageFormat::Png,
                     Engine::STROKE_EXPORT_IMAGE_SCALE,
                 ) {
                     Ok(image_bytes) => image_bytes,
                     Err(e) => {
-                        tracing::error!("Converting ShapeStroke to XoppImage failed, Err: {e:?}");
+                        error!("Converting ShapeStroke to XoppImage failed, Err: {e:?}");
                         return None;
                     }
                 };
@@ -566,12 +567,12 @@ impl Stroke {
                 // Xournal++ text strokes do not support affine transformations, so we have to convert on best effort here.
                 // The best solution for now seems to be to export them as a bitmap image.
                 let png_data = match textstroke.export_to_bitmap_image_bytes(
-                    image::ImageOutputFormat::Png,
+                    image::ImageFormat::Png,
                     Engine::STROKE_EXPORT_IMAGE_SCALE,
                 ) {
                     Ok(image_bytes) => image_bytes,
                     Err(e) => {
-                        tracing::error!("Converting TextStroke to XoppImage failed, Err: {e:?}");
+                        error!("Converting TextStroke to XoppImage failed, Err: {e:?}");
                         return None;
                     }
                 };
@@ -608,12 +609,12 @@ impl Stroke {
             }
             Stroke::VectorImage(vectorimage) => {
                 let png_data = match vectorimage.export_to_bitmap_image_bytes(
-                    image::ImageOutputFormat::Png,
+                    image::ImageFormat::Png,
                     Engine::STROKE_EXPORT_IMAGE_SCALE,
                 ) {
                     Ok(image_bytes) => image_bytes,
                     Err(e) => {
-                        tracing::error!(
+                        error!(
                             "Exporting VectorImage to image bytes failed while converting Stroke to Xopp, Err: {e:?}"
                         );
                         return None;
@@ -656,12 +657,12 @@ impl Stroke {
             }
             Stroke::BitmapImage(bitmapimage) => {
                 let png_data = match bitmapimage.export_to_bitmap_image_bytes(
-                    image::ImageOutputFormat::Png,
+                    image::ImageFormat::Png,
                     Engine::STROKE_EXPORT_IMAGE_SCALE,
                 ) {
                     Ok(image_bytes) => image_bytes,
                     Err(e) => {
-                        tracing::error!(
+                        error!(
                             "Exporting BitmapImage to image bytes failed while converting Stroke to Xopp, Err: {e:?}"
                         );
                         return None;

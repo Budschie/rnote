@@ -10,6 +10,7 @@ use rnote_compose::transform::Transformable;
 use rnote_compose::SplitOrder;
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
+use tracing::error;
 
 /// Document export format.
 #[derive(
@@ -336,7 +337,7 @@ impl Engine {
                 rnote_file.save_as_bytes(&file_name)
             };
             if oneshot_sender.send(result()).is_err() {
-                tracing::error!(
+                error!(
                     "Sending result to receiver failed while saving document as rnote bytes. Receiver already dropped."
                 );
             }
@@ -353,6 +354,7 @@ impl Engine {
             import_prefs: self.import_prefs.clone_config(),
             export_prefs: self.export_prefs.clone_config(),
             pen_sounds: self.pen_sounds(),
+            optimize_epd: self.optimize_epd(),
         }
     }
 
@@ -462,7 +464,7 @@ impl Engine {
             };
 
             if oneshot_sender.send(result()).is_err() {
-                tracing::error!("Sending result to receiver failed while exporting document as Svg bytes. Receiver already dropped.");
+                error!("Sending result to receiver failed while exporting document as Svg bytes. Receiver already dropped.");
             }
         });
 
@@ -536,7 +538,7 @@ impl Engine {
             };
 
             if oneshot_sender.send(result()).is_err() {
-                tracing::error!("Sending result to receiver failed while exporting document as Pdf bytes. Receiver already dropped.");
+                error!("Sending result to receiver failed while exporting document as Pdf bytes. Receiver already dropped.");
             }
         });
 
@@ -666,7 +668,7 @@ impl Engine {
             };
 
             if oneshot_sender.send(result()).is_err() {
-                tracing::error!(
+                error!(
                     "Sending result to receiver failed while exporting document as xopp bytes. Receiver already dropped."
                 );
             }
@@ -734,7 +736,7 @@ impl Engine {
             };
 
             if oneshot_sender.send(result()).is_err() {
-                tracing::error!(
+                error!(
                     "Sending result to receiver failed while exporting document pages as Svg bytes. Receiver already dropped."
                 );
             }
@@ -759,10 +761,8 @@ impl Engine {
             let result = || -> Result<Vec<Vec<u8>>, anyhow::Error> {
                 let image_format = match doc_pages_export_prefs.export_format {
                     DocPagesExportFormat::Svg => return Err(anyhow::anyhow!("Extracting bitmap image format from doc pages export prefs failed, not set to a bitmap format.")),
-                    DocPagesExportFormat::Png => image::ImageOutputFormat::Png,
-                    DocPagesExportFormat::Jpeg => {
-                        image::ImageOutputFormat::Jpeg(doc_pages_export_prefs.jpeg_quality)
-                    }
+                    DocPagesExportFormat::Png => image::ImageFormat::Png,
+                    DocPagesExportFormat::Jpeg => image::ImageFormat::Jpeg,
                 };
                 pages_contents
                     .into_par_iter()
@@ -779,12 +779,15 @@ impl Engine {
                                 "Generating Svg for page {i} failed, returned None."
                             ))?
                             .gen_image(doc_pages_export_prefs.bitmap_scalefactor)?
-                            .into_encoded_bytes(image_format.clone())
+                            .into_encoded_bytes(
+                                image_format,
+                                Some(doc_pages_export_prefs.jpeg_quality),
+                            )
                     })
                     .collect()
             };
             if oneshot_sender.send(result()).is_err() {
-                tracing::error!("Sending result to receiver failed while exporting document pages as bitmap bytes. Receiver already dropped.");
+                error!("Sending result to receiver failed while exporting document pages as bitmap bytes. Receiver already dropped.");
             }
         });
 
@@ -849,7 +852,7 @@ impl Engine {
                 ))
             };
             if oneshot_sender.send(result()).is_err() {
-                tracing::error!("Sending result to receiver failed while exporting selection as Svg bytes. Receiver already dropped.");
+                error!("Sending result to receiver failed while exporting selection as Svg bytes. Receiver already dropped.");
             }
         });
 
@@ -885,19 +888,20 @@ impl Engine {
                 };
                 let image_format = match selection_export_prefs.export_format {
                     SelectionExportFormat::Svg => return Err(anyhow::anyhow!("Extracting bitmap image format from doc pages export prefs failed, not set to a bitmap format.")),
-                    SelectionExportFormat::Png => image::ImageOutputFormat::Png,
-                    SelectionExportFormat::Jpeg => {
-                        image::ImageOutputFormat::Jpeg(selection_export_prefs.jpeg_quality)
-                    }
+                    SelectionExportFormat::Png => image::ImageFormat::Png,
+                    SelectionExportFormat::Jpeg => image::ImageFormat::Jpeg
                 };
 
                 Ok(Some(
                     svg.gen_image(selection_export_prefs.bitmap_scalefactor)?
-                        .into_encoded_bytes(image_format)?,
+                        .into_encoded_bytes(
+                            image_format,
+                            Some(selection_export_prefs.jpeg_quality),
+                        )?,
                 ))
             };
             if oneshot_sender.send(result()).is_err() {
-                tracing::error!("Sending result to receiver failed while exporting selection as bitmap image bytes. Receiver already dropped");
+                error!("Sending result to receiver failed while exporting selection as bitmap image bytes. Receiver already dropped");
             }
         });
 

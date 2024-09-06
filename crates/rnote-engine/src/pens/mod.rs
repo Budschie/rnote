@@ -30,6 +30,7 @@ pub use typewriter::Typewriter;
 // Imports
 use crate::engine::{EngineView, EngineViewMut};
 use crate::{DrawableOnDoc, WidgetFlags};
+use core::fmt::Display;
 use futures::channel::oneshot;
 use piet_cairo::CairoRenderContext;
 use rnote_compose::penevent::PenProgress;
@@ -248,16 +249,16 @@ impl std::str::FromStr for PenStyle {
     }
 }
 
-impl std::string::ToString for PenStyle {
-    fn to_string(&self) -> String {
+impl Display for PenStyle {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            PenStyle::Brush => String::from("brush"),
-            PenStyle::Shaper => String::from("shaper"),
-            PenStyle::Typewriter => String::from("typewriter"),
-            PenStyle::Equation => String::from("equation"),
-            PenStyle::Eraser => String::from("eraser"),
-            PenStyle::Selector => String::from("selector"),
-            PenStyle::Tools => String::from("tools"),
+            PenStyle::Brush => write!(f, "brush"),
+            PenStyle::Shaper => write!(f, "shaper"),
+            PenStyle::Typewriter => write!(f, "typewriter"),
+            PenStyle::Equation => write!(f, "equation"),
+            PenStyle::Eraser => write!(f, "eraser"),
+            PenStyle::Selector => write!(f, "selector"),
+            PenStyle::Tools => write!(f, "tools"),
         }
     }
 }

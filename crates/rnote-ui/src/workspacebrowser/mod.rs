@@ -19,6 +19,7 @@ use gtk4::{
     SortListModel, SorterChange, Widget,
 };
 use std::path::PathBuf;
+use tracing::warn;
 
 mod imp {
     use super::*;
@@ -190,10 +191,10 @@ impl RnWorkspaceBrowser {
         }
     }
 
-    fn setup_actions(&self, _appwindow: &RnAppWindow) {
+    fn setup_actions(&self, appwindow: &RnAppWindow) {
         self.imp()
             .action_group
-            .add_action(&workspaceactions::create_folder(self));
+            .add_action(&workspaceactions::create_folder(self, appwindow));
     }
 
     fn setup_dir_controls(&self, appwindow: &RnAppWindow) {
@@ -204,7 +205,7 @@ impl RnWorkspaceBrowser {
                     dir = match dir.canonicalize() {
                         Ok(dir) => dir,
                         Err(e) => {
-                            tracing::warn!("Could not canonicalize dir {dir:?} from workspacelistentry, Err: {e:?}");
+                            warn!("Could not canonicalize dir {dir:?} from workspacelistentry, Err: {e:?}");
                             return;
                         }
                     };
@@ -212,7 +213,7 @@ impl RnWorkspaceBrowser {
                 if let Some(parent) = dir.parent().map(|p| p.to_path_buf()) {
                     workspacebrowser.workspacesbar().set_selected_workspace_dir(parent);
                 } else {
-                    tracing::warn!("Can't move directory up from dir {dir:?} from workspacelistentry, has no parent.");
+                    warn!("Can't move directory up from dir {dir:?} from workspacelistentry, has no parent.");
                 }
             }
         }));

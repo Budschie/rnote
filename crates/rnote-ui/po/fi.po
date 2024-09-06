@@ -1,0 +1,2528 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the rnote package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: rnote\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-07-26 10:39+0200\n"
+"PO-Revision-Date: 2024-06-10 12:09+0000\n"
+"Last-Translator: Jiri Grönroos <jiri.gronroos@iki.fi>\n"
+"Language-Team: Finnish <https://hosted.weblate.org/projects/rnote/repo/fi/>\n"
+"Language: fi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.6-dev\n"
+
+#: crates/rnote-ui/data/app.desktop.in.in:5
+#: crates/rnote-ui/data/app.metainfo.xml.in.in:9
+#: crates/rnote-ui/src/dialogs/mod.rs:33
+msgid "Sketch and take handwritten notes"
+msgstr "Luonnostele ja tee käsinkirjoitettuja muistiinpanoja"
+
+#. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
+#: crates/rnote-ui/data/app.desktop.in.in:15
+msgid "Gnome;GTK;Office;Graphics;Notes;"
+msgstr "Gnome;GTK;Office;Graphics;Notes;toimisto;grafiikka;muistiinpanot;"
+
+#: crates/rnote-ui/data/app.desktop.in.in:20
+#: crates/rnote-ui/data/ui/shortcuts.ui:20
+msgid "New Window"
+msgstr "Uusi ikkuna"
+
+#: crates/rnote-ui/data/app.metainfo.xml.in.in:21
+msgid ""
+"Rnote is a vector-based drawing app for sketching, handwritten notes and to "
+"annotate documents and pictures."
+msgstr ""
+"Rnote on vektoripohjainen piirrustussovellus luonnosteluun, "
+"käsinkirjoitettuihin muistiinpanoihin ja kommentien lisäämiseen "
+"asiakirjoihin sekä kuviin."
+
+#: crates/rnote-ui/data/app.metainfo.xml.in.in:25
+msgid ""
+"Disclaimer: The file format is still unstable. It might change and break "
+"compatibility between versions."
+msgstr ""
+"Vastuuvapautuslauseke: Tiedostomuoto on edelleen epävakaa. Se saattaa "
+"muuttua ja rikkoa yhteensopivuuden versioiden välillä."
+
+#: crates/rnote-ui/data/app.metainfo.xml.in.in:35
+msgid "An overview"
+msgstr "Yleisnäkymä"
+
+#: crates/rnote-ui/data/app.metainfo.xml.in.in:40
+msgid "A selection"
+msgstr "Valinta"
+
+#: crates/rnote-ui/data/app.metainfo.xml.in.in:45
+msgid "Write text with the typewriter"
+msgstr "Kirjoita tekstiä kirjoituskoneella"
+
+#: crates/rnote-ui/data/app.metainfo.xml.in.in:50
+msgid "Hide toolbars with the focus mode"
+msgstr "Piilota työkalupalkit keskittymistilassa"
+
+#: crates/rnote-ui/data/app.metainfo.xml.in.in:55
+msgid "Quickly access files through workspace"
+msgstr "Käytä tiedostoja nopeasti työtilan avulla"
+
+#: crates/rnote-ui/data/app.metainfo.xml.in.in:60
+msgid "Adjust document settings"
+msgstr "Määritä asiakirjan asetukset"
+
+#: crates/rnote-ui/data/app.metainfo.xml.in.in:65
+msgid "Configure action shortcuts"
+msgstr "Määritä pikanäppäinten toiminnot"
+
+#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:5
+#: crates/rnote-ui/data/ui/shortcuts.ui:185
+msgid "Clear Document"
+msgstr "Tyhjennä asiakirja"
+
+#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:6
+msgid "This clears the entire document. Please confirm."
+msgstr "Tämä tyhjentää koko asiakirjan. Vahvista tyhjentäminen."
+
+#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:10
+#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:22
+#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:40
+#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:58
+#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:74
+#: crates/rnote-ui/data/ui/dialogs/export.ui:14
+#: crates/rnote-ui/data/ui/dialogs/export.ui:183
+#: crates/rnote-ui/data/ui/dialogs/export.ui:423
+#: crates/rnote-ui/data/ui/dialogs/import.ui:14
+#: crates/rnote-ui/data/ui/dialogs/import.ui:213
+#: crates/rnote-ui/src/workspacebrowser/widgethelper.rs:31
+msgid "Cancel"
+msgstr "Peru"
+
+#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:11
+msgid "Clear"
+msgstr "Tyhjennä"
+
+#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:16
+#: crates/rnote-ui/data/ui/mainheader.ui:22
+#: crates/rnote-ui/src/canvas/mod.rs:592
+msgid "New Document"
+msgstr "Uusi asiakirja"
+
+#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:17
+msgid ""
+"Creating a new document will discard any unsaved changes.\n"
+"Do you want to save the current document?"
+msgstr ""
+"Uuden asiakirjan luominen hylkää kaikki tallentamattomat muutokset.\n"
+"Haluatko tallentaa nykyisen asiakirjan?"
+
+#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:23
+#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:41
+msgid "Discard"
+msgstr "Hylkää"
+
+#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:24
+#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:42
+#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:60
+#: crates/rnote-ui/src/dialogs/export.rs:42
+msgid "Save"
+msgstr "Tallenna"
+
+#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:29
+msgid "Close Tab"
+msgstr "Sulje välilehti"
+
+#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:30
+msgid ""
+"This tab contains unsaved changes.\n"
+"Changes which are not saved will be permanently lost."
+msgstr ""
+"Tämä välilehti sisältää tallentamattomia muutoksia.\n"
+"Muutokset, joita ei tallenneta, häviävät pysyvästi."
+
+#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:47
+msgid "Close Window"
+msgstr "Sulje ikkuna"
+
+#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:48
+msgid ""
+"Some opened files contain unsaved changes.\n"
+"Changes which are not saved will be permanently lost."
+msgstr ""
+"Jotkin avoimet tiedostot sisältävät tallentamattomia muutoksia.\n"
+"Muutokset, joita ei tallenneta, häviävät pysyvästi."
+
+#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:54
+msgid "Unsaved Documents"
+msgstr "Tallentamattomia asiakirjoja"
+
+#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:59
+msgid "Discard All"
+msgstr "Hylkää kaikki"
+
+#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:65
+msgid "Edit Workspace"
+msgstr "Muokkaa työtilaa"
+
+#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:79
+#: crates/rnote-ui/data/ui/settingspanel.ui:241
+#: crates/rnote-ui/src/workspacebrowser/widgethelper.rs:36
+msgid "Apply"
+msgstr "Toteuta"
+
+#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:119
+msgid "Workspace Name"
+msgstr "Työtilan nimi"
+
+#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:124
+msgid "Icon"
+msgstr "Kuvake"
+
+#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:125
+msgid "Change the workspace icon"
+msgstr "Vaihda työtilan kuvake"
+
+#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:145
+#: crates/rnote-ui/data/ui/settingspanel.ui:293
+msgid "Color"
+msgstr "Väri"
+
+#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:146
+msgid "Change the workspace color"
+msgstr "Vaihda työtilan väriä"
+
+#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:160
+msgid "Directory"
+msgstr "Kansio"
+
+#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:161
+msgid "Change the workspace directory"
+msgstr "Vaihda työtilan kansio"
+
+#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:170
+#: crates/rnote-ui/data/ui/dialogs/export.ui:290
+#: crates/rnote-ui/src/dialogs/export.rs:417
+#: crates/rnote-ui/src/dialogs/export.rs:454
+#: crates/rnote-ui/src/dialogs/export.rs:462
+#: crates/rnote-ui/src/dialogs/mod.rs:522
+msgid "- no directory selected -"
+msgstr "- kansiota ei ole valittu -"
+
+#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:185
+msgid "Change the directory"
+msgstr "Vaihda kansio"
+
+#: crates/rnote-ui/data/ui/dialogs/export.ui:5
+#: crates/rnote-ui/src/dialogs/export.rs:285
+msgid "Export Document"
+msgstr "Vie asiakirja"
+
+#: crates/rnote-ui/data/ui/dialogs/export.ui:19
+#: crates/rnote-ui/data/ui/dialogs/export.ui:188
+#: crates/rnote-ui/data/ui/dialogs/export.ui:428
+#: crates/rnote-ui/src/dialogs/export.rs:1025
+#: crates/rnote-ui/src/dialogs/export.rs:1088
+msgid "Export"
+msgstr "Vie"
+
+#: crates/rnote-ui/data/ui/dialogs/export.ui:74
+#: crates/rnote-ui/data/ui/dialogs/export.ui:483
+msgid "Export File"
+msgstr "Vie tiedosto"
+
+#: crates/rnote-ui/data/ui/dialogs/export.ui:75
+#: crates/rnote-ui/data/ui/dialogs/export.ui:484
+msgid "Select the export file"
+msgstr "Valitse vientitiedosto"
+
+#. force the user to pick another file
+#: crates/rnote-ui/data/ui/dialogs/export.ui:84
+#: crates/rnote-ui/data/ui/dialogs/export.ui:493
+#: crates/rnote-ui/src/dialogs/export.rs:131
+#: crates/rnote-ui/src/dialogs/export.rs:153
+#: crates/rnote-ui/src/dialogs/export.rs:160
+#: crates/rnote-ui/src/dialogs/export.rs:205
+#: crates/rnote-ui/src/dialogs/export.rs:736
+#: crates/rnote-ui/src/dialogs/export.rs:762
+#: crates/rnote-ui/src/dialogs/export.rs:769
+#: crates/rnote-ui/src/dialogs/export.rs:820
+msgid "- no file selected -"
+msgstr "- tiedostoa ei ole valittu -"
+
+#: crates/rnote-ui/data/ui/dialogs/export.ui:108
+#: crates/rnote-ui/data/ui/dialogs/export.ui:319
+#: crates/rnote-ui/data/ui/dialogs/export.ui:517
+msgid "Export Preferences"
+msgstr "Viennin asetukset"
+
+#: crates/rnote-ui/data/ui/dialogs/export.ui:112
+#: crates/rnote-ui/data/ui/dialogs/export.ui:323
+#: crates/rnote-ui/data/ui/dialogs/export.ui:521
+msgid "With Background"
+msgstr "Taustakuvan kera"
+
+#: crates/rnote-ui/data/ui/dialogs/export.ui:113
+#: crates/rnote-ui/data/ui/dialogs/export.ui:324
+#: crates/rnote-ui/data/ui/dialogs/export.ui:522
+msgid "Set whether the background should be exported"
+msgstr "Viedäänkö taustakuva"
+
+#: crates/rnote-ui/data/ui/dialogs/export.ui:118
+#: crates/rnote-ui/data/ui/dialogs/export.ui:329
+#: crates/rnote-ui/data/ui/dialogs/export.ui:527
+msgid "With Pattern"
+msgstr "Kuvion kera"
+
+#: crates/rnote-ui/data/ui/dialogs/export.ui:119
+#: crates/rnote-ui/data/ui/dialogs/export.ui:330
+#: crates/rnote-ui/data/ui/dialogs/export.ui:528
+msgid "Set whether the background pattern should be exported"
+msgstr "Viedäänkö taustakuvio"
+
+#: crates/rnote-ui/data/ui/dialogs/export.ui:124
+#: crates/rnote-ui/data/ui/dialogs/export.ui:335
+#: crates/rnote-ui/data/ui/dialogs/export.ui:533
+msgid "Optimize for Printing"
+msgstr "Optimoi tulostusta varten"
+
+#: crates/rnote-ui/data/ui/dialogs/export.ui:125
+#: crates/rnote-ui/data/ui/dialogs/export.ui:336
+#: crates/rnote-ui/data/ui/dialogs/export.ui:534
+msgid "Set whether the content should be optimized for printing"
+msgstr "Optimoidaanko sisältö tulostusta varten"
+
+#: crates/rnote-ui/data/ui/dialogs/export.ui:130
+#: crates/rnote-ui/data/ui/dialogs/export.ui:341
+#: crates/rnote-ui/data/ui/dialogs/export.ui:539
+msgid "Export Format"
+msgstr "Vientimuoto"
+
+#: crates/rnote-ui/data/ui/dialogs/export.ui:131
+#: crates/rnote-ui/data/ui/dialogs/export.ui:342
+msgid "The export format"
+msgstr "Viennissä käytettävä muoto"
+
+#: crates/rnote-ui/data/ui/dialogs/export.ui:135
+#: crates/rnote-ui/data/ui/dialogs/export.ui:346
+#: crates/rnote-ui/data/ui/dialogs/export.ui:544
+#: crates/rnote-ui/src/dialogs/export.rs:304
+#: crates/rnote-ui/src/dialogs/export.rs:635
+#: crates/rnote-ui/src/dialogs/export.rs:954
+msgid "Svg"
+msgstr "SVG"
+
+#: crates/rnote-ui/data/ui/dialogs/export.ui:136
+#: crates/rnote-ui/src/dialogs/export.rs:315
+msgid "Pdf"
+msgstr "PDF"
+
+#: crates/rnote-ui/data/ui/dialogs/export.ui:137
+#: crates/rnote-ui/src/dialogs/export.rs:326
+msgid "Xopp"
+msgstr "Xopp"
+
+#: crates/rnote-ui/data/ui/dialogs/export.ui:145
+#: crates/rnote-ui/data/ui/dialogs/export.ui:356
+msgid "Page Order"
+msgstr "Sivujärjestys"
+
+#: crates/rnote-ui/data/ui/dialogs/export.ui:146
+msgid ""
+"The page order when documents with layouts\n"
+"that expand in horizontal and vertical directions\n"
+"are cut into pages"
+msgstr ""
+
+#: crates/rnote-ui/data/ui/dialogs/export.ui:152
+#: crates/rnote-ui/data/ui/dialogs/export.ui:363
+msgid "Horizontal First"
+msgstr "Vaakasuunta ensin"
+
+#: crates/rnote-ui/data/ui/dialogs/export.ui:153
+#: crates/rnote-ui/data/ui/dialogs/export.ui:364
+msgid "Vertical First"
+msgstr "Pystysuunta ensin"
+
+#: crates/rnote-ui/data/ui/dialogs/export.ui:174
+#: crates/rnote-ui/src/dialogs/export.rs:615
+msgid "Export Document Pages"
+msgstr "Vie asiakirjan sivut"
+
+#: crates/rnote-ui/data/ui/dialogs/export.ui:260
+msgid "Page Files Naming:"
+msgstr ""
+
+#: crates/rnote-ui/data/ui/dialogs/export.ui:280
+msgid "Export Directory"
+msgstr "Vientikansio"
+
+#: crates/rnote-ui/data/ui/dialogs/export.ui:281
+msgid "Select the export directory"
+msgstr "Valitse vientikansio"
+
+#: crates/rnote-ui/data/ui/dialogs/export.ui:312
+msgctxt ""
+"When pages are exported this is the base name, followed by: - Page 0,1,.."
+msgid "Export Files Stem Name"
+msgstr ""
+
+#: crates/rnote-ui/data/ui/dialogs/export.ui:347
+#: crates/rnote-ui/data/ui/dialogs/export.ui:545
+#: crates/rnote-ui/src/dialogs/export.rs:646
+#: crates/rnote-ui/src/dialogs/export.rs:965
+msgid "Png"
+msgstr "PNG"
+
+#: crates/rnote-ui/data/ui/dialogs/export.ui:348
+#: crates/rnote-ui/data/ui/dialogs/export.ui:546
+#: crates/rnote-ui/src/dialogs/export.rs:659
+#: crates/rnote-ui/src/dialogs/export.rs:978
+msgid "Jpeg"
+msgstr "JPEG"
+
+#: crates/rnote-ui/data/ui/dialogs/export.ui:357
+msgid ""
+"The page order when documents with layouts\n"
+"    that expand in horizontal and vertical directions\n"
+"    are cut into pages"
+msgstr ""
+
+#: crates/rnote-ui/data/ui/dialogs/export.ui:372
+#: crates/rnote-ui/data/ui/dialogs/export.ui:554
+#: crates/rnote-ui/data/ui/dialogs/import.ui:160
+msgid "Bitmap Scale-Factor"
+msgstr "Bittikartan skaalauskerroin"
+
+#: crates/rnote-ui/data/ui/dialogs/export.ui:373
+#: crates/rnote-ui/data/ui/dialogs/import.ui:161
+#, fuzzy
+#| msgid ""
+#| "Set the bitmap scale factor in relation\n"
+#| "to the actual size on the document"
+msgid ""
+"Set the bitmap scale factor in relation\n"
+"    to the actual size on the document"
+msgstr ""
+"Aseta bittikartan skaalauskerroin suhteessa\n"
+"asiakirjan todelliseen kokoon"
+
+#: crates/rnote-ui/data/ui/dialogs/export.ui:381
+#: crates/rnote-ui/data/ui/dialogs/export.ui:563
+msgid "Jpeg Quality"
+msgstr "JPEG:n laatu"
+
+#: crates/rnote-ui/data/ui/dialogs/export.ui:382
+#: crates/rnote-ui/data/ui/dialogs/export.ui:564
+msgid "Set the quality of the Jpeg image (1 - 100)"
+msgstr "Aseta Jpeg-kuvan laatu (1 - 100)"
+
+#: crates/rnote-ui/data/ui/dialogs/export.ui:414
+#: crates/rnote-ui/src/dialogs/export.rs:933
+msgid "Export Selection"
+msgstr "Vie valinta"
+
+#: crates/rnote-ui/data/ui/dialogs/export.ui:540
+msgid "The export image format"
+msgstr "Viennin kuvamuoto"
+
+#: crates/rnote-ui/data/ui/dialogs/export.ui:555
+#, fuzzy
+#| msgid ""
+#| "Set the bitmap scale factor in relation\n"
+#| "to the actual size on the document"
+msgid ""
+"Set the bitmap scale factor in relation\n"
+"to the actual size on the document"
+msgstr ""
+"Aseta bittikartan skaalauskerroin suhteessa\n"
+"asiakirjan todelliseen kokoon"
+
+#: crates/rnote-ui/data/ui/dialogs/export.ui:571
+msgid "Margin"
+msgstr "Reunus"
+
+#: crates/rnote-ui/data/ui/dialogs/export.ui:572
+msgid "Set the margin around the selected area"
+msgstr "Aseta reunus valitun alueen ympärille"
+
+#: crates/rnote-ui/data/ui/dialogs/import.ui:5
+msgid "Import Pdf"
+msgstr "Tuo PDF"
+
+#: crates/rnote-ui/data/ui/dialogs/import.ui:19
+#: crates/rnote-ui/data/ui/dialogs/import.ui:218
+#: crates/rnote-ui/src/dialogs/import.rs:94
+msgid "Import"
+msgstr "Tuo"
+
+#: crates/rnote-ui/data/ui/dialogs/import.ui:63
+msgid "Info"
+msgstr "Tiedot"
+
+#: crates/rnote-ui/data/ui/dialogs/import.ui:81
+msgid "Pdf Import Preferences"
+msgstr "PDF-tuonnin asetukset"
+
+#: crates/rnote-ui/data/ui/dialogs/import.ui:85
+msgid "Start Page"
+msgstr "Aloitussivu"
+
+#: crates/rnote-ui/data/ui/dialogs/import.ui:94
+msgid "End Page"
+msgstr "Lopetussivu"
+
+#: crates/rnote-ui/data/ui/dialogs/import.ui:103
+msgid "Adjust Document"
+msgstr "Säädä asiakirjaa"
+
+#: crates/rnote-ui/data/ui/dialogs/import.ui:104
+msgid "Whether the document layout should be adjusted to the Pdf"
+msgstr "Säädetänkö asiakirjan asettelua vastaamaan PDF:ää"
+
+#: crates/rnote-ui/data/ui/dialogs/import.ui:109
+msgid "Page Width (%)"
+msgstr "Sivun leveys (%)"
+
+#: crates/rnote-ui/data/ui/dialogs/import.ui:110
+msgid "Set the width of imported Pdf's in percentage to the format width"
+msgstr ""
+
+#: crates/rnote-ui/data/ui/dialogs/import.ui:117
+msgid "Page Spacing"
+msgstr "Sivujen välistys"
+
+#: crates/rnote-ui/data/ui/dialogs/import.ui:118
+msgid "How Pdf pages are spaced"
+msgstr "Miten PDF:n sivut välistetään"
+
+#: crates/rnote-ui/data/ui/dialogs/import.ui:122
+msgid "Continuous"
+msgstr "Jatkuvasti"
+
+#: crates/rnote-ui/data/ui/dialogs/import.ui:123
+msgid "One per Document Page"
+msgstr "Yksi asiakirjan sivua kohden"
+
+#: crates/rnote-ui/data/ui/dialogs/import.ui:131
+msgid "Pages Type"
+msgstr "Sivujen tyyppi"
+
+#: crates/rnote-ui/data/ui/dialogs/import.ui:132
+msgid "Set whether Pdf's should be imported as vector or bitmap images"
+msgstr "Tuodaanko PDF:t vektori- vai bittikarttakuvina"
+
+#: crates/rnote-ui/data/ui/dialogs/import.ui:144
+msgid "Vector"
+msgstr "Vektori"
+
+#: crates/rnote-ui/data/ui/dialogs/import.ui:151
+msgid "Bitmap"
+msgstr "Bittikartta"
+
+#: crates/rnote-ui/data/ui/dialogs/import.ui:169
+msgid "Page Borders"
+msgstr "Sivun reunat"
+
+#: crates/rnote-ui/data/ui/dialogs/import.ui:170
+msgid "Whether the pages have drawn borders"
+msgstr "Piirretäänkö sivuille reunukset"
+
+#: crates/rnote-ui/data/ui/dialogs/import.ui:204
+msgid "Import Xournal++ File"
+msgstr "Tuo Xournal++-tiedosto"
+
+#: crates/rnote-ui/data/ui/dialogs/import.ui:247
+msgid "Xournal++ File Import Preferences"
+msgstr "Xournal++-tiedostotuonnin asetukset"
+
+#: crates/rnote-ui/data/ui/dialogs/import.ui:251
+msgid "DPI"
+msgstr "DPI"
+
+#: crates/rnote-ui/data/ui/dialogs/import.ui:252
+msgid "Set the preferred DPI for the Xournal++ file"
+msgstr "Aseta ensisijainen DPI Xournal++-tiedostolle"
+
+#: crates/rnote-ui/data/ui/penssidebar/brushpage.ui:18
+msgid "Brush Style"
+msgstr "Siveltimen tyyli"
+
+#: crates/rnote-ui/data/ui/penssidebar/brushpage.ui:33
+#: crates/rnote-ui/data/ui/penssidebar/brushpage.ui:149
+msgid "Brush Configuration"
+msgstr "Siveltimen asetukset"
+
+#: crates/rnote-ui/data/ui/penssidebar/brushpage.ui:66
+msgid "Brush Styles"
+msgstr "Siveltimen tyylit"
+
+#: crates/rnote-ui/data/ui/penssidebar/brushpage.ui:95
+msgid "Marker"
+msgstr "Merkitsin"
+
+#: crates/rnote-ui/data/ui/penssidebar/brushpage.ui:96
+msgid "Mark underneath other strokes"
+msgstr "Merkitse muiden piirrosvetojen alapuolelle"
+
+#: crates/rnote-ui/data/ui/penssidebar/brushpage.ui:107
+#: crates/rnote-ui/data/ui/penssidebar/shaperpage.ui:201
+msgid "Solid"
+msgstr "Kiinteä"
+
+#: crates/rnote-ui/data/ui/penssidebar/brushpage.ui:108
+msgid "Draw solid color strokes"
+msgstr "Piirrä kiinteiden värien vetoja"
+
+#: crates/rnote-ui/data/ui/penssidebar/brushpage.ui:119
+msgid "Textured"
+msgstr "Teksturoitu"
+
+#: crates/rnote-ui/data/ui/penssidebar/brushpage.ui:120
+msgid "Draw textured strokes"
+msgstr "Piirrä teksturoituja vetoja"
+
+#: crates/rnote-ui/data/ui/penssidebar/brushpage.ui:170
+msgid "Path Modelling"
+msgstr "Polun mallinnus"
+
+#: crates/rnote-ui/data/ui/penssidebar/brushpage.ui:187
+msgid "Simple"
+msgstr "Yksinkertainen"
+
+#: crates/rnote-ui/data/ui/penssidebar/brushpage.ui:188
+msgid "Produces line segments from the raw input.\n"
+msgstr ""
+
+#: crates/rnote-ui/data/ui/penssidebar/brushpage.ui:194
+msgid "Curved"
+msgstr "Kaareva"
+
+#: crates/rnote-ui/data/ui/penssidebar/brushpage.ui:195
+msgid "Produces smooth, curved segments.\n"
+msgstr "Tuottaa sulavia, kaarevia lohkoja.\n"
+
+#: crates/rnote-ui/data/ui/penssidebar/brushpage.ui:201
+msgid "Modeled"
+msgstr "Mallinnettu"
+
+#: crates/rnote-ui/data/ui/penssidebar/brushpage.ui:202
+msgid ""
+"Produces a modeled path with physics based algorithms.\n"
+"Results in the best looking handwriting."
+msgstr ""
+"Tuottaa mallinnetun polun fysiikkaan pohjautuvilla algoritmeillä.\n"
+"Tuottaa parhaalta näyttävän käsinkirjoituksen."
+
+#: crates/rnote-ui/data/ui/penssidebar/brushpage.ui:211
+msgid "Solid Style"
+msgstr "Kiinteä tyyli"
+
+#: crates/rnote-ui/data/ui/penssidebar/brushpage.ui:214
+msgid "Pressure Curve"
+msgstr "Painekäyrä"
+
+#: crates/rnote-ui/data/ui/penssidebar/brushpage.ui:215
+msgid "Choose a pressure curve"
+msgstr "Valitse painekäyrä"
+
+#: crates/rnote-ui/data/ui/penssidebar/brushpage.ui:219
+msgid "Constant"
+msgstr "Vakio"
+
+#: crates/rnote-ui/data/ui/penssidebar/brushpage.ui:220
+msgid "Linear"
+msgstr "Lineaarinen"
+
+#: crates/rnote-ui/data/ui/penssidebar/brushpage.ui:221
+msgid "Square root"
+msgstr "Neliöjuuri"
+
+#: crates/rnote-ui/data/ui/penssidebar/brushpage.ui:222
+msgid "Cubic root"
+msgstr "Kuutiojuuri"
+
+#: crates/rnote-ui/data/ui/penssidebar/brushpage.ui:223
+msgid "Quadratic Parabola"
+msgstr "Neliöllinen paraabeli"
+
+#: crates/rnote-ui/data/ui/penssidebar/brushpage.ui:224
+msgid "Cubic Parabola"
+msgstr "Kuutiollinen paraabeli"
+
+#: crates/rnote-ui/data/ui/penssidebar/brushpage.ui:235
+msgid "Textured Style"
+msgstr "Teksturoitu tyyli"
+
+#: crates/rnote-ui/data/ui/penssidebar/brushpage.ui:238
+msgid "Density"
+msgstr "Tiheys"
+
+#: crates/rnote-ui/data/ui/penssidebar/brushpage.ui:239
+msgid "The density is the amount of dots per 10x10 area"
+msgstr "Tiheys on pisteiden määrä 10x10-alueelle"
+
+#: crates/rnote-ui/data/ui/penssidebar/brushpage.ui:248
+msgctxt ""
+"Drawing with a textured pen, how the dots of the texture are distributed"
+msgid "Stroke Dots Position Distribution"
+msgstr ""
+
+#: crates/rnote-ui/data/ui/penssidebar/brushpage.ui:249
+msgid "Choose a dots position probability distribution"
+msgstr ""
+
+#: crates/rnote-ui/data/ui/penssidebar/brushpage.ui:253
+msgctxt "A variant of the textured pen texture distribution"
+msgid "Uniform"
+msgstr "Yhtenäinen"
+
+#: crates/rnote-ui/data/ui/penssidebar/brushpage.ui:254
+msgctxt "A variant of the textured pen texture distribution"
+msgid "Normal"
+msgstr "Normaali"
+
+#: crates/rnote-ui/data/ui/penssidebar/brushpage.ui:255
+msgctxt "A variant of the textured pen texture distribution"
+msgid "Exponential"
+msgstr "Eksponentiaalinen"
+
+#: crates/rnote-ui/data/ui/penssidebar/brushpage.ui:256
+msgctxt "A variant of the textured pen texture distribution"
+msgid "Reverse Exponential"
+msgstr "Käänteinen eksponentiaalinen"
+
+#: crates/rnote-ui/data/ui/penssidebar/eraserpage.ui:21
+msgid "Trash Strokes"
+msgstr ""
+
+#: crates/rnote-ui/data/ui/penssidebar/eraserpage.ui:31
+msgid "Split Strokes"
+msgstr ""
+
+#: crates/rnote-ui/data/ui/penssidebar/penssidebar.ui:17
+#: crates/rnote-ui/src/settingspanel/penshortcutmodels.rs:81
+msgid "Brush"
+msgstr "Sivellin"
+
+#: crates/rnote-ui/data/ui/penssidebar/penssidebar.ui:33
+#: crates/rnote-ui/src/settingspanel/penshortcutmodels.rs:82
+msgid "Shaper"
+msgstr "Muotoillin"
+
+#: crates/rnote-ui/data/ui/penssidebar/penssidebar.ui:49
+#: crates/rnote-ui/src/settingspanel/penshortcutmodels.rs:83
+msgid "Typewriter"
+msgstr "Kirjoituskone"
+
+#: crates/rnote-ui/data/ui/penssidebar/penssidebar.ui:65
+#: crates/rnote-ui/src/settingspanel/penshortcutmodels.rs:84
+msgid "Eraser"
+msgstr "Pyyhekumi"
+
+#: crates/rnote-ui/data/ui/penssidebar/penssidebar.ui:81
+#: crates/rnote-ui/src/settingspanel/penshortcutmodels.rs:85
+msgid "Selector"
+msgstr "Valitsin"
+
+#: crates/rnote-ui/data/ui/penssidebar/penssidebar.ui:97
+#: crates/rnote-ui/src/settingspanel/penshortcutmodels.rs:86
+msgid "Tools"
+msgstr "Työkalut"
+
+#: crates/rnote-ui/data/ui/penssidebar/selectorpage.ui:22
+msgid "Select With a Polygon"
+msgstr "Valitse monikulmiolla"
+
+#: crates/rnote-ui/data/ui/penssidebar/selectorpage.ui:32
+msgid "Select With a Rectangle"
+msgstr "Valitse suorakulmiolla"
+
+#: crates/rnote-ui/data/ui/penssidebar/selectorpage.ui:42
+msgid "Select One by One"
+msgstr "Valitse yksittäin"
+
+#: crates/rnote-ui/data/ui/penssidebar/selectorpage.ui:52
+msgid "Select Intersecting Path"
+msgstr "Valitse läpileikkaava polku"
+
+#: crates/rnote-ui/data/ui/penssidebar/selectorpage.ui:73
+msgid "Lock Aspectratio While Resizing the Selection"
+msgstr "Lukitse kuvasuhde valinnan kokoa muuttaessa"
+
+#: crates/rnote-ui/data/ui/penssidebar/selectorpage.ui:83
+msgid "Select All Strokes"
+msgstr "Valitse kaikki vedot"
+
+#: crates/rnote-ui/data/ui/penssidebar/selectorpage.ui:94
+msgid "Deselect All Strokes"
+msgstr "Poista kaikkien vetojen valinnat"
+
+#: crates/rnote-ui/data/ui/penssidebar/selectorpage.ui:105
+msgid "Invert Color Brightness of All Selected Strokes"
+msgstr ""
+
+#: crates/rnote-ui/data/ui/penssidebar/selectorpage.ui:116
+#: crates/rnote-ui/data/ui/shortcuts.ui:236
+msgid "Duplicate Selection"
+msgstr "Monista valinta"
+
+#: crates/rnote-ui/data/ui/penssidebar/selectorpage.ui:127
+msgid "Delete Selection"
+msgstr "Poista valinta"
+
+#: crates/rnote-ui/data/ui/penssidebar/shaperpage.ui:19
+#: crates/rnote-ui/data/ui/penssidebar/shaperpage.ui:248
+msgid "Shape Builders"
+msgstr "Muotorakentajat"
+
+#: crates/rnote-ui/data/ui/penssidebar/shaperpage.ui:35
+#: crates/rnote-ui/data/ui/penssidebar/shaperpage.ui:290
+msgid "Constraints"
+msgstr "Rajoitteet"
+
+#: crates/rnote-ui/data/ui/penssidebar/shaperpage.ui:64
+msgid "Shaper Style"
+msgstr "Muotoillimen tyyli"
+
+#: crates/rnote-ui/data/ui/penssidebar/shaperpage.ui:77
+#: crates/rnote-ui/data/ui/penssidebar/shaperpage.ui:170
+msgid "Shape Configuration"
+msgstr "Muodon asetukset"
+
+#: crates/rnote-ui/data/ui/penssidebar/shaperpage.ui:101
+msgid "Shaper Styles"
+msgstr "Muotoillimen tyylit"
+
+#: crates/rnote-ui/data/ui/penssidebar/shaperpage.ui:130
+msgid "Smooth"
+msgstr ""
+
+#: crates/rnote-ui/data/ui/penssidebar/shaperpage.ui:141
+msgid "Rough"
+msgstr ""
+
+#: crates/rnote-ui/data/ui/penssidebar/shaperpage.ui:192
+msgid "Rough style"
+msgstr ""
+
+#: crates/rnote-ui/data/ui/penssidebar/shaperpage.ui:196
+msgid "Fill Style"
+msgstr "Täyttötyyli"
+
+#: crates/rnote-ui/data/ui/penssidebar/shaperpage.ui:197
+msgid "Choose a fill style"
+msgstr "Valitse täyttötyyli"
+
+#: crates/rnote-ui/data/ui/penssidebar/shaperpage.ui:202
+msgid "Hachure"
+msgstr ""
+
+#: crates/rnote-ui/data/ui/penssidebar/shaperpage.ui:203
+msgid "Zig-Zag"
+msgstr "Mutkitteleva"
+
+#: crates/rnote-ui/data/ui/penssidebar/shaperpage.ui:204
+msgid "Zig-Zag Line"
+msgstr "Mutkitteleva viiva"
+
+#: crates/rnote-ui/data/ui/penssidebar/shaperpage.ui:205
+msgid "Crosshatch"
+msgstr ""
+
+#: crates/rnote-ui/data/ui/penssidebar/shaperpage.ui:206
+#: crates/rnote-ui/data/ui/settingspanel.ui:322
+msgid "Dots"
+msgstr "Pisteet"
+
+#: crates/rnote-ui/data/ui/penssidebar/shaperpage.ui:207
+msgid "Dashed"
+msgstr ""
+
+#: crates/rnote-ui/data/ui/penssidebar/shaperpage.ui:215
+msgid "Hachure Angle"
+msgstr ""
+
+#: crates/rnote-ui/data/ui/penssidebar/shaperpage.ui:216
+msgid "Set the angle of hachure fills"
+msgstr ""
+
+#: crates/rnote-ui/data/ui/penssidebar/shaperpage.ui:319
+msgid "Enabled"
+msgstr "Käytössä"
+
+#: crates/rnote-ui/data/ui/penssidebar/shaperpage.ui:320
+msgid ""
+"Hold Ctrl to temporarily\n"
+"enable/disable constraints\n"
+"when this switch is off/on"
+msgstr ""
+"Pidä Ctrl pohjassa väliaikaisesti\n"
+"käyttääksesi/poistaaksesi rajoitteita\n"
+"kun tämä kytkin on pois/päällä"
+
+#: crates/rnote-ui/data/ui/penssidebar/shaperpage.ui:327
+msgid "1:1"
+msgstr "1:1"
+
+#: crates/rnote-ui/data/ui/penssidebar/shaperpage.ui:332
+msgid "3:2"
+msgstr "3:2"
+
+#: crates/rnote-ui/data/ui/penssidebar/shaperpage.ui:337
+msgid "Golden Ratio (1:1.618)"
+msgstr "Kultainen leikkaus (1:1.618)"
+
+#: crates/rnote-ui/data/ui/penssidebar/toolspage.ui:19
+msgid "Insert Vertical Space"
+msgstr "Lisää tilaa pystysuuntaisesti"
+
+#: crates/rnote-ui/data/ui/penssidebar/toolspage.ui:29
+#: crates/rnote-ui/data/ui/shortcuts.ui:108
+msgid "Move View"
+msgstr "Siirrä näkymää"
+
+#: crates/rnote-ui/data/ui/penssidebar/toolspage.ui:40
+msgid "Zoom In/Out"
+msgstr "Lähennä/loitonna"
+
+#: crates/rnote-ui/data/ui/penssidebar/typewriterpage.ui:43
+msgid "Pick And Insert Emoji"
+msgstr "Valitse ja syötä emoji"
+
+#: crates/rnote-ui/data/ui/penssidebar/typewriterpage.ui:68
+msgid "Reset Text Attributes"
+msgstr "Nollaa tekstiominaisuudet"
+
+#: crates/rnote-ui/data/ui/penssidebar/typewriterpage.ui:77
+msgid "Bold"
+msgstr "Lihavointi"
+
+#: crates/rnote-ui/data/ui/penssidebar/typewriterpage.ui:86
+msgid "Italic"
+msgstr "Kursivointi"
+
+#: crates/rnote-ui/data/ui/penssidebar/typewriterpage.ui:95
+msgid "Underline"
+msgstr "Alleviivaus"
+
+#: crates/rnote-ui/data/ui/penssidebar/typewriterpage.ui:104
+msgid "Strikethrough"
+msgstr "Yliviivaus"
+
+#: crates/rnote-ui/data/ui/penssidebar/typewriterpage.ui:126
+msgid "Align Left"
+msgstr "Tasaus vasemmalle"
+
+#: crates/rnote-ui/data/ui/penssidebar/typewriterpage.ui:133
+msgid "Align Center"
+msgstr "Tasaus keskelle"
+
+#: crates/rnote-ui/data/ui/penssidebar/typewriterpage.ui:140
+msgid "Align Right"
+msgstr "Tasaus oikealle"
+
+#: crates/rnote-ui/data/ui/penssidebar/typewriterpage.ui:147
+msgid "Fill"
+msgstr "Täyttö"
+
+#: crates/rnote-ui/data/ui/workspacesbar/workspacesbar.ui:60
+msgid "Move Selected Workspace Up"
+msgstr "Siirrä valittu työtila ylös"
+
+#: crates/rnote-ui/data/ui/workspacesbar/workspacesbar.ui:69
+msgid "Move Selected Workspace Down"
+msgstr "Siirrä valittu työtila alas"
+
+#: crates/rnote-ui/data/ui/workspacesbar/workspacesbar.ui:80
+msgid "Add Workspace"
+msgstr "Lisää työtila"
+
+#: crates/rnote-ui/data/ui/workspacesbar/workspacesbar.ui:89
+msgid "Remove Selected Workspace"
+msgstr "Poista valittu työtila"
+
+#: crates/rnote-ui/data/ui/workspacesbar/workspacesbar.ui:99
+msgid "Edit Selected Workspace"
+msgstr "Muokkaa valittua työtilaa"
+
+#: crates/rnote-ui/data/ui/appmenu.ui:24
+msgid "Co_lor Scheme"
+msgstr "_Väriteema"
+
+#: crates/rnote-ui/data/ui/appmenu.ui:26
+msgid "Use _System Colors"
+msgstr "Käytä _järjestelmän värejä"
+
+#: crates/rnote-ui/data/ui/appmenu.ui:31
+msgid "Use _Light Colors"
+msgstr "Käytä _vaaleita värejä"
+
+#: crates/rnote-ui/data/ui/appmenu.ui:36
+msgid "Use _Dark Colors"
+msgstr "Käytä _tummia värejä"
+
+#: crates/rnote-ui/data/ui/appmenu.ui:42
+msgid "Developer _Menu"
+msgstr "_Kehittäjävalikko"
+
+#: crates/rnote-ui/data/ui/appmenu.ui:47
+msgid "Visual _Debugging"
+msgstr "Visuaalinen _vianjäljitys"
+
+#: crates/rnote-ui/data/ui/appmenu.ui:51
+msgid "Export Engine _State"
+msgstr "Vie _moottorin tila"
+
+#: crates/rnote-ui/data/ui/appmenu.ui:55
+msgid "Export Engine _Config"
+msgstr "Vie moottorin a_setukset"
+
+#: crates/rnote-ui/data/ui/appmenu.ui:61
+msgid "De_veloper Mode"
+msgstr "Kehitt_äjätila"
+
+#: crates/rnote-ui/data/ui/appmenu.ui:66
+msgid "New _Window"
+msgstr "Uusi _ikkuna"
+
+#: crates/rnote-ui/data/ui/appmenu.ui:72
+msgid "_New"
+msgstr "_Uusi"
+
+#: crates/rnote-ui/data/ui/appmenu.ui:76
+msgid "_Open"
+msgstr "_Avaa"
+
+#: crates/rnote-ui/data/ui/appmenu.ui:80
+msgid "_Save"
+msgstr "_Tallenna"
+
+#: crates/rnote-ui/data/ui/appmenu.ui:84
+msgid "Save _As"
+msgstr "Tallenna _nimellä"
+
+#: crates/rnote-ui/data/ui/appmenu.ui:90
+msgid "_Print"
+msgstr "T_ulosta"
+
+#: crates/rnote-ui/data/ui/appmenu.ui:94
+msgid "_Import File"
+msgstr "Tuo tie_dosto"
+
+#: crates/rnote-ui/data/ui/appmenu.ui:98
+msgid "_Clipboard"
+msgstr "_Leikepöytä"
+
+#: crates/rnote-ui/data/ui/appmenu.ui:100
+#: crates/rnote-ui/data/ui/contextmenu.ui:10
+msgid "_Copy"
+msgstr "_Kopioi"
+
+#: crates/rnote-ui/data/ui/appmenu.ui:104
+#: crates/rnote-ui/data/ui/contextmenu.ui:14
+msgid "C_ut"
+msgstr "_Leikkaa"
+
+#: crates/rnote-ui/data/ui/appmenu.ui:108
+#: crates/rnote-ui/data/ui/contextmenu.ui:18
+msgid "_Paste"
+msgstr "L_iitä"
+
+#: crates/rnote-ui/data/ui/appmenu.ui:113
+msgid "_Export…"
+msgstr "_Vie…"
+
+#: crates/rnote-ui/data/ui/appmenu.ui:115
+msgid "Export _Document"
+msgstr "Vie _asiakirja"
+
+#: crates/rnote-ui/data/ui/appmenu.ui:119
+msgid "Export Document _Pages"
+msgstr "Vie asiakirjan _sivut"
+
+#: crates/rnote-ui/data/ui/appmenu.ui:123
+msgid "Export _Selection"
+msgstr "Vie _valinta"
+
+#: crates/rnote-ui/data/ui/appmenu.ui:130
+msgid "Se_ttings"
+msgstr "_Asetukset"
+
+#: crates/rnote-ui/data/ui/appmenu.ui:134
+msgid "_Keyboard Shortcuts"
+msgstr "_Pikanäppäimet"
+
+#: crates/rnote-ui/data/ui/appmenu.ui:138
+msgid "_Donate 💝"
+msgstr "_Lahjoita 💝"
+
+#: crates/rnote-ui/data/ui/appmenu.ui:142
+msgid "A_bout Rnote"
+msgstr "_Tietoja - Rnote"
+
+#: crates/rnote-ui/data/ui/appmenu.ui:173
+msgid "Sidebar on the Left Side"
+msgstr "Sivupalkki vasemalla puolella"
+
+#: crates/rnote-ui/data/ui/appmenu.ui:182
+msgid "Sidebar on the Right Side"
+msgstr "Sivupalkki oikealla puolella"
+
+#: crates/rnote-ui/data/ui/appmenu.ui:192
+#: crates/rnote-ui/data/ui/shortcuts.ui:56
+msgid "Toggle Fullscreen"
+msgstr "Koko näyttö päällä/pois"
+
+#: crates/rnote-ui/data/ui/canvasmenu.ui:24
+msgid "_Snap Positions"
+msgstr ""
+
+#: crates/rnote-ui/data/ui/canvasmenu.ui:29
+msgid "_Pen Sounds"
+msgstr "_Kynän äänet"
+
+#: crates/rnote-ui/data/ui/canvasmenu.ui:34
+msgid "_Return to Origin Page"
+msgstr "_Palaa alkusivulle"
+
+#: crates/rnote-ui/data/ui/canvasmenu.ui:38
+msgid "C_lear Document"
+msgstr "_Tyhjennä asiakirja"
+
+#: crates/rnote-ui/data/ui/canvasmenu.ui:44
+msgid "Show _Format Borders"
+msgstr ""
+
+#: crates/rnote-ui/data/ui/canvasmenu.ui:49
+msgid "Show _Origin Indicator"
+msgstr "Näytä _alkusivun ilmaisin"
+
+#: crates/rnote-ui/data/ui/canvasmenu.ui:54
+msgid "Draw With _Touch Input"
+msgstr "Piirrä _kosketussyötteellä"
+
+#: crates/rnote-ui/data/ui/canvasmenu.ui:59
+msgid "Block Pinch to _Zoom"
+msgstr "Estä lähennys _nipistämällä"
+
+#: crates/rnote-ui/data/ui/canvasmenu.ui:64
+msgid "Respect Borders When Pasting"
+msgstr ""
+
+#: crates/rnote-ui/data/ui/canvasmenu.ui:95
+#: crates/rnote-ui/data/ui/shortcuts.ui:132
+#: crates/rnote-ui/data/ui/shortcuts.ui:138
+#: crates/rnote-ui/data/ui/shortcuts.ui:144
+msgid "Zoom out"
+msgstr "Loitonna"
+
+#: crates/rnote-ui/data/ui/canvasmenu.ui:104
+msgid "Reset Zoom"
+msgstr "Palauta mittakaava"
+
+#: crates/rnote-ui/data/ui/canvasmenu.ui:111
+#: crates/rnote-ui/data/ui/shortcuts.ui:114
+#: crates/rnote-ui/data/ui/shortcuts.ui:120
+#: crates/rnote-ui/data/ui/shortcuts.ui:126
+msgid "Zoom in"
+msgstr "Lähennä"
+
+#: crates/rnote-ui/data/ui/canvasmenu.ui:123
+msgid "Zoom to Page Width"
+msgstr "Lähennä sivun leveyteen"
+
+#: crates/rnote-ui/data/ui/canvasmenu.ui:138
+msgid ""
+"Remove Page.\n"
+"Available in Fixed-Size Document Layout."
+msgstr ""
+
+#: crates/rnote-ui/data/ui/canvasmenu.ui:147
+msgid ""
+"Add Page.\n"
+"Available in Fixed-Size Document Layout."
+msgstr ""
+
+#: crates/rnote-ui/data/ui/canvasmenu.ui:156
+msgid ""
+"Resize Document to Fit Content.\n"
+"Available in Fixed-Size Document Layout."
+msgstr ""
+
+#: crates/rnote-ui/data/ui/colorpicker.ui:23
+msgid "Stroke Color"
+msgstr "Vedon väri"
+
+#: crates/rnote-ui/data/ui/colorpicker.ui:30
+msgid "Fill Color"
+msgstr "Täyttöväri"
+
+#: crates/rnote-ui/data/ui/filerow.ui:61
+#: crates/rnote-ui/src/dialogs/import.rs:36
+msgid "Open"
+msgstr "Avaa"
+
+#: crates/rnote-ui/data/ui/filerow.ui:65
+msgid "Open in Default App"
+msgstr "Avaa oletussovelluksessa"
+
+#: crates/rnote-ui/data/ui/filerow.ui:69
+#: crates/rnote-ui/src/workspacebrowser/filerow/actions/rename.rs:91
+msgid "Rename"
+msgstr "Nimeä uudelleen"
+
+#: crates/rnote-ui/data/ui/filerow.ui:73
+msgid "Move to Trash"
+msgstr "Siirrä roskakoriin"
+
+#: crates/rnote-ui/data/ui/filerow.ui:77
+msgid "Duplicate"
+msgstr "Monista"
+
+#: crates/rnote-ui/data/ui/mainheader.ui:23
+#: crates/rnote-ui/src/canvas/mod.rs:594
+msgid "Draft"
+msgstr "Luonnos"
+
+#: crates/rnote-ui/data/ui/mainheader.ui:40
+#: crates/rnote-ui/data/ui/mainheader.ui:74
+msgid "Show/Hide Sidebar"
+msgstr "Näytä/piilota sivupalkki"
+
+#: crates/rnote-ui/data/ui/mainheader.ui:47
+#: crates/rnote-ui/data/ui/shortcuts.ui:26
+msgid "New Tab"
+msgstr "Uusi välilehti"
+
+#: crates/rnote-ui/data/ui/mainheader.ui:54
+msgid "Focus Mode"
+msgstr "Keskittymistila"
+
+#: crates/rnote-ui/data/ui/mainheader.ui:66
+#: crates/rnote-ui/data/ui/shortcuts.ui:167
+msgid "Save Document"
+msgstr "Tallenna asiakirja"
+
+#: crates/rnote-ui/data/ui/overlays.ui:98
+msgid "Move _Left"
+msgstr "Siirrä _vasemmalle"
+
+#: crates/rnote-ui/data/ui/overlays.ui:102
+msgid "Move _Right"
+msgstr "Siirrä _oikealle"
+
+#: crates/rnote-ui/data/ui/overlays.ui:108
+msgid "_Close"
+msgstr "_Sulje"
+
+#: crates/rnote-ui/data/ui/penshortcutrow.ui:11
+msgid "Temporary"
+msgstr "Väliaikainen"
+
+#: crates/rnote-ui/data/ui/penshortcutrow.ui:12
+msgid "Permanent"
+msgstr "Pysyvä"
+
+#: crates/rnote-ui/data/ui/penshortcutrow.ui:13
+msgid "Toggle"
+msgstr ""
+
+#: crates/rnote-ui/data/ui/penshortcutrow.ui:14
+msgid "Disabled"
+msgstr "Ei käytössä"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:41
+#: crates/rnote-ui/data/ui/shortcuts.ui:11
+msgid "General"
+msgstr "Yleiset"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:44
+msgid "Autosave"
+msgstr "Automaattinen tallennus"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:45
+msgid "Enable or disable autosave"
+msgstr "Käytä tai poista käytöstä automaattinen tallennus"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:50
+msgid "Autosave Interval (secs)"
+msgstr "Automaattisen tallennuksen aikaväli (s)"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:51
+msgid "Set the autosave interval in seconds"
+msgstr "Aseta automaattisen tallennuksen aikaväli sekunneissa"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:58
+msgid "Show Scrollbars"
+msgstr "Näytä vierityspalkit"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:59
+msgid "Set whether the scrollbars on the canvas are shown"
+msgstr "Näytetäänkö vierityspalkit piirtoalueella"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:64
+msgid "Optimize for E-Paper Displays"
+msgstr "Optimoi E-paperinäytöille"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:65
+msgid ""
+"Changes certain UI elements and modifies behaviour\n"
+"of tools for optimized usage on E-Paper displays"
+msgstr ""
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:71
+msgid "Inertial Touch Scrolling"
+msgstr ""
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:72
+msgid ""
+"Set whether touch scrolling on the canvas is inertial.\n"
+"An application restart is required when this option\n"
+"gets disabled."
+msgstr ""
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:79
+msgid "Regular Cursor"
+msgstr "Tavallinen kohdistin"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:80
+msgid "Set the regular cursor"
+msgstr "Aseta tavallinen kohdistin"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:102
+msgid "Show Drawing Cursor"
+msgstr "Näytä piirrustuskohdistin"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:103
+msgid "Set whether the drawing cursor is visible"
+msgstr "Onko piirrustuskohdistin näkyvissä"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:109
+msgid "Drawing Cursor"
+msgstr "Piirrustuskohdistin"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:110
+msgid "Set the drawing cursor"
+msgstr "Aseta piirrustuskohdistin"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:135
+msgid "Page Format"
+msgstr "Sivun muoto"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:138
+msgid "Format"
+msgstr "Muoto"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:139
+msgid "Choose a format"
+msgstr "Valitse muoto"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:143
+msgid "A6"
+msgstr "A6"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:144
+msgid "A5"
+msgstr "A5"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:145
+msgid "A4"
+msgstr "A4"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:146
+msgid "A3"
+msgstr "A3"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:147
+msgid "A2"
+msgstr "A2"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:148
+msgid "US letter"
+msgstr "US letter"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:149
+msgid "US legal"
+msgstr "US legal"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:150
+msgid "Custom"
+msgstr "Mukautettu"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:158
+msgid "Orientation"
+msgstr "Suunta"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:159
+msgid "Set the format orientation"
+msgstr "Aseta muodon suunta"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:171
+msgid "Portrait"
+msgstr "Pysty"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:177
+msgid "Landscape"
+msgstr "Vaaka"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:187
+msgid "Width"
+msgstr "Leveys"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:188
+msgid "Set the format width"
+msgstr "Aseta muodon leveys"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:204
+msgid "Height"
+msgstr "Korkeus"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:205
+msgid "Set the format height"
+msgstr "Aseta muodon korkeus"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:221
+msgid "Dpi"
+msgstr "DPI"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:222
+msgid "Set the Dpi (dots per inch). Defaults to 96."
+msgstr "Aseta DPI (pistettä per tuuma). Oletus on 96."
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:232
+msgid "Revert"
+msgstr "Palauta oletukset"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:254
+#: crates/rnote-ui/data/ui/shortcuts.ui:158
+#: crates/rnote-ui/src/dialogs/mod.rs:631
+msgid "Document"
+msgstr "Asiakirja"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:257
+msgid "Document Layout"
+msgstr "Asiakirjan asettelu"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:261
+msgid "Fixed Size"
+msgstr "Kiinteä koko"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:262
+msgid "Continuous Vertical"
+msgstr "Jatkuva pystysuorassa"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:263
+msgid "Semi Infinite"
+msgstr "Melkein loputon"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:264
+msgid "Infinite"
+msgstr "Loputon"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:272
+msgid "Format Border Color"
+msgstr ""
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:273
+msgid "Set the format border color"
+msgstr ""
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:294
+msgid "Set the background color"
+msgstr "Aseta taustaväri"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:314
+msgid "Pattern"
+msgstr "Kuvio"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:315
+msgid "Choose a background pattern"
+msgstr "Valitse taustakuvio"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:319
+msgid "None"
+msgstr "Ei mitään"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:320
+msgid "Lines"
+msgstr "Viivat"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:321
+#: crates/rnote-ui/src/penssidebar/shaperpage.rs:429
+msgid "Grid"
+msgstr "Ruudukko"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:323
+msgid "Isometric Grid"
+msgstr ""
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:324
+msgid "Isometric Dots"
+msgstr ""
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:332
+msgid "Pattern Color"
+msgstr "Kuvion väri"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:333
+msgid "Set the background pattern color"
+msgstr "Aseta taustakuvion väri"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:353
+msgid "Pattern Width"
+msgstr "Kuvion leveys"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:354
+msgid "Set the background pattern width"
+msgstr "Aseta taustakuvion leveys"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:370
+msgid "Pattern Height"
+msgstr "Kuvion korkeus"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:371
+msgid "Set the background pattern height"
+msgstr "Aseta taustakuvion korkeus"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:387
+msgid "Invert Color Brightness"
+msgstr "Käänteinen värin kirkkaus"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:388
+msgid "Invert the brightness of all background pattern colors"
+msgstr ""
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:392
+msgid "Invert"
+msgstr "Käänteinen"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:402
+msgid "Button Shortcuts"
+msgstr "Painikkeiden pikanäppäimet"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:405
+msgid "Stylus Primary Button Action"
+msgstr "Stylus-kynän ensisijaisen painikkeen toiminto"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:406
+msgid ""
+"Set the action for the\n"
+"primary stylus button"
+msgstr ""
+"Aseta toiminto stylus-\n"
+"kynän ensisijaiselle painikkeelle"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:418
+msgid "Stylus Secondary Button Action"
+msgstr "Stylus-kynän toissijaisen painikkeen toiminto"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:419
+msgid ""
+"Set the action for the\n"
+"secondary stylus button"
+msgstr ""
+"Aseta toiminto stylus-\n"
+"kynän toissijaiselle painikkeelle"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:431
+msgid "Mouse Secondary Button Action"
+msgstr "Hiiren toissijaisen painikkeen toiminto"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:432
+msgid ""
+"Set the action for the\n"
+"secondary mouse button"
+msgstr ""
+"Aseta toiminto hiiren\n"
+"toissijaiselle painikkeelle"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:444
+msgid "Touch Two-Finger Long-Press Action"
+msgstr "Kosketuksen kahden sormen pitkän painalluksen toiminto"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:445
+msgid ""
+"Set the action for the touch\n"
+"two-finger long-press gesture"
+msgstr ""
+"Aseta toiminto kosketuksen\n"
+"kahden sormen pitkän painalluksen eleelle"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:457
+msgid "Keyboard Ctrl-Space Action"
+msgstr "Näppäimistön Ctrl-välilyönnin toiminto"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:458
+msgid ""
+"Set the action for the keyboard\n"
+"Ctrl plus Space shortcut"
+msgstr ""
+"Aseta toiminto näppäimistön\n"
+"Ctrl:n ja välilyönnin pikanäppäimelle"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:470
+msgid "Drawing Pad Button 1 Action"
+msgstr "Piirtoalustan painikkeen 1 toiminto"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:471
+msgid ""
+"Set the action for button 1\n"
+"on a drawing pad"
+msgstr ""
+"Aseta toiminto\n"
+"piirrosalustan painikkeelle 1"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:483
+msgid "Drawing Pad Button 2 Action"
+msgstr "Piirtoalustan painikkeen 2 toiminto"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:484
+msgid ""
+"Set the action for button 2\n"
+"on a drawing pad"
+msgstr ""
+"Aseta toiminto\n"
+"piirrosalustan painikkeelle 2"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:496
+msgid "Drawing Pad Button 3 Action"
+msgstr "Piirtoalustan painikkeen 3 toiminto"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:497
+msgid ""
+"Set the action for button 3\n"
+"on a drawing pad"
+msgstr ""
+"Aseta toiminto\n"
+"piirrosalustan painikkeelle 3"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:509
+msgid "Drawing Pad Button 4 Action"
+msgstr "Piirtoalustan painikkeen 4 toiminto"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:510
+msgid ""
+"Set the action for button 4\n"
+"on a drawing pad"
+msgstr ""
+"Aseta toiminto\n"
+"piirrosalustan painikkeelle 4"
+
+#: crates/rnote-ui/data/ui/shortcuts.ui:14
+msgid "Show Keyboard Shortcuts"
+msgstr "Näytä näppäimistön pikanäppäimet"
+
+#: crates/rnote-ui/data/ui/shortcuts.ui:32
+msgid "Close the Active Tab"
+msgstr "Sulje aktiivinen välilehti"
+
+#: crates/rnote-ui/data/ui/shortcuts.ui:38
+msgid "Quit the Application"
+msgstr "Lopeta sovellus"
+
+#: crates/rnote-ui/data/ui/shortcuts.ui:44
+msgid "Open the Canvas-Menu"
+msgstr "Avaa piirtoaluevalikko"
+
+#: crates/rnote-ui/data/ui/shortcuts.ui:50
+msgid "Open the App-Menu"
+msgstr "Avaa sovellusvalikko"
+
+#: crates/rnote-ui/data/ui/shortcuts.ui:64
+msgid "Navigation"
+msgstr "Liikkuminen"
+
+#: crates/rnote-ui/data/ui/shortcuts.ui:67
+msgid "Switch to the 'Brush'"
+msgstr "Vaihda kohtaan \"Sivellin\""
+
+#: crates/rnote-ui/data/ui/shortcuts.ui:73
+msgid "Switch to the 'Shaper'"
+msgstr "Vaihda kohtaan \"Muotoillin\""
+
+#: crates/rnote-ui/data/ui/shortcuts.ui:79
+msgid "Switch to the 'Typewriter'"
+msgstr "Vaihda kohtaan \"Kirjoituskone\""
+
+#: crates/rnote-ui/data/ui/shortcuts.ui:85
+msgid "Switch to the 'Eraser'"
+msgstr "Vaihda kohtaan \"Pyyhekumi\""
+
+#: crates/rnote-ui/data/ui/shortcuts.ui:91
+msgid "Switch to the 'Selector'"
+msgstr "Vaihda kohtaan \"Valitsin\""
+
+#: crates/rnote-ui/data/ui/shortcuts.ui:97
+msgid "Switch to the 'Tools'"
+msgstr "Vaihda kohtaan \"Työkalut\""
+
+#: crates/rnote-ui/data/ui/shortcuts.ui:105
+msgid "View"
+msgstr "Näkymä"
+
+#: crates/rnote-ui/data/ui/shortcuts.ui:109
+msgid "Alt + Drag"
+msgstr "Alt + Raahaus"
+
+#: crates/rnote-ui/data/ui/shortcuts.ui:150
+msgid "Zoom in/out"
+msgstr "Lähennä/loitonna"
+
+#: crates/rnote-ui/data/ui/shortcuts.ui:151
+msgid "Alt + Shift + Drag"
+msgstr "Alt + Shift + Raahaus"
+
+#: crates/rnote-ui/data/ui/shortcuts.ui:161
+msgid "Open Document"
+msgstr "Avaa asiakirja"
+
+#: crates/rnote-ui/data/ui/shortcuts.ui:173
+#: crates/rnote-ui/src/dialogs/export.rs:40
+msgid "Save Document As"
+msgstr "Tallenna asiakirja nimellä"
+
+#: crates/rnote-ui/data/ui/shortcuts.ui:179
+msgid "Snap Positions"
+msgstr "Napsauta sijainnit"
+
+#: crates/rnote-ui/data/ui/shortcuts.ui:191
+msgid "Add Page (When in Fixed-Size Layout)"
+msgstr "Lisää sivu (kun kiinteäkokoinen asettelu)"
+
+#: crates/rnote-ui/data/ui/shortcuts.ui:197
+msgid "Remove Last Page (When in Fixed-Size Layout)"
+msgstr "Poista viimeinen sivu (kun kiinteäkokoinen asettelu)"
+
+#: crates/rnote-ui/data/ui/shortcuts.ui:203
+msgid "Print Document"
+msgstr "Tulosta asiakirjoja"
+
+#: crates/rnote-ui/data/ui/shortcuts.ui:209
+#: crates/rnote-ui/src/dialogs/import.rs:92
+msgid "Import File"
+msgstr "Tuo tiedosto"
+
+#: crates/rnote-ui/data/ui/shortcuts.ui:215
+msgid "Drawing"
+msgstr "Piirrustus"
+
+#: crates/rnote-ui/data/ui/shortcuts.ui:218
+msgid "Copy to Clipboard"
+msgstr "Kopioi leikepöydälle"
+
+#: crates/rnote-ui/data/ui/shortcuts.ui:224
+msgid "Cut to Clipboard"
+msgstr "Leikkaa leikepöydälle"
+
+#: crates/rnote-ui/data/ui/shortcuts.ui:230
+msgid "Paste Clipboard"
+msgstr "Liitä leikepöydältä"
+
+#: crates/rnote-ui/data/ui/shortcuts.ui:242
+msgid "Undo"
+msgstr "Kumoa"
+
+#: crates/rnote-ui/data/ui/shortcuts.ui:248
+msgid "Redo"
+msgstr "Tee uudelleen"
+
+#: crates/rnote-ui/data/ui/sidebar.ui:50
+msgid "Workspace"
+msgstr "Työtila"
+
+#: crates/rnote-ui/data/ui/sidebar.ui:61
+msgid "Settings"
+msgstr "Asetukset"
+
+#: crates/rnote-ui/data/ui/strokecontentpreview.ui:79
+msgid "Page"
+msgstr "Sivu"
+
+#: crates/rnote-ui/data/ui/workspacebrowser.ui:64
+msgid "Move Directory up"
+msgstr "Siirry kansio ylös"
+
+#: crates/rnote-ui/data/ui/workspacebrowser.ui:81
+msgid "Workspace Directory Actions"
+msgstr "Työtilan kansion toiminnot"
+
+#: crates/rnote-ui/data/ui/workspacebrowser.ui:163
+msgid "Create new Folder"
+msgstr "Luo uusi kansio"
+
+#: crates/rnote-ui/src/appwindow/actions.rs:573
+#: crates/rnote-ui/src/appwindow/imp.rs:313
+#: crates/rnote-ui/src/dialogs/export.rs:81
+#: crates/rnote-ui/src/dialogs/mod.rs:118
+#: crates/rnote-ui/src/dialogs/mod.rs:248
+#: crates/rnote-ui/src/dialogs/mod.rs:401
+msgid "Saving document failed"
+msgstr "Asiakirjan tallentaminen epäonnistui"
+
+#: crates/rnote-ui/src/appwindow/actions.rs:636
+msgid "Printing document failed"
+msgstr "Asiakirjan tulostaminen epäonnistui"
+
+#: crates/rnote-ui/src/appwindow/actions.rs:672
+msgid "Exporting selection failed, nothing selected"
+msgstr "Valinnan vienti epäonnistui, mitään ei ole valittu"
+
+#: crates/rnote-ui/src/appwindow/imp.rs:268
+msgid "Saves are in progress, waiting before closing.."
+msgstr ""
+
+#: crates/rnote-ui/src/appwindow/imp.rs:336
+msgid "Button 1"
+msgstr "Painike 1"
+
+#: crates/rnote-ui/src/appwindow/imp.rs:343
+msgid "Button 2"
+msgstr "Painike 2"
+
+#: crates/rnote-ui/src/appwindow/imp.rs:350
+msgid "Button 3"
+msgstr "Painike 3"
+
+#: crates/rnote-ui/src/appwindow/imp.rs:357
+msgid "Button 4"
+msgstr "Painike 4"
+
+#: crates/rnote-ui/src/appwindow/mod.rs:141
+msgid ""
+"Settings schema is not installed. App settings could not be loaded and won't "
+"be saved."
+msgstr ""
+"Asetusten skeemaa ei ole asennettu. Sovelluksen asetuksia ei voitu ladata, "
+"eikä asetuksia voi tallentaa."
+
+#: crates/rnote-ui/src/appwindow/mod.rs:520
+msgid "Opening file failed"
+msgstr "Tiedoston avaaminen epäonnistui"
+
+#: crates/rnote-ui/src/canvas/mod.rs:858 crates/rnote-ui/src/dialogs/mod.rs:195
+#: crates/rnote-ui/src/dialogs/mod.rs:331
+msgid "- invalid file name -"
+msgstr "- virheellinen tiedostonimi -"
+
+#: crates/rnote-ui/src/canvas/mod.rs:871
+msgid "- invalid folder path -"
+msgstr "- virheellinen kansion polku -"
+
+#: crates/rnote-ui/src/canvas/mod.rs:895
+msgid "Opened file was modified on disk"
+msgstr "Avattua tiedostoa muokattiin levyllä"
+
+#: crates/rnote-ui/src/canvas/mod.rs:896
+msgid "Reload"
+msgstr "Lataa uudelleen"
+
+#: crates/rnote-ui/src/canvas/mod.rs:903
+msgid "Reloading .rnote file from disk failed"
+msgstr ".rnote-tiedoston lataaminen uudelleen levyltä epäonnistui"
+
+#: crates/rnote-ui/src/canvas/mod.rs:969
+msgid "Opened file was renamed or moved."
+msgstr "Avattu tiedosto nimettiin uudelleen tai siirrettiin."
+
+#: crates/rnote-ui/src/canvas/mod.rs:983
+msgid "Opened file was removed."
+msgstr "Avattu tiedosto poistettiin."
+
+#: crates/rnote-ui/src/canvas/mod.rs:1169
+msgid "Inserting file failed"
+msgstr "Tiedoston lisääminen epäonnistui"
+
+#: crates/rnote-ui/src/canvas/mod.rs:1179
+msgid "Inserting text failed"
+msgstr "Tekstin lisääminen epäonnistui"
+
+#: crates/rnote-ui/src/dialogs/export.rs:33
+#: crates/rnote-ui/src/dialogs/import.rs:28
+msgid ".rnote"
+msgstr ".rnote"
+
+#: crates/rnote-ui/src/dialogs/export.rs:66
+msgid "Saved document successfully"
+msgstr "Asiakirja tallennettu"
+
+#: crates/rnote-ui/src/dialogs/export.rs:243
+#: crates/rnote-ui/src/dialogs/export.rs:256
+#: crates/rnote-ui/src/dialogs/export.rs:586
+#: crates/rnote-ui/src/dialogs/export.rs:882
+msgid "Exporting document failed"
+msgstr "Asiakirjan vieminen epäonnistui"
+
+#: crates/rnote-ui/src/dialogs/export.rs:247
+msgid "Exported document successfully"
+msgstr "Asiakirja vietiin onnistuneesti"
+
+#: crates/rnote-ui/src/dialogs/export.rs:248
+#: crates/rnote-ui/src/dialogs/export.rs:582
+#: crates/rnote-ui/src/dialogs/export.rs:874
+msgid "View in file manager"
+msgstr "Näytä tiedostonhallinnassa"
+
+#: crates/rnote-ui/src/dialogs/export.rs:262
+#: crates/rnote-ui/src/dialogs/export.rs:592
+#: crates/rnote-ui/src/dialogs/export.rs:888
+msgid "Failed to open the file in the file manager"
+msgstr "Tiedoston avaaminen tiedostonhallinnassa epäonnistui"
+
+#: crates/rnote-ui/src/dialogs/export.rs:272
+msgid "Exporting document failed, no file selected"
+msgstr "Asiakirjan vienti epäonnistui. Tiedostoa ei ole valittu"
+
+#: crates/rnote-ui/src/dialogs/export.rs:287
+#: crates/rnote-ui/src/dialogs/export.rs:617
+#: crates/rnote-ui/src/dialogs/export.rs:935
+#: crates/rnote-ui/src/dialogs/mod.rs:504
+msgid "Select"
+msgstr "Valitse"
+
+#: crates/rnote-ui/src/dialogs/export.rs:577
+msgid "Exporting document pages failed"
+msgstr "Asiakirjan sivujen vienti epäonnistui"
+
+#: crates/rnote-ui/src/dialogs/export.rs:581
+msgid "Exported document pages successfully"
+msgstr "Asiakirjan sivut vietiin onnistuneesti"
+
+#: crates/rnote-ui/src/dialogs/export.rs:601
+msgid "Exporting document pages failed, no directory selected"
+msgstr "Asiakirjan sivujen vienti epäonnistui. Kansiota ei ole valittu"
+
+#: crates/rnote-ui/src/dialogs/export.rs:859
+msgid "Exporting selection failed, no file selected"
+msgstr "Valinnan vienti epäonnistui. Tiedostoa ei ole valittu"
+
+#: crates/rnote-ui/src/dialogs/export.rs:869
+msgid "Exporting selection failed"
+msgstr "Valinnan vienti epäonnistui"
+
+#: crates/rnote-ui/src/dialogs/export.rs:873
+msgid "Exported selection successfully"
+msgstr "Valinta vietiin onnistuneesti"
+
+#: crates/rnote-ui/src/dialogs/export.rs:1011
+#: crates/rnote-ui/src/dialogs/export.rs:1074
+msgid "Json"
+msgstr "JSON"
+
+#: crates/rnote-ui/src/dialogs/export.rs:1023
+msgid "Export Engine State"
+msgstr "Vie moottorin tila"
+
+#: crates/rnote-ui/src/dialogs/export.rs:1042
+msgid "Exporting engine state failed"
+msgstr "Moottorin tilan vienti epäonnistui"
+
+#: crates/rnote-ui/src/dialogs/export.rs:1046
+msgid "Exported engine state successfully"
+msgstr "Moottorin tila vietiin onnistuneesti"
+
+#: crates/rnote-ui/src/dialogs/export.rs:1086
+msgid "Export Engine Config"
+msgstr "Vie moottorin asetukset"
+
+#: crates/rnote-ui/src/dialogs/export.rs:1105
+msgid "Exporting engine config failed"
+msgstr "Moottorin asetusten vienti epäonnistui"
+
+#: crates/rnote-ui/src/dialogs/export.rs:1109
+msgid "Exported engine config successfully"
+msgstr "Moottorin asetukset vietiin onnistuneesti"
+
+#: crates/rnote-ui/src/dialogs/import.rs:34
+msgid "Open File"
+msgstr "Avaa tiedosto"
+
+#: crates/rnote-ui/src/dialogs/import.rs:86
+msgid "Jpg, Pdf, Png, Svg, Xopp, Txt"
+msgstr "Jpg, Pdf, Png, Svg, Xopp, Txt"
+
+#: crates/rnote-ui/src/dialogs/import.rs:239
+msgid "- no file name -"
+msgstr "- ei tiedostonimeä -"
+
+#: crates/rnote-ui/src/dialogs/import.rs:244
+msgid "- no title -"
+msgstr "- ei nimeä -"
+
+#: crates/rnote-ui/src/dialogs/import.rs:247
+msgid "- no author -"
+msgstr "- ei tekijää -"
+
+#: crates/rnote-ui/src/dialogs/import.rs:251
+msgid "- no date -"
+msgstr "- ei päiväystä -"
+
+#: crates/rnote-ui/src/dialogs/import.rs:258
+msgid "File name:"
+msgstr "Tiedostonimi:"
+
+#: crates/rnote-ui/src/dialogs/import.rs:262
+msgid "Title:"
+msgstr "Nimi:"
+
+#: crates/rnote-ui/src/dialogs/import.rs:266
+msgid "Author:"
+msgstr "Tekijä:"
+
+#: crates/rnote-ui/src/dialogs/import.rs:270
+msgid "Modification date:"
+msgstr "Muokkauspäivä:"
+
+#: crates/rnote-ui/src/dialogs/import.rs:274
+msgid "Pages:"
+msgstr "Sivuja:"
+
+#. TRANSLATORS: 'Name <email@domain.com>' or 'Name https://website.example'
+#: crates/rnote-ui/src/dialogs/mod.rs:40
+msgid "translator-credits"
+msgstr "Jiri Grönroos <jiri.gronroos+l10n@iki.fi>"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:202
+#: crates/rnote-ui/src/dialogs/mod.rs:338
+msgid "- invalid save folder name -"
+msgstr "- virheellinen tallennuskansion nimi -"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:218
+#: crates/rnote-ui/src/dialogs/mod.rs:353
+msgid "The changes will be saved"
+msgstr "Muutokset tallennetaan"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:223
+#: crates/rnote-ui/src/dialogs/mod.rs:358
+msgid "A new file will be created"
+msgstr "Uusi tiedosto luodaan"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:502
+msgid "Change Workspace Directory"
+msgstr "Vaihda työtilan kansiota"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:618
+msgid "Band-Aid"
+msgstr "Laastari"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:619
+msgid "Bank"
+msgstr "Pankki"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:620
+msgid "Bookmark"
+msgstr "Kirjanmerkki"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:621
+msgid "Book"
+msgstr "Kirja"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:622
+msgid "Bread"
+msgstr "Leipä"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:623
+msgid "Calendar"
+msgstr "Kalenteri"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:624
+msgid "Camera"
+msgstr "Kamera"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:625
+msgctxt "as in computer chip"
+msgid "Chip"
+msgstr "Piiri"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:626
+msgid "Clock"
+msgstr "Kello"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:627
+msgid "Code"
+msgstr "Koodi"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:628
+msgid "Compose"
+msgstr "Kooste"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:629
+msgctxt "as in plant"
+msgid "Crop"
+msgstr "Viljelykasvi"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:630
+msgid "Dictionary"
+msgstr "Sanasto"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:632
+msgid "Drinks"
+msgstr "Juomat"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:633
+msgid "Flag"
+msgstr "Lippu"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:634
+msgid "Folder"
+msgstr "Kansio"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:635
+msgid "Footprints"
+msgstr "Jalanjäljet"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:636
+msgid "Gamepad"
+msgstr "Peliohjain"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:637
+msgid "Gear"
+msgstr "Ratas"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:638
+msgid "Globe"
+msgstr "Maapallo"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:639
+msgid "Hammer"
+msgstr "Vasara"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:640
+msgid "Heart"
+msgstr "Sydän"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:641
+msgid "Hourglass"
+msgstr "Tiimalasi"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:642
+msgid "Key"
+msgstr "Avain"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:643
+msgid "Language"
+msgstr "Kieli"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:644
+msgid "Library"
+msgstr "Kirjasto"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:645
+msgid "Lightbulb"
+msgstr "Lamppu"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:646
+msgid "Mathematics"
+msgstr "Matematiikka"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:647
+msgid "Meeting"
+msgstr "Tapaaminen"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:648
+msgid "Money"
+msgstr "Raha"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:649
+msgid "Musical Note"
+msgstr "Nuotti"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:650
+msgid "Nature"
+msgstr "Luonto"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:651
+msgid "Open Book"
+msgstr "Avoin kirja"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:652
+msgid "Paintbrush"
+msgstr "Sivellin"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:653
+msgid "Pencil and Paper"
+msgstr "Kynä ja paperi"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:654
+msgid "People"
+msgstr "Ihmiset"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:655
+msgid "Person"
+msgstr "Hahmo"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:656
+msgid "Projector"
+msgstr "Projektori"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:657
+msgid "Science"
+msgstr "Tiede"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:658
+msgid "Scratchpad"
+msgstr "Piirtolehtiö"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:659
+msgid "Shapes"
+msgstr "Muodot"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:660
+msgid "Shopping"
+msgstr "Ostokset"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:661
+msgid "Speech Bubble"
+msgstr "Puhekupla"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:662
+msgid "Speedometer"
+msgstr "Nopeusmittari"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:663
+msgid "Star"
+msgstr "Tähti"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:665
+msgctxt "as in terminal software"
+msgid "Terminal"
+msgstr "Pääte"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:667
+msgid "Text"
+msgstr "Teksti"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:668
+msgid "Travel"
+msgstr "Matkustus"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:669
+msgid "Weather"
+msgstr "Sää"
+
+#: crates/rnote-ui/src/dialogs/mod.rs:670
+msgid "Weight"
+msgstr "Paino"
+
+#: crates/rnote-ui/src/penssidebar/shaperpage.rs:387
+msgid "Miscellaneous"
+msgstr "Sekalaiset"
+
+#: crates/rnote-ui/src/penssidebar/shaperpage.rs:396
+msgid "Coordinate Systems"
+msgstr "Koordinaattijärjestelmät"
+
+#: crates/rnote-ui/src/penssidebar/shaperpage.rs:404
+msgid "Ellipses"
+msgstr "Ellipsit"
+
+#: crates/rnote-ui/src/penssidebar/shaperpage.rs:411
+msgid "Curves & Paths"
+msgstr "Käyrät ja polut"
+
+#: crates/rnote-ui/src/penssidebar/shaperpage.rs:426
+msgid "Arrow"
+msgstr "Nuoli"
+
+#: crates/rnote-ui/src/penssidebar/shaperpage.rs:427
+msgid "Line"
+msgstr "Viiva"
+
+#: crates/rnote-ui/src/penssidebar/shaperpage.rs:428
+msgid "Rectangle"
+msgstr "Suorakulmio"
+
+#: crates/rnote-ui/src/penssidebar/shaperpage.rs:430
+msgid "2D coordinate system"
+msgstr "2D-koordinaattijärjestelmä"
+
+#: crates/rnote-ui/src/penssidebar/shaperpage.rs:431
+msgid "3D coordinate system"
+msgstr "3D-koordinaattijärjestelmä"
+
+#: crates/rnote-ui/src/penssidebar/shaperpage.rs:432
+msgid "2D single quadrant coordinate system"
+msgstr ""
+
+#: crates/rnote-ui/src/penssidebar/shaperpage.rs:433
+msgid "Ellipse"
+msgstr "Ellipsi"
+
+#: crates/rnote-ui/src/penssidebar/shaperpage.rs:434
+msgid "Ellipse with foci"
+msgstr "Ellipsi kohdistimilla"
+
+#: crates/rnote-ui/src/penssidebar/shaperpage.rs:435
+msgid "Quadratic bezier curve"
+msgstr "Neliöllinen Bézier-käyrä"
+
+#: crates/rnote-ui/src/penssidebar/shaperpage.rs:436
+msgid "Cubic bezier curve"
+msgstr "Kuutiollinen Bézier-käyrä"
+
+#: crates/rnote-ui/src/penssidebar/shaperpage.rs:437
+msgid "Polyline"
+msgstr "Murtoviiva"
+
+#: crates/rnote-ui/src/penssidebar/shaperpage.rs:438
+msgid "Polygon"
+msgstr "Monikulmio"
+
+#: crates/rnote-ui/src/settingspanel/mod.rs:571
+msgid "Application restart is required"
+msgstr "Sovellus on käynnistettävä uudelleen"
+
+#: crates/rnote-ui/src/settingspanel/mod.rs:887
+msgctxt "a cursor type"
+msgid "Crosshair (Small)"
+msgstr "Tähtäin (pieni)"
+
+#: crates/rnote-ui/src/settingspanel/mod.rs:888
+msgctxt "a cursor type"
+msgid "Crosshair (Medium)"
+msgstr "Tähtäin (tavallinen)"
+
+#: crates/rnote-ui/src/settingspanel/mod.rs:889
+msgctxt "a cursor type"
+msgid "Crosshair (Large)"
+msgstr "Tähtäin (suuri)"
+
+#: crates/rnote-ui/src/settingspanel/mod.rs:890
+msgctxt "a cursor type"
+msgid "Dot (Small)"
+msgstr "Piste (pieni)"
+
+#: crates/rnote-ui/src/settingspanel/mod.rs:891
+msgctxt "a cursor type"
+msgid "Dot (Medium)"
+msgstr "Piste (tavallinen)"
+
+#: crates/rnote-ui/src/settingspanel/mod.rs:892
+msgctxt "a cursor type"
+msgid "Dot (Large)"
+msgstr "Piste (suuri)"
+
+#: crates/rnote-ui/src/settingspanel/mod.rs:893
+msgctxt "a cursor type"
+msgid "Teardrop North-West (Small)"
+msgstr "Pisara, luode (pieni)"
+
+#: crates/rnote-ui/src/settingspanel/mod.rs:894
+msgctxt "a cursor type"
+msgid "Teardrop North-West (Medium)"
+msgstr "Pisara, luode (tavallinen)"
+
+#: crates/rnote-ui/src/settingspanel/mod.rs:895
+msgctxt "a cursor type"
+msgid "Teardrop North-West (Large)"
+msgstr "Pisara, luode (suuri)"
+
+#: crates/rnote-ui/src/settingspanel/mod.rs:896
+msgctxt "a cursor type"
+msgid "Teardrop North-East (Small)"
+msgstr "Pisara, koillinen (pieni)"
+
+#: crates/rnote-ui/src/settingspanel/mod.rs:897
+msgctxt "a cursor type"
+msgid "Teardrop North-East (Medium)"
+msgstr "Pisara, koillinen (tavallinen)"
+
+#: crates/rnote-ui/src/settingspanel/mod.rs:898
+msgctxt "a cursor type"
+msgid "Teardrop North-East (Large)"
+msgstr "Pisara, koillinen (suuri)"
+
+#: crates/rnote-ui/src/settingspanel/mod.rs:899
+msgctxt "a cursor type"
+msgid "Teardrop North (Small)"
+msgstr "Pisara, pohjoinen (pieni)"
+
+#: crates/rnote-ui/src/settingspanel/mod.rs:900
+msgctxt "a cursor type"
+msgid "Teardrop North (Medium)"
+msgstr "Pisara, pohjoinen (tavallinen)"
+
+#: crates/rnote-ui/src/settingspanel/mod.rs:901
+msgctxt "a cursor type"
+msgid "Teardrop North (Large)"
+msgstr "Pisara, pohjoinen (suuri)"
+
+#: crates/rnote-ui/src/settingspanel/mod.rs:902
+msgctxt "a cursor type"
+msgid "Beam (Small)"
+msgstr "Säde (pieni)"
+
+#: crates/rnote-ui/src/settingspanel/mod.rs:903
+msgctxt "a cursor type"
+msgid "Beam (Medium)"
+msgstr "Säde (tavallinen)"
+
+#: crates/rnote-ui/src/settingspanel/mod.rs:904
+msgctxt "a cursor type"
+msgid "Beam (Large)"
+msgstr "Säde (suuri)"
+
+#: crates/rnote-ui/src/workspacebrowser/filerow/actions/duplicate.rs:35
+msgid "Can't duplicate an unsaved document"
+msgstr "Tallentamatonta asiakirjaa ei voi monistaa"
+
+#: crates/rnote-ui/src/workspacebrowser/filerow/actions/duplicate.rs:45
+msgid "Duplicating the file failed"
+msgstr "Tiedoston monistaminen epäonnistui"
+
+#: crates/rnote-ui/src/workspacebrowser/filerow/actions/duplicate.rs:51
+msgid "Duplicating the directory failed"
+msgstr "Kansion monistaminen epäonnistui"
+
+#: crates/rnote-ui/src/workspacebrowser/filerow/actions/open_in_default_app.rs:18
+msgid "Open the file in the default app failed"
+msgstr "Tiedoston avaaminen oletussovelluksessa epäonnistui"
+
+#: crates/rnote-ui/src/workspacebrowser/filerow/actions/rename.rs:39
+msgid "Renaming file failed, target file already exists"
+msgstr ""
+"Tiedoston nimeäminen uudelleen epäonnistui. Kohdetiedosto on jo olemassa"
+
+#: crates/rnote-ui/src/workspacebrowser/filerow/actions/rename.rs:46
+msgid "Renaming file failed"
+msgstr "Tiedoston nimeäminen uudelleen epäonnistui"
+
+#: crates/rnote-ui/src/workspacebrowser/filerow/actions/trash.rs:20
+msgid "Trashing file failed"
+msgstr "Tiedoston siirtäminen roskakoriin epäonnistui"
+
+#: crates/rnote-ui/src/workspacebrowser/workspaceactions/createfolder.rs:67
+msgid "Folder Name"
+msgstr "Kansion nimi"
+
+#: crates/rnote-ui/src/workspacebrowser/workspaceactions/createfolder.rs:75
+msgid "New Folder"
+msgstr "Uusi kansio"
+
+#: crates/rnote-ui/src/utils.rs:159
+msgctxt "used in string representation of the current selected color"
+msgid "grey"
+msgstr "harmaa"
+
+#: crates/rnote-ui/src/utils.rs:161 crates/rnote-ui/src/utils.rs:196
+msgctxt "part of string representation of a color"
+msgid "rose"
+msgstr "roosa"
+
+#: crates/rnote-ui/src/utils.rs:163
+msgctxt "part of string representation of a color"
+msgid "red"
+msgstr "punainen"
+
+#: crates/rnote-ui/src/utils.rs:166
+msgctxt "part of string representation of a color"
+msgid "orange"
+msgstr "oranssi"
+
+#: crates/rnote-ui/src/utils.rs:169
+msgctxt "part of string representation of a color"
+msgid "yellow"
+msgstr "keltainen"
+
+#: crates/rnote-ui/src/utils.rs:173
+msgctxt "part of string representation of a color"
+msgid "chartreuse-green"
+msgstr ""
+
+#: crates/rnote-ui/src/utils.rs:176
+msgctxt "part of string representation of a color"
+msgid "green"
+msgstr "vihreä"
+
+#: crates/rnote-ui/src/utils.rs:179
+msgctxt "part of string representation of a color"
+msgid "spring-green"
+msgstr "keväänvihreä"
+
+#: crates/rnote-ui/src/utils.rs:182
+msgctxt "part of string representation of a color"
+msgid "cyan"
+msgstr "syaani"
+
+#: crates/rnote-ui/src/utils.rs:185
+msgctxt "part of string representation of a color"
+msgid "azure"
+msgstr "asuurinsininen"
+
+#: crates/rnote-ui/src/utils.rs:188
+msgctxt "part of string representation of a color"
+msgid "blue"
+msgstr "sininen"
+
+#: crates/rnote-ui/src/utils.rs:191
+msgctxt "part of string representation of a color"
+msgid "violet"
+msgstr "violetti"
+
+#: crates/rnote-ui/src/utils.rs:194
+msgctxt "part of string representation of a color"
+msgid "magenta"
+msgstr "magenta"
+
+#: crates/rnote-ui/src/utils.rs:201
+msgctxt "part of string representation of a color"
+msgid "greyish"
+msgstr "harmahtava"
+
+#: crates/rnote-ui/src/utils.rs:204
+msgctxt "part of string representation of a color"
+msgid "vivid"
+msgstr "eloisa"
+
+#: crates/rnote-ui/src/utils.rs:208
+msgctxt "part of string representation of a color"
+msgid "very-dark"
+msgstr "erittäin tumma"
+
+#: crates/rnote-ui/src/utils.rs:210
+msgctxt "part of string representation of a color"
+msgid "dark"
+msgstr "tumma"
+
+#: crates/rnote-ui/src/utils.rs:213
+msgctxt "part of string representation of a color"
+msgid "mid"
+msgstr ""
+
+#: crates/rnote-ui/src/utils.rs:215
+msgctxt "part of string representation of a color"
+msgid "bright"
+msgstr "kirkas"
+
+#: crates/rnote-ui/src/utils.rs:219
+msgctxt "part of string representation of a color"
+msgid "transparent"
+msgstr "läpinäkyvä"
+
+#: crates/rnote-ui/src/utils.rs:221
+msgctxt "part of string representation of a color"
+msgid "translucent"
+msgstr "läpikuultava"
+
+#: crates/rnote-ui/src/utils.rs:225
+msgctxt "part of string representation of a color"
+msgid "slightly-translucent"
+msgstr "hieman läpikuultava"
+
+#: crates/rnote-ui/src/utils.rs:234
+msgctxt "part of string representation of a color"
+msgid "fully transparent"
+msgstr "täysin läpinäkyvä"
+
+#: crates/rnote-ui/src/utils.rs:237
+msgctxt "part of string representation of a color"
+msgid "black"
+msgstr "musta"
+
+#: crates/rnote-ui/src/utils.rs:239
+msgctxt "part of string representation of a color"
+msgid "white"
+msgstr "valkoinen"

@@ -7,6 +7,7 @@ use p2d::bounding_volume::Aabb;
 use rnote_compose::ext::AabbExt;
 use serde::{Deserialize, Serialize};
 use std::time::Duration;
+use tracing::error;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub enum NudgeDirection {
@@ -205,7 +206,7 @@ impl Camera {
                     reinstall_zoom_task = true;
                 }
                 Err(e) => {
-                    tracing::error!("Could not replace task for one off zoom task, Err: {e:?}");
+                    error!("Could not replace task for one off zoom task, Err: {e:?}");
                     reinstall_zoom_task = true;
                 }
             }
@@ -230,6 +231,13 @@ impl Camera {
     /// Takes the scale factor in account
     pub fn image_scale(&self) -> f64 {
         self.zoom * self.scale_factor
+    }
+
+    /// The scale factor that gets set according to the toolkit hi-dpi settings.
+    ///
+    /// For Gtk it currently is 1.0 for scaling < 150%, 2.0 for >= 150% and < 250%, ..
+    pub fn scale_factor(&self) -> f64 {
+        self.scale_factor
     }
 
     pub fn set_scale_factor(&mut self, scale_factor: f64) -> WidgetFlags {

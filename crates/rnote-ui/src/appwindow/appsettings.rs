@@ -2,6 +2,7 @@
 use crate::appwindow::RnAppWindow;
 use adw::{prelude::*, subclass::prelude::*};
 use gtk4::{gdk, glib, glib::clone};
+use tracing::error;
 
 impl RnAppWindow {
     /// Setup settings binds.
@@ -22,7 +23,7 @@ impl RnAppWindow {
 
                 if let Err(e) = app_settings
                     .set_string("color-scheme", &color_scheme) {
-                        tracing::error!("Failed to set setting `color-scheme`, Err: {e:?}");
+                        error!("Failed to set setting `color-scheme`, Err: {e:?}");
                     }
             }),
         );
@@ -59,6 +60,12 @@ impl RnAppWindow {
         // touch drawing
         app_settings
             .bind("touch-drawing", self, "touch-drawing")
+            .get_no_changes()
+            .build();
+
+        // respect borders
+        app_settings
+            .bind("respect-borders", self, "respect-borders")
             .get_no_changes()
             .build();
 
@@ -406,9 +413,6 @@ impl RnAppWindow {
             let is_maximized = app_settings.boolean("is-maximized");
 
             if is_maximized {
-                // don't restore maximized window state on macos, avoids issues disussed in
-                // issue 823 - https://github.com/flxzt/rnote/issues/823
-                #[cfg(not(target_os = "macos"))]
                 self.maximize();
             } else {
                 self.set_default_size(window_width, window_height);
@@ -440,9 +444,11 @@ impl RnAppWindow {
 
         {
             // Appwindow
-            app_settings.set_int("window-width", self.width())?;
-            app_settings.set_int("window-height", self.height())?;
             app_settings.set_boolean("is-maximized", self.is_maximized())?;
+            if !self.is_maximized() {
+                app_settings.set_int("window-width", self.width())?;
+                app_settings.set_int("window-height", self.height())?;
+            }
         }
 
         {
@@ -473,7 +479,7 @@ impl RnAppWindow {
             glib::source::timeout_add_seconds_local(
                 Self::PERIODIC_CONFIGSAVE_INTERVAL, clone!(@weak app_settings, @weak self as appwindow => @default-return glib::ControlFlow::Break, move || {
                     if let Err(e) = appwindow.active_tab_wrapper().canvas().save_engine_config(&app_settings) {
-                        tracing::error!("Saving engine config in periodic save task failed , Err: {e:?}");
+                        error!("Saving engine config in periodic save task failed , Err: {e:?}");
                     }
 
                     glib::ControlFlow::Continue

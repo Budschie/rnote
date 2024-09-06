@@ -35,7 +35,6 @@ use p2d::bounding_volume::{Aabb, BoundingVolume};
 use rnote_compose::eventresult::EventPropagation;
 use rnote_compose::ext::AabbExt;
 use rnote_compose::penevent::{PenEvent, ShortcutKey};
-use rnote_compose::shapes::Shapeable;
 use rnote_compose::{Color, SplitOrder};
 use serde::{Deserialize, Serialize};
 use std::borrow::BorrowMut;
@@ -43,6 +42,7 @@ use std::collections::HashMap;
 use std::path::PathBuf;
 use std::sync::Arc;
 use std::time::Instant;
+use tracing::error;
 
 #[derive(Debug)]
 pub struct WrongPenError;
@@ -106,8 +106,6 @@ pub enum EngineTask {
         images: GeneratedContentImages,
         /// The image scale-factor the render task was using while generating the images.
         image_scale: f64,
-        /// The stroke bounds at the time when the render task has launched.
-        stroke_bounds: Aabb,
     },
     /// Appends the images to the rendering of the given stroke.
     ///
@@ -158,6 +156,8 @@ pub struct EngineConfig {
     export_prefs: ExportPrefs,
     #[serde(rename = "pen_sounds")]
     pen_sounds: bool,
+    #[serde(rename = "optimize_epd")]
+    optimize_epd: bool,
 }
 
 #[derive(Debug, Clone)]
@@ -167,7 +167,7 @@ impl EngineTaskSender {
     pub fn send(&self, task: EngineTask) {
         if let Err(e) = self.0.unbounded_send(task) {
             let err = format!("{e:?}");
-            tracing::error!(
+            error!(
                 "Failed to send engine task {:?}, Err: {err}",
                 e.into_inner()
             );
@@ -204,6 +204,8 @@ pub struct Engine {
     pub export_prefs: ExportPrefs,
     #[serde(rename = "pen_sounds")]
     pen_sounds: bool,
+    #[serde(rename = "optimize_epd")]
+    optimize_epd: bool,
 
     #[serde(skip)]
     audioplayer: Option<AudioPlayer>,
@@ -224,6 +226,12 @@ pub struct Engine {
     equation_compilation_errors: HashMap<StrokeKey, String>,
     #[serde(skip)]
     equation_compiler: Option<EquationCompilerMainThread>,
+    // Origin indicator rendering
+    #[serde(skip)]
+    origin_indicator_image: Option<render::Image>,
+    #[cfg(feature = "ui")]
+    #[serde(skip)]
+    origin_indicator_rendernode: Option<gtk4::gsk::RenderNode>,
 }
 
 impl Default for Engine {
@@ -239,6 +247,7 @@ impl Default for Engine {
             import_prefs: ImportPrefs::default(),
             export_prefs: ExportPrefs::default(),
             pen_sounds: false,
+            optimize_epd: false,
 
             audioplayer: None,
             visual_debug: false,
@@ -249,6 +258,9 @@ impl Default for Engine {
             background_rendernodes: Vec::default(),
             equation_compilation_errors: HashMap::new(),
             equation_compiler: None,
+            origin_indicator_image: None,
+            #[cfg(feature = "ui")]
+            origin_indicator_rendernode: None,
         }
     }
 }
@@ -308,7 +320,7 @@ impl Engine {
                     self.audioplayer = match AudioPlayer::new_init(pkg_data_dir) {
                         Ok(audioplayer) => Some(audioplayer),
                         Err(e) => {
-                            tracing::error!("Creating a new audioplayer failed while enabling pen sounds, Err: {e:?}");
+                            error!("Creating a new audioplayer failed while enabling pen sounds, Err: {e:?}");
                             None
                         }
                     }
@@ -317,6 +329,14 @@ impl Engine {
         } else {
             self.audioplayer.take();
         }
+    }
+
+    pub fn optimize_epd(&self) -> bool {
+        self.optimize_epd
+    }
+
+    pub fn set_optimize_epd(&mut self, optimize_epd: bool) {
+        self.optimize_epd = optimize_epd
     }
 
     pub fn visual_debug(&self) -> bool {
@@ -361,7 +381,7 @@ impl Engine {
         let mut widget_flags = self.store.import_from_snapshot(&snapshot)
             | self.doc_resize_autoexpand()
             | self.current_pen_update_state()
-            | self.background_regenerate_pattern()
+            | self.background_rendering_regenerate()
             | self.update_content_rendering_current_viewport();
         widget_flags.refresh_ui = true;
         widget_flags.view_modified = true;
@@ -437,7 +457,6 @@ impl Engine {
                 key,
                 images,
                 image_scale,
-                stroke_bounds,
             } => {
                 if let Some(state) = self.store.render_comp_state(key) {
                     match state {
@@ -447,18 +466,12 @@ impl Engine {
                         }
                         RenderCompState::BusyRenderingInTask => {
                             if (self.camera.image_scale()
-                                - render_comp::RENDER_IMAGE_SCALE_EQUALITY_TOLERANCE
+                                - render_comp::RENDER_IMAGE_SCALE_TOLERANCE
                                 ..self.camera.image_scale()
-                                    + render_comp::RENDER_IMAGE_SCALE_EQUALITY_TOLERANCE)
+                                    + render_comp::RENDER_IMAGE_SCALE_TOLERANCE)
                                 .contains(&image_scale)
-                                && self
-                                    .store
-                                    .get_stroke_ref(key)
-                                    .map(|s| s.bounds() == stroke_bounds)
-                                    .unwrap_or(true)
                             {
-                                // Only when the image scale and stroke bounds are the same
-                                // to when the render task was started,
+                                // Only when the image scale is roughly the same to when the render task was started,
                                 // the new images are considered valid and can replace the old.
                                 self.store.replace_rendering_with_images(key, images);
                             }
@@ -492,7 +505,7 @@ impl Engine {
                 let all_strokes = self.store.stroke_keys_unordered();
                 self.store.set_rendering_dirty_for_strokes(&all_strokes);
                 widget_flags |= self.doc_resize_autoexpand()
-                    | self.background_regenerate_pattern()
+                    | self.background_rendering_regenerate()
                     | self.update_rendering_current_viewport();
             }
             EngineTask::UpdateEquation { key, svg_code } => {
@@ -684,7 +697,7 @@ impl Engine {
         let mut widget_flags = WidgetFlags::default();
         if active {
             widget_flags |= self.reinstall_pen_current_style()
-                | self.background_regenerate_pattern()
+                | self.background_rendering_regenerate()
                 | self.update_content_rendering_current_viewport();
             widget_flags.view_modified = true;
 
@@ -758,7 +771,7 @@ impl Engine {
         self.store
             .set_rendering_dirty_for_strokes(&self.store.stroke_keys_as_rendered());
         self.camera.set_scale_factor(scale_factor)
-            | self.background_regenerate_pattern()
+            | self.background_rendering_regenerate()
             | self.update_content_rendering_current_viewport()
     }
 
@@ -807,7 +820,7 @@ impl Engine {
     ///
     /// Background and content rendering then needs to be updated.
     pub fn doc_expand_autoexpand(&mut self) -> WidgetFlags {
-        self.document.expand_autoexpand(&self.camera)
+        self.document.expand_autoexpand(&self.camera, &self.store)
     }
 
     /// Add a page to the document when in fixed size layout.
@@ -1085,6 +1098,38 @@ impl Engine {
                     equation_compiler: &mut self.equation_compiler,
                 },
             )
+        }
+        widget_flags
+    }
+
+    pub fn text_change_color(&mut self, color: Color) -> WidgetFlags {
+        let mut widget_flags = WidgetFlags::default();
+        if let Pen::Typewriter(typewriter) = self.penholder.current_pen_mut() {
+            if typewriter.selection_range().is_some() {
+                widget_flags |= typewriter.replace_text_attribute_current_selection(
+                    TextAttribute::TextColor(color),
+                    &mut EngineViewMut {
+                        tasks_tx: self.tasks_tx.clone(),
+                        pens_config: &mut self.pens_config,
+                        document: &mut self.document,
+                        store: &mut self.store,
+                        camera: &mut self.camera,
+                        audioplayer: &mut self.audioplayer,
+                    },
+                )
+            } else {
+                widget_flags |= typewriter.change_text_style_in_modifying_stroke(
+                    |style| style.color = color,
+                    &mut EngineViewMut {
+                        tasks_tx: self.tasks_tx.clone(),
+                        pens_config: &mut self.pens_config,
+                        document: &mut self.document,
+                        store: &mut self.store,
+                        camera: &mut self.camera,
+                        audioplayer: &mut self.audioplayer,
+                    },
+                )
+            }
         }
         widget_flags
     }

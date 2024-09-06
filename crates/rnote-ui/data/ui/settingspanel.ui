@@ -60,6 +60,13 @@
                       </object>
                     </child>
                     <child>
+                      <object class="AdwSwitchRow" id="general_optimize_epd_row">
+                        <property name="title" translatable="yes">Optimize for E-Paper Displays</property>
+                        <property name="subtitle" translatable="yes">Changes certain UI elements and modifies behaviour
+of tools for optimized usage on E-Paper displays</property>
+                      </object>
+                    </child>
+                    <child>
                       <object class="AdwSwitchRow" id="general_inertial_scrolling_row">
                         <property name="title" translatable="yes">Inertial Touch Scrolling</property>
                         <property name="subtitle" translatable="yes">Set whether touch scrolling on the canvas is inertial.
@@ -245,6 +252,21 @@ gets disabled.</property>
                 <child>
                   <object class="AdwPreferencesGroup">
                     <property name="title" translatable="yes">Document</property>
+                    <child>
+                      <object class="AdwComboRow" id="doc_document_layout_row">
+                        <property name="title" translatable="yes">Document Layout</property>
+                        <property name="model">
+                          <object class="GtkStringList">
+                            <items>
+                              <item translatable="yes">Fixed Size</item>
+                              <item translatable="yes">Continuous Vertical</item>
+                              <item translatable="yes">Semi Infinite</item>
+                              <item translatable="yes">Infinite</item>
+                            </items>
+                          </object>
+                        </property>
+                      </object>
+                    </child>
                     <child>
                       <object class="AdwActionRow" id="doc_format_border_color_row">
                         <property name="title" translatable="yes">Format Border Color</property>

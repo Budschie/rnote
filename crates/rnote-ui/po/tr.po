@@ -7,20 +7,20 @@ msgid ""
 msgstr ""
 "Project-Id-Version: rnote\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-07 18:37+0100\n"
-"PO-Revision-Date: 2024-01-01 22:12+0000\n"
-"Last-Translator: Sabri Ünal <libreajans@gmail.com>\n"
+"POT-Creation-Date: 2024-07-26 10:39+0200\n"
+"PO-Revision-Date: 2024-06-16 21:09+0000\n"
+"Last-Translator: Sabri Ünal <yakushabb@gmail.com>\n"
 "Language-Team: Turkish <https://hosted.weblate.org/projects/rnote/repo/tr/>\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.4-dev\n"
+"X-Generator: Weblate 5.6-dev\n"
 
 #: crates/rnote-ui/data/app.desktop.in.in:5
 #: crates/rnote-ui/data/app.metainfo.xml.in.in:9
-#: crates/rnote-ui/src/dialogs/mod.rs:35
+#: crates/rnote-ui/src/dialogs/mod.rs:33
 msgid "Sketch and take handwritten notes"
 msgstr "Eskiz yap ve el yazısıyla notlar al"
 
@@ -30,6 +30,7 @@ msgid "Gnome;GTK;Office;Graphics;Notes;"
 msgstr "Gnome;GTK;Office;Graphics;Notes;Ofis;Grafik;Not;Notlar;"
 
 #: crates/rnote-ui/data/app.desktop.in.in:20
+#: crates/rnote-ui/data/ui/shortcuts.ui:20
 msgid "New Window"
 msgstr "Yeni Pencere"
 
@@ -78,7 +79,7 @@ msgid "Configure action shortcuts"
 msgstr "Eylem kısayollarını yapılandır"
 
 #: crates/rnote-ui/data/ui/dialogs/dialogs.ui:5
-#: crates/rnote-ui/data/ui/shortcuts.ui:179
+#: crates/rnote-ui/data/ui/shortcuts.ui:185
 msgid "Clear Document"
 msgstr "Belgeyi Temizle"
 
@@ -90,15 +91,15 @@ msgstr "Bu, tüm belgeyi temizleyecek. Lütfen doğrulayın."
 #: crates/rnote-ui/data/ui/dialogs/dialogs.ui:22
 #: crates/rnote-ui/data/ui/dialogs/dialogs.ui:40
 #: crates/rnote-ui/data/ui/dialogs/dialogs.ui:58
-#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:70
-#: crates/rnote-ui/data/ui/dialogs/export.ui:10
-#: crates/rnote-ui/data/ui/dialogs/export.ui:175
-#: crates/rnote-ui/data/ui/dialogs/export.ui:411
-#: crates/rnote-ui/data/ui/dialogs/import.ui:10
-#: crates/rnote-ui/data/ui/dialogs/import.ui:199
-#: crates/rnote-ui/src/workspacebrowser/widgethelper.rs:34
+#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:74
+#: crates/rnote-ui/data/ui/dialogs/export.ui:14
+#: crates/rnote-ui/data/ui/dialogs/export.ui:183
+#: crates/rnote-ui/data/ui/dialogs/export.ui:423
+#: crates/rnote-ui/data/ui/dialogs/import.ui:14
+#: crates/rnote-ui/data/ui/dialogs/import.ui:213
+#: crates/rnote-ui/src/workspacebrowser/widgethelper.rs:31
 msgid "Cancel"
-msgstr "İptal Et"
+msgstr "İptal"
 
 #: crates/rnote-ui/data/ui/dialogs/dialogs.ui:11
 msgid "Clear"
@@ -106,8 +107,7 @@ msgstr "Temizle"
 
 #: crates/rnote-ui/data/ui/dialogs/dialogs.ui:16
 #: crates/rnote-ui/data/ui/mainheader.ui:22
-#: crates/rnote-ui/data/ui/shortcuts.ui:149
-#: crates/rnote-ui/src/canvas/mod.rs:593
+#: crates/rnote-ui/src/canvas/mod.rs:592
 msgid "New Document"
 msgstr "Yeni Belge"
 
@@ -127,7 +127,7 @@ msgstr "Gözden çıkar"
 #: crates/rnote-ui/data/ui/dialogs/dialogs.ui:24
 #: crates/rnote-ui/data/ui/dialogs/dialogs.ui:42
 #: crates/rnote-ui/data/ui/dialogs/dialogs.ui:60
-#: crates/rnote-ui/src/dialogs/export.rs:32
+#: crates/rnote-ui/src/dialogs/export.rs:42
 msgid "Save"
 msgstr "Kaydet"
 
@@ -163,174 +163,178 @@ msgstr "Kaydedilmemiş Belgeler"
 msgid "Discard All"
 msgstr "Tümünden Vazgeç"
 
-#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:67
+#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:65
 msgid "Edit Workspace"
 msgstr "Çalışma Alanı Düzenle"
 
-#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:75
-#: crates/rnote-ui/data/ui/settingspanel.ui:234
-#: crates/rnote-ui/src/workspacebrowser/widgethelper.rs:39
+#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:79
+#: crates/rnote-ui/data/ui/settingspanel.ui:241
+#: crates/rnote-ui/src/workspacebrowser/widgethelper.rs:36
 msgid "Apply"
 msgstr "Uygula"
 
-#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:117
+#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:119
 msgid "Workspace Name"
 msgstr "Çalışma Alanı Adı"
 
-#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:122
+#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:124
 msgid "Icon"
 msgstr "Simge"
 
-#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:123
+#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:125
 msgid "Change the workspace icon"
 msgstr "Çalışma alanı simgesini değiştir"
 
-#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:143
-#: crates/rnote-ui/data/ui/settingspanel.ui:271
+#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:145
+#: crates/rnote-ui/data/ui/settingspanel.ui:293
 msgid "Color"
 msgstr "Renk"
 
-#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:144
+#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:146
 msgid "Change the workspace color"
 msgstr "Çalışma alanı rengini değiştir"
 
-#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:158
+#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:160
 msgid "Directory"
 msgstr "Dizin"
 
-#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:159
+#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:161
 msgid "Change the workspace directory"
 msgstr "Çalışma alanı dizinini değiştir"
 
-#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:168
-#: crates/rnote-ui/data/ui/dialogs/export.ui:284
-#: crates/rnote-ui/src/dialogs/export.rs:372
-#: crates/rnote-ui/src/dialogs/export.rs:409
+#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:170
+#: crates/rnote-ui/data/ui/dialogs/export.ui:290
 #: crates/rnote-ui/src/dialogs/export.rs:417
-#: crates/rnote-ui/src/dialogs/mod.rs:527
+#: crates/rnote-ui/src/dialogs/export.rs:454
+#: crates/rnote-ui/src/dialogs/export.rs:462
+#: crates/rnote-ui/src/dialogs/mod.rs:522
 msgid "- no directory selected -"
 msgstr "- dizin seçilmedi -"
 
-#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:183
+#: crates/rnote-ui/data/ui/dialogs/dialogs.ui:185
 msgid "Change the directory"
 msgstr "Dizini değiştir"
 
-#: crates/rnote-ui/data/ui/dialogs/export.ui:7
-#: crates/rnote-ui/src/dialogs/export.rs:268
+#: crates/rnote-ui/data/ui/dialogs/export.ui:5
+#: crates/rnote-ui/src/dialogs/export.rs:285
 msgid "Export Document"
 msgstr "Belgeyi Dışa Aktar"
 
-#: crates/rnote-ui/data/ui/dialogs/export.ui:15
-#: crates/rnote-ui/data/ui/dialogs/export.ui:180
-#: crates/rnote-ui/data/ui/dialogs/export.ui:416
-#: crates/rnote-ui/src/dialogs/export.rs:907
-#: crates/rnote-ui/src/dialogs/export.rs:955
+#: crates/rnote-ui/data/ui/dialogs/export.ui:19
+#: crates/rnote-ui/data/ui/dialogs/export.ui:188
+#: crates/rnote-ui/data/ui/dialogs/export.ui:428
+#: crates/rnote-ui/src/dialogs/export.rs:1025
+#: crates/rnote-ui/src/dialogs/export.rs:1088
 msgid "Export"
 msgstr "Dışa aktar"
 
-#: crates/rnote-ui/data/ui/dialogs/export.ui:72
-#: crates/rnote-ui/data/ui/dialogs/export.ui:473
+#: crates/rnote-ui/data/ui/dialogs/export.ui:74
+#: crates/rnote-ui/data/ui/dialogs/export.ui:483
 msgid "Export File"
 msgstr "Dosyayı Dışa Aktar"
 
-#: crates/rnote-ui/data/ui/dialogs/export.ui:73
-#: crates/rnote-ui/data/ui/dialogs/export.ui:474
+#: crates/rnote-ui/data/ui/dialogs/export.ui:75
+#: crates/rnote-ui/data/ui/dialogs/export.ui:484
 msgid "Select the export file"
 msgstr "Dışa aktarma dosyasını seç"
 
 #. force the user to pick another file
-#: crates/rnote-ui/data/ui/dialogs/export.ui:82
-#: crates/rnote-ui/data/ui/dialogs/export.ui:483
-#: crates/rnote-ui/src/dialogs/export.rs:119
-#: crates/rnote-ui/src/dialogs/export.rs:141
-#: crates/rnote-ui/src/dialogs/export.rs:148
-#: crates/rnote-ui/src/dialogs/export.rs:193
-#: crates/rnote-ui/src/dialogs/export.rs:664
-#: crates/rnote-ui/src/dialogs/export.rs:690
-#: crates/rnote-ui/src/dialogs/export.rs:697
-#: crates/rnote-ui/src/dialogs/export.rs:748
+#: crates/rnote-ui/data/ui/dialogs/export.ui:84
+#: crates/rnote-ui/data/ui/dialogs/export.ui:493
+#: crates/rnote-ui/src/dialogs/export.rs:131
+#: crates/rnote-ui/src/dialogs/export.rs:153
+#: crates/rnote-ui/src/dialogs/export.rs:160
+#: crates/rnote-ui/src/dialogs/export.rs:205
+#: crates/rnote-ui/src/dialogs/export.rs:736
+#: crates/rnote-ui/src/dialogs/export.rs:762
+#: crates/rnote-ui/src/dialogs/export.rs:769
+#: crates/rnote-ui/src/dialogs/export.rs:820
 msgid "- no file selected -"
 msgstr "- dosya seçilmedi -"
 
-#: crates/rnote-ui/data/ui/dialogs/export.ui:106
-#: crates/rnote-ui/data/ui/dialogs/export.ui:313
-#: crates/rnote-ui/data/ui/dialogs/export.ui:507
+#: crates/rnote-ui/data/ui/dialogs/export.ui:108
+#: crates/rnote-ui/data/ui/dialogs/export.ui:319
+#: crates/rnote-ui/data/ui/dialogs/export.ui:517
 msgid "Export Preferences"
 msgstr "Dışa Aktarma Tercihleri"
 
-#: crates/rnote-ui/data/ui/dialogs/export.ui:110
-#: crates/rnote-ui/data/ui/dialogs/export.ui:317
-#: crates/rnote-ui/data/ui/dialogs/export.ui:511
+#: crates/rnote-ui/data/ui/dialogs/export.ui:112
+#: crates/rnote-ui/data/ui/dialogs/export.ui:323
+#: crates/rnote-ui/data/ui/dialogs/export.ui:521
 msgid "With Background"
 msgstr "Arka Plan ile"
 
-#: crates/rnote-ui/data/ui/dialogs/export.ui:111
-#: crates/rnote-ui/data/ui/dialogs/export.ui:318
-#: crates/rnote-ui/data/ui/dialogs/export.ui:512
+#: crates/rnote-ui/data/ui/dialogs/export.ui:113
+#: crates/rnote-ui/data/ui/dialogs/export.ui:324
+#: crates/rnote-ui/data/ui/dialogs/export.ui:522
 msgid "Set whether the background should be exported"
 msgstr "Arka planın dışa aktarılıp aktarılmayacağını ayarla"
 
-#: crates/rnote-ui/data/ui/dialogs/export.ui:116
-#: crates/rnote-ui/data/ui/dialogs/export.ui:323
-#: crates/rnote-ui/data/ui/dialogs/export.ui:517
+#: crates/rnote-ui/data/ui/dialogs/export.ui:118
+#: crates/rnote-ui/data/ui/dialogs/export.ui:329
+#: crates/rnote-ui/data/ui/dialogs/export.ui:527
 msgid "With Pattern"
 msgstr "Desen ile"
 
-#: crates/rnote-ui/data/ui/dialogs/export.ui:117
-#: crates/rnote-ui/data/ui/dialogs/export.ui:324
-#: crates/rnote-ui/data/ui/dialogs/export.ui:518
+#: crates/rnote-ui/data/ui/dialogs/export.ui:119
+#: crates/rnote-ui/data/ui/dialogs/export.ui:330
+#: crates/rnote-ui/data/ui/dialogs/export.ui:528
 msgid "Set whether the background pattern should be exported"
 msgstr "Arka plan deseninin dışa aktarılıp aktarılmayacağını ayarla"
 
-#: crates/rnote-ui/data/ui/dialogs/export.ui:122
-#: crates/rnote-ui/data/ui/dialogs/export.ui:329
-#: crates/rnote-ui/data/ui/dialogs/export.ui:523
+#: crates/rnote-ui/data/ui/dialogs/export.ui:124
+#: crates/rnote-ui/data/ui/dialogs/export.ui:335
+#: crates/rnote-ui/data/ui/dialogs/export.ui:533
 msgid "Optimize for Printing"
 msgstr "Baskı İçin Eniyile"
 
-#: crates/rnote-ui/data/ui/dialogs/export.ui:123
-#: crates/rnote-ui/data/ui/dialogs/export.ui:330
-#: crates/rnote-ui/data/ui/dialogs/export.ui:524
+#: crates/rnote-ui/data/ui/dialogs/export.ui:125
+#: crates/rnote-ui/data/ui/dialogs/export.ui:336
+#: crates/rnote-ui/data/ui/dialogs/export.ui:534
 msgid "Set whether the content should be optimized for printing"
 msgstr "İçeriğin baskı için eniyilenme durumunu ayarla"
 
-#: crates/rnote-ui/data/ui/dialogs/export.ui:128
-#: crates/rnote-ui/data/ui/dialogs/export.ui:335
-#: crates/rnote-ui/data/ui/dialogs/export.ui:529
+#: crates/rnote-ui/data/ui/dialogs/export.ui:130
+#: crates/rnote-ui/data/ui/dialogs/export.ui:341
+#: crates/rnote-ui/data/ui/dialogs/export.ui:539
 msgid "Export Format"
 msgstr "Dışa Aktarma Biçimi"
 
-#: crates/rnote-ui/data/ui/dialogs/export.ui:129
-#: crates/rnote-ui/data/ui/dialogs/export.ui:336
+#: crates/rnote-ui/data/ui/dialogs/export.ui:131
+#: crates/rnote-ui/data/ui/dialogs/export.ui:342
 msgid "The export format"
 msgstr "Dışa aktarma biçimi"
 
-#: crates/rnote-ui/data/ui/dialogs/export.ui:133
-#: crates/rnote-ui/data/ui/dialogs/export.ui:340
-#: crates/rnote-ui/data/ui/dialogs/export.ui:534
-#: crates/rnote-ui/src/dialogs/export.rs:278
-#: crates/rnote-ui/src/dialogs/export.rs:579
-#: crates/rnote-ui/src/dialogs/export.rs:866
+#: crates/rnote-ui/data/ui/dialogs/export.ui:135
+#: crates/rnote-ui/data/ui/dialogs/export.ui:346
+#: crates/rnote-ui/data/ui/dialogs/export.ui:544
+#: crates/rnote-ui/src/dialogs/export.rs:304
+#: crates/rnote-ui/src/dialogs/export.rs:635
+#: crates/rnote-ui/src/dialogs/export.rs:954
 msgid "Svg"
 msgstr "Svg"
 
-#: crates/rnote-ui/data/ui/dialogs/export.ui:134
-#: crates/rnote-ui/src/dialogs/export.rs:283
+#: crates/rnote-ui/data/ui/dialogs/export.ui:136
+#: crates/rnote-ui/src/dialogs/export.rs:315
 msgid "Pdf"
 msgstr "Pdf"
 
-#: crates/rnote-ui/data/ui/dialogs/export.ui:135
-#: crates/rnote-ui/src/dialogs/export.rs:288
+#: crates/rnote-ui/data/ui/dialogs/export.ui:137
+#: crates/rnote-ui/src/dialogs/export.rs:326
 msgid "Xopp"
 msgstr "Xopp"
 
-#: crates/rnote-ui/data/ui/dialogs/export.ui:143
-#: crates/rnote-ui/data/ui/dialogs/export.ui:350
+#: crates/rnote-ui/data/ui/dialogs/export.ui:145
+#: crates/rnote-ui/data/ui/dialogs/export.ui:356
 msgid "Page Order"
 msgstr "Sayfa Sırası"
 
-#: crates/rnote-ui/data/ui/dialogs/export.ui:144
-#: crates/rnote-ui/data/ui/dialogs/export.ui:351
+#: crates/rnote-ui/data/ui/dialogs/export.ui:146
+#, fuzzy
+#| msgid ""
+#| "The page order when documents with layouts\n"
+#| "that expand in horizontal and vertical directions\n"
+#| "are cut into pages"
 msgid ""
 "The page order when documents with layouts\n"
 "that expand in horizontal and vertical directions\n"
@@ -340,64 +344,111 @@ msgstr ""
 "sahip belgeler sayfalar halinde\n"
 "kesildiğinde sayfa sırası"
 
-#: crates/rnote-ui/data/ui/dialogs/export.ui:150
-#: crates/rnote-ui/data/ui/dialogs/export.ui:357
+#: crates/rnote-ui/data/ui/dialogs/export.ui:152
+#: crates/rnote-ui/data/ui/dialogs/export.ui:363
 msgid "Horizontal First"
 msgstr "Önce Yatay"
 
-#: crates/rnote-ui/data/ui/dialogs/export.ui:151
-#: crates/rnote-ui/data/ui/dialogs/export.ui:358
+#: crates/rnote-ui/data/ui/dialogs/export.ui:153
+#: crates/rnote-ui/data/ui/dialogs/export.ui:364
 msgid "Vertical First"
 msgstr "Önce Dikey"
 
-#: crates/rnote-ui/data/ui/dialogs/export.ui:172
-#: crates/rnote-ui/src/dialogs/export.rs:565
+#: crates/rnote-ui/data/ui/dialogs/export.ui:174
+#: crates/rnote-ui/src/dialogs/export.rs:615
 msgid "Export Document Pages"
 msgstr "Belge Sayfalarını Dışa Aktar"
 
-#: crates/rnote-ui/data/ui/dialogs/export.ui:254
+#: crates/rnote-ui/data/ui/dialogs/export.ui:260
 msgid "Page Files Naming:"
 msgstr "Sayfa Dosyaları Adlandırma:"
 
-#: crates/rnote-ui/data/ui/dialogs/export.ui:274
+#: crates/rnote-ui/data/ui/dialogs/export.ui:280
 msgid "Export Directory"
 msgstr "Dışa Aktarım Dizini"
 
-#: crates/rnote-ui/data/ui/dialogs/export.ui:275
+#: crates/rnote-ui/data/ui/dialogs/export.ui:281
 msgid "Select the export directory"
 msgstr "Dışa aktarma dizinini seç"
 
-#: crates/rnote-ui/data/ui/dialogs/export.ui:306
-#, fuzzy
-#| msgid "Export Files Stem Name"
+#: crates/rnote-ui/data/ui/dialogs/export.ui:312
 msgctxt ""
 "When pages are exported this is the base name, followed by: - Page 0,1,.."
 msgid "Export Files Stem Name"
 msgstr "Dışa Aktarma Dosyalarının Kök Adı"
 
-#: crates/rnote-ui/data/ui/dialogs/export.ui:341
-#: crates/rnote-ui/data/ui/dialogs/export.ui:535
-#: crates/rnote-ui/src/dialogs/export.rs:584
-#: crates/rnote-ui/src/dialogs/export.rs:871
+#: crates/rnote-ui/data/ui/dialogs/export.ui:347
+#: crates/rnote-ui/data/ui/dialogs/export.ui:545
+#: crates/rnote-ui/src/dialogs/export.rs:646
+#: crates/rnote-ui/src/dialogs/export.rs:965
 msgid "Png"
 msgstr "Png"
 
-#: crates/rnote-ui/data/ui/dialogs/export.ui:342
-#: crates/rnote-ui/data/ui/dialogs/export.ui:536
-#: crates/rnote-ui/src/dialogs/export.rs:590
-#: crates/rnote-ui/src/dialogs/export.rs:877
+#: crates/rnote-ui/data/ui/dialogs/export.ui:348
+#: crates/rnote-ui/data/ui/dialogs/export.ui:546
+#: crates/rnote-ui/src/dialogs/export.rs:659
+#: crates/rnote-ui/src/dialogs/export.rs:978
 msgid "Jpeg"
 msgstr "Jpeg"
 
-#: crates/rnote-ui/data/ui/dialogs/export.ui:366
-#: crates/rnote-ui/data/ui/dialogs/export.ui:544
-#: crates/rnote-ui/data/ui/dialogs/import.ui:152
+#: crates/rnote-ui/data/ui/dialogs/export.ui:357
+#, fuzzy
+#| msgid ""
+#| "The page order when documents with layouts\n"
+#| "that expand in horizontal and vertical directions\n"
+#| "are cut into pages"
+msgid ""
+"The page order when documents with layouts\n"
+"    that expand in horizontal and vertical directions\n"
+"    are cut into pages"
+msgstr ""
+"Yatay ve dikey yönlerde genişleyen mizanpajlara\n"
+"sahip belgeler sayfalar halinde\n"
+"kesildiğinde sayfa sırası"
+
+#: crates/rnote-ui/data/ui/dialogs/export.ui:372
+#: crates/rnote-ui/data/ui/dialogs/export.ui:554
+#: crates/rnote-ui/data/ui/dialogs/import.ui:160
 msgid "Bitmap Scale-Factor"
 msgstr "Bitmap Ölçek Faktörü"
 
-#: crates/rnote-ui/data/ui/dialogs/export.ui:367
-#: crates/rnote-ui/data/ui/dialogs/export.ui:545
-#: crates/rnote-ui/data/ui/dialogs/import.ui:153
+#: crates/rnote-ui/data/ui/dialogs/export.ui:373
+#: crates/rnote-ui/data/ui/dialogs/import.ui:161
+#, fuzzy
+#| msgid ""
+#| "Set the bitmap scale factor in relation\n"
+#| "to the actual size on the document"
+msgid ""
+"Set the bitmap scale factor in relation\n"
+"    to the actual size on the document"
+msgstr ""
+"Belgedeki gerçek boyuta göre bitmap \n"
+"ölçek faktörünü ayarlayın"
+
+#: crates/rnote-ui/data/ui/dialogs/export.ui:381
+#: crates/rnote-ui/data/ui/dialogs/export.ui:563
+msgid "Jpeg Quality"
+msgstr "Jpeg Kalitesi"
+
+#: crates/rnote-ui/data/ui/dialogs/export.ui:382
+#: crates/rnote-ui/data/ui/dialogs/export.ui:564
+msgid "Set the quality of the Jpeg image (1 - 100)"
+msgstr "Jpeg görüntünün kalitesini ayarlayın (1 - 100)"
+
+#: crates/rnote-ui/data/ui/dialogs/export.ui:414
+#: crates/rnote-ui/src/dialogs/export.rs:933
+msgid "Export Selection"
+msgstr "Seçimi Dışa Aktar"
+
+#: crates/rnote-ui/data/ui/dialogs/export.ui:540
+msgid "The export image format"
+msgstr "Dışa aktarma görüntü biçim"
+
+#: crates/rnote-ui/data/ui/dialogs/export.ui:555
+#, fuzzy
+#| msgid ""
+#| "Set the bitmap scale factor in relation\n"
+#| "to the actual size on the document"
 msgid ""
 "Set the bitmap scale factor in relation\n"
 "to the actual size on the document"
@@ -405,123 +456,112 @@ msgstr ""
 "Belgedeki gerçek boyuta göre bitmap \n"
 "ölçek faktörünü ayarlayın"
 
-#: crates/rnote-ui/data/ui/dialogs/export.ui:375
-#: crates/rnote-ui/data/ui/dialogs/export.ui:553
-msgid "Jpeg Quality"
-msgstr "Jpeg Kalitesi"
-
-#: crates/rnote-ui/data/ui/dialogs/export.ui:376
-#: crates/rnote-ui/data/ui/dialogs/export.ui:554
-msgid "Set the quality of the Jpeg image (1 - 100)"
-msgstr "Jpeg görüntünün kalitesini ayarlayın (1 - 100)"
-
-#: crates/rnote-ui/data/ui/dialogs/export.ui:408
-#: crates/rnote-ui/src/dialogs/export.rs:854
-msgid "Export Selection"
-msgstr "Seçimi Dışa Aktar"
-
-#: crates/rnote-ui/data/ui/dialogs/export.ui:530
-msgid "The export image format"
-msgstr "Dışa aktarma görüntü biçim"
-
-#: crates/rnote-ui/data/ui/dialogs/export.ui:561
+#: crates/rnote-ui/data/ui/dialogs/export.ui:571
 msgid "Margin"
 msgstr "Kenar boşluğu"
 
-#: crates/rnote-ui/data/ui/dialogs/export.ui:562
+#: crates/rnote-ui/data/ui/dialogs/export.ui:572
 msgid "Set the margin around the selected area"
 msgstr "Seçilen alanın etrafındaki kenar boşluğunu ayarla"
 
-#: crates/rnote-ui/data/ui/dialogs/import.ui:7
+#: crates/rnote-ui/data/ui/dialogs/import.ui:5
 msgid "Import Pdf"
 msgstr "PDF İçe Aktar"
 
-#: crates/rnote-ui/data/ui/dialogs/import.ui:15
-#: crates/rnote-ui/data/ui/dialogs/import.ui:204
-#: crates/rnote-ui/src/dialogs/import.rs:68
+#: crates/rnote-ui/data/ui/dialogs/import.ui:19
+#: crates/rnote-ui/data/ui/dialogs/import.ui:218
+#: crates/rnote-ui/src/dialogs/import.rs:94
 msgid "Import"
 msgstr "İçe aktar"
 
-#: crates/rnote-ui/data/ui/dialogs/import.ui:61
+#: crates/rnote-ui/data/ui/dialogs/import.ui:63
 msgid "Info"
 msgstr "Bilgi"
 
-#: crates/rnote-ui/data/ui/dialogs/import.ui:79
+#: crates/rnote-ui/data/ui/dialogs/import.ui:81
 msgid "Pdf Import Preferences"
 msgstr "PDF İçe Aktarma Tercihleri"
 
-#: crates/rnote-ui/data/ui/dialogs/import.ui:83
+#: crates/rnote-ui/data/ui/dialogs/import.ui:85
 msgid "Start Page"
 msgstr "Başlangıç Sayfası"
 
-#: crates/rnote-ui/data/ui/dialogs/import.ui:92
+#: crates/rnote-ui/data/ui/dialogs/import.ui:94
 msgid "End Page"
 msgstr "Bitiş sayfası"
 
-#: crates/rnote-ui/data/ui/dialogs/import.ui:101
+#: crates/rnote-ui/data/ui/dialogs/import.ui:103
+msgid "Adjust Document"
+msgstr "Belgeyi Düzenle"
+
+#: crates/rnote-ui/data/ui/dialogs/import.ui:104
+msgid "Whether the document layout should be adjusted to the Pdf"
+msgstr "Belge düzeninin PDF'ye uydurulma durumu"
+
+#: crates/rnote-ui/data/ui/dialogs/import.ui:109
 msgid "Page Width (%)"
 msgstr "Sayfa Genişliği (%)"
 
-#: crates/rnote-ui/data/ui/dialogs/import.ui:102
+#: crates/rnote-ui/data/ui/dialogs/import.ui:110
 msgid "Set the width of imported Pdf's in percentage to the format width"
 msgstr ""
 "İçe aktarılan PDFʼlerin genişliğini biçim genişliğine yüzde olarak ayarla"
 
-#: crates/rnote-ui/data/ui/dialogs/import.ui:109
+#: crates/rnote-ui/data/ui/dialogs/import.ui:117
 msgid "Page Spacing"
 msgstr "Sayfa Boşluğu"
 
-#: crates/rnote-ui/data/ui/dialogs/import.ui:110
+#: crates/rnote-ui/data/ui/dialogs/import.ui:118
 msgid "How Pdf pages are spaced"
 msgstr "PDF sayfaları nasıl boşluklu"
 
-#: crates/rnote-ui/data/ui/dialogs/import.ui:114
+#: crates/rnote-ui/data/ui/dialogs/import.ui:122
 msgid "Continuous"
 msgstr "Sürekli"
 
-#: crates/rnote-ui/data/ui/dialogs/import.ui:115
+#: crates/rnote-ui/data/ui/dialogs/import.ui:123
 msgid "One per Document Page"
 msgstr "Belge Sayfası Başına Bir"
 
-#: crates/rnote-ui/data/ui/dialogs/import.ui:123
+#: crates/rnote-ui/data/ui/dialogs/import.ui:131
 msgid "Pages Type"
 msgstr "Sayfa Türü"
 
-#: crates/rnote-ui/data/ui/dialogs/import.ui:124
+#: crates/rnote-ui/data/ui/dialogs/import.ui:132
 msgid "Set whether Pdf's should be imported as vector or bitmap images"
 msgstr ""
 "PDFʼlerin vektör olarak mı yoksa biteşlem görüntüleri olarak mı içe "
 "aktarılacağını ayarla"
 
-#: crates/rnote-ui/data/ui/dialogs/import.ui:136
+#: crates/rnote-ui/data/ui/dialogs/import.ui:144
 msgid "Vector"
 msgstr "Vektör"
 
-#: crates/rnote-ui/data/ui/dialogs/import.ui:143
+#: crates/rnote-ui/data/ui/dialogs/import.ui:151
 msgid "Bitmap"
 msgstr "Biteşlem"
 
-#: crates/rnote-ui/data/ui/dialogs/import.ui:161
+#: crates/rnote-ui/data/ui/dialogs/import.ui:169
 msgid "Page Borders"
 msgstr "Sayfa Sınırları"
 
-#: crates/rnote-ui/data/ui/dialogs/import.ui:162
+#: crates/rnote-ui/data/ui/dialogs/import.ui:170
 msgid "Whether the pages have drawn borders"
 msgstr "Sayfaların sınırlarının çizilip çizilmediğini"
 
-#: crates/rnote-ui/data/ui/dialogs/import.ui:196
+#: crates/rnote-ui/data/ui/dialogs/import.ui:204
 msgid "Import Xournal++ File"
 msgstr "Xournal++ Dosyasını İçe Aktar"
 
-#: crates/rnote-ui/data/ui/dialogs/import.ui:235
+#: crates/rnote-ui/data/ui/dialogs/import.ui:247
 msgid "Xournal++ File Import Preferences"
 msgstr "Xournal++ Dosya İçe Aktarma Tercihleri"
 
-#: crates/rnote-ui/data/ui/dialogs/import.ui:239
+#: crates/rnote-ui/data/ui/dialogs/import.ui:251
 msgid "DPI"
 msgstr "DPI"
 
-#: crates/rnote-ui/data/ui/dialogs/import.ui:240
+#: crates/rnote-ui/data/ui/dialogs/import.ui:252
 msgid "Set the preferred DPI for the Xournal++ file"
 msgstr "Xournal++ dosyası için tercih edilen DPI değerini ayarla"
 
@@ -644,8 +684,6 @@ msgid "The density is the amount of dots per 10x10 area"
 msgstr "Yoğunluk, 10x10 alan başına nokta miktarıdır"
 
 #: crates/rnote-ui/data/ui/penssidebar/brushpage.ui:248
-#, fuzzy
-#| msgid "Stroke Dots Position Distribution"
 msgctxt ""
 "Drawing with a textured pen, how the dots of the texture are distributed"
 msgid "Stroke Dots Position Distribution"
@@ -656,29 +694,21 @@ msgid "Choose a dots position probability distribution"
 msgstr "Nokta konum olasılık dağılımı seç"
 
 #: crates/rnote-ui/data/ui/penssidebar/brushpage.ui:253
-#, fuzzy
-#| msgid "Uniform"
 msgctxt "A variant of the textured pen texture distribution"
 msgid "Uniform"
-msgstr "Birbiçimli"
+msgstr "Tek Biçimli"
 
 #: crates/rnote-ui/data/ui/penssidebar/brushpage.ui:254
-#, fuzzy
-#| msgid "Normal"
 msgctxt "A variant of the textured pen texture distribution"
 msgid "Normal"
 msgstr "Normal"
 
 #: crates/rnote-ui/data/ui/penssidebar/brushpage.ui:255
-#, fuzzy
-#| msgid "Exponential"
 msgctxt "A variant of the textured pen texture distribution"
 msgid "Exponential"
 msgstr "Katsayısal"
 
 #: crates/rnote-ui/data/ui/penssidebar/brushpage.ui:256
-#, fuzzy
-#| msgid "Reverse Exponential"
 msgctxt "A variant of the textured pen texture distribution"
 msgid "Reverse Exponential"
 msgstr "Ters Katsayısal"
@@ -754,7 +784,7 @@ msgid "Invert Color Brightness of All Selected Strokes"
 msgstr "Tüm Seçili Darbelerin Renk Parlaklığını Ters Çevir"
 
 #: crates/rnote-ui/data/ui/penssidebar/selectorpage.ui:116
-#: crates/rnote-ui/data/ui/shortcuts.ui:230
+#: crates/rnote-ui/data/ui/shortcuts.ui:236
 msgid "Duplicate Selection"
 msgstr "Seçimi İkizle"
 
@@ -822,7 +852,7 @@ msgid "Crosshatch"
 msgstr "Çapraz tarama"
 
 #: crates/rnote-ui/data/ui/penssidebar/shaperpage.ui:206
-#: crates/rnote-ui/data/ui/settingspanel.ui:300
+#: crates/rnote-ui/data/ui/settingspanel.ui:322
 msgid "Dots"
 msgstr "Noktalar"
 
@@ -869,7 +899,7 @@ msgid "Insert Vertical Space"
 msgstr "Dikey Boşluk Ekle"
 
 #: crates/rnote-ui/data/ui/penssidebar/toolspage.ui:29
-#: crates/rnote-ui/data/ui/shortcuts.ui:96
+#: crates/rnote-ui/data/ui/shortcuts.ui:108
 msgid "Move View"
 msgstr "Görünümü Taşı"
 
@@ -954,185 +984,176 @@ msgid "Use _Dark Colors"
 msgstr "_Koyu Renkleri Kullan"
 
 #: crates/rnote-ui/data/ui/appmenu.ui:42
-msgid "De_veloper Mode"
-msgstr "_Geliştirici Kipi"
-
-#: crates/rnote-ui/data/ui/appmenu.ui:47
 msgid "Developer _Menu"
 msgstr "Geliştirici _Menüsü"
 
-#: crates/rnote-ui/data/ui/appmenu.ui:52
+#: crates/rnote-ui/data/ui/appmenu.ui:47
 msgid "Visual _Debugging"
 msgstr "_Görsel Hata Ayıklama"
 
-#: crates/rnote-ui/data/ui/appmenu.ui:56
+#: crates/rnote-ui/data/ui/appmenu.ui:51
 msgid "Export Engine _State"
 msgstr "Motor _Durumunu Dışa Aktar"
 
-#: crates/rnote-ui/data/ui/appmenu.ui:60
+#: crates/rnote-ui/data/ui/appmenu.ui:55
 msgid "Export Engine _Config"
 msgstr "Motor _Ayarını Dışa Aktar"
 
-#: crates/rnote-ui/data/ui/appmenu.ui:68
+#: crates/rnote-ui/data/ui/appmenu.ui:61
+msgid "De_veloper Mode"
+msgstr "_Geliştirici Kipi"
+
+#: crates/rnote-ui/data/ui/appmenu.ui:66
+msgid "New _Window"
+msgstr "Yeni _Pencere"
+
+#: crates/rnote-ui/data/ui/appmenu.ui:72
 msgid "_New"
 msgstr "_Yeni"
 
-#: crates/rnote-ui/data/ui/appmenu.ui:72
+#: crates/rnote-ui/data/ui/appmenu.ui:76
 msgid "_Open"
 msgstr "_Aç"
 
-#: crates/rnote-ui/data/ui/appmenu.ui:76
+#: crates/rnote-ui/data/ui/appmenu.ui:80
 msgid "_Save"
 msgstr "_Kaydet"
 
-#: crates/rnote-ui/data/ui/appmenu.ui:80
+#: crates/rnote-ui/data/ui/appmenu.ui:84
 msgid "Save _As"
 msgstr "_Farklı Kaydet"
 
-#: crates/rnote-ui/data/ui/appmenu.ui:86
+#: crates/rnote-ui/data/ui/appmenu.ui:90
 msgid "_Print"
 msgstr "_Yazdır"
 
-#: crates/rnote-ui/data/ui/appmenu.ui:90
+#: crates/rnote-ui/data/ui/appmenu.ui:94
 msgid "_Import File"
 msgstr "Dosya _İçe Aktar"
 
-#: crates/rnote-ui/data/ui/appmenu.ui:94
+#: crates/rnote-ui/data/ui/appmenu.ui:98
 msgid "_Clipboard"
 msgstr "_Pano"
 
-#: crates/rnote-ui/data/ui/appmenu.ui:96
+#: crates/rnote-ui/data/ui/appmenu.ui:100
+#: crates/rnote-ui/data/ui/contextmenu.ui:10
 msgid "_Copy"
 msgstr "_Kopyala"
 
-#: crates/rnote-ui/data/ui/appmenu.ui:100
+#: crates/rnote-ui/data/ui/appmenu.ui:104
+#: crates/rnote-ui/data/ui/contextmenu.ui:14
 msgid "C_ut"
 msgstr "K_es"
 
-#: crates/rnote-ui/data/ui/appmenu.ui:104
+#: crates/rnote-ui/data/ui/appmenu.ui:108
+#: crates/rnote-ui/data/ui/contextmenu.ui:18
 msgid "_Paste"
 msgstr "_Yapıştır"
 
-#: crates/rnote-ui/data/ui/appmenu.ui:109
+#: crates/rnote-ui/data/ui/appmenu.ui:113
 msgid "_Export…"
 msgstr "_Dışa Aktar…"
 
-#: crates/rnote-ui/data/ui/appmenu.ui:111
+#: crates/rnote-ui/data/ui/appmenu.ui:115
 msgid "Export _Document"
 msgstr "Belgeyi _Dışa Aktar"
 
-#: crates/rnote-ui/data/ui/appmenu.ui:115
+#: crates/rnote-ui/data/ui/appmenu.ui:119
 msgid "Export Document _Pages"
 msgstr "Belge _Sayfalarını Dışa Aktar"
 
-#: crates/rnote-ui/data/ui/appmenu.ui:119
+#: crates/rnote-ui/data/ui/appmenu.ui:123
 msgid "Export _Selection"
 msgstr "_Seçimi Dışa Aktar"
 
-#: crates/rnote-ui/data/ui/appmenu.ui:126
+#: crates/rnote-ui/data/ui/appmenu.ui:130
 msgid "Se_ttings"
 msgstr "_Ayarlar"
 
-#: crates/rnote-ui/data/ui/appmenu.ui:130
+#: crates/rnote-ui/data/ui/appmenu.ui:134
 msgid "_Keyboard Shortcuts"
 msgstr "_Klavye Kısayolları"
 
-#: crates/rnote-ui/data/ui/appmenu.ui:134
+#: crates/rnote-ui/data/ui/appmenu.ui:138
 msgid "_Donate 💝"
 msgstr "_Bağış yap 💝"
 
-#: crates/rnote-ui/data/ui/appmenu.ui:138
+#: crates/rnote-ui/data/ui/appmenu.ui:142
 msgid "A_bout Rnote"
 msgstr "Rnote _Hakkında"
 
-#: crates/rnote-ui/data/ui/appmenu.ui:169
+#: crates/rnote-ui/data/ui/appmenu.ui:173
 msgid "Sidebar on the Left Side"
 msgstr "Kenar Çubuğu Solda"
 
-#: crates/rnote-ui/data/ui/appmenu.ui:178
+#: crates/rnote-ui/data/ui/appmenu.ui:182
 msgid "Sidebar on the Right Side"
 msgstr "Kenar Çubuğu Sağda"
 
-#: crates/rnote-ui/data/ui/appmenu.ui:188
-#: crates/rnote-ui/data/ui/shortcuts.ui:44
+#: crates/rnote-ui/data/ui/appmenu.ui:192
+#: crates/rnote-ui/data/ui/shortcuts.ui:56
 msgid "Toggle Fullscreen"
 msgstr "Tam Ekranı Aç/Kapat"
 
 #: crates/rnote-ui/data/ui/canvasmenu.ui:24
-msgid "_Document Layout"
-msgstr "Belge _Düzeni"
-
-#: crates/rnote-ui/data/ui/canvasmenu.ui:27
-msgid "_Fixed Size"
-msgstr "_Sabit Boyut"
-
-#: crates/rnote-ui/data/ui/canvasmenu.ui:32
-msgid "_Continuous Vertical"
-msgstr "_Sürekli Dikey"
-
-#: crates/rnote-ui/data/ui/canvasmenu.ui:37
-msgid "_Semi Infinite"
-msgstr "_Yarı Sonsuz"
-
-#: crates/rnote-ui/data/ui/canvasmenu.ui:42
-msgid "_Infinite"
-msgstr "_Sonsuz"
-
-#: crates/rnote-ui/data/ui/canvasmenu.ui:49
 msgid "_Snap Positions"
 msgstr "_Çıtçıtlı Konumlar"
 
-#: crates/rnote-ui/data/ui/canvasmenu.ui:54
+#: crates/rnote-ui/data/ui/canvasmenu.ui:29
 msgid "_Pen Sounds"
 msgstr "_Kalem Sesleri"
 
-#: crates/rnote-ui/data/ui/canvasmenu.ui:59
+#: crates/rnote-ui/data/ui/canvasmenu.ui:34
 msgid "_Return to Origin Page"
 msgstr "Özgün Sayfaya _Dön"
 
-#: crates/rnote-ui/data/ui/canvasmenu.ui:63
+#: crates/rnote-ui/data/ui/canvasmenu.ui:38
 msgid "C_lear Document"
 msgstr "Belgeyi _Temizle"
 
-#: crates/rnote-ui/data/ui/canvasmenu.ui:69
+#: crates/rnote-ui/data/ui/canvasmenu.ui:44
 msgid "Show _Format Borders"
 msgstr "_Biçim Kenarlıklarını Göster"
 
-#: crates/rnote-ui/data/ui/canvasmenu.ui:74
+#: crates/rnote-ui/data/ui/canvasmenu.ui:49
 msgid "Show _Origin Indicator"
 msgstr "_Menşe Göstergesini Göster"
 
-#: crates/rnote-ui/data/ui/canvasmenu.ui:79
+#: crates/rnote-ui/data/ui/canvasmenu.ui:54
 msgid "Draw With _Touch Input"
 msgstr "_Dokunmatik Girdiyle Çiz"
 
-#: crates/rnote-ui/data/ui/canvasmenu.ui:84
+#: crates/rnote-ui/data/ui/canvasmenu.ui:59
 msgid "Block Pinch to _Zoom"
 msgstr "_Yakınlaştırma için Çimdiklemeyi Engelle"
 
-#: crates/rnote-ui/data/ui/canvasmenu.ui:115
-#: crates/rnote-ui/data/ui/shortcuts.ui:120
-#: crates/rnote-ui/data/ui/shortcuts.ui:126
+#: crates/rnote-ui/data/ui/canvasmenu.ui:64
+msgid "Respect Borders When Pasting"
+msgstr "Yapıştırırken Kenarlıkları Koru"
+
+#: crates/rnote-ui/data/ui/canvasmenu.ui:95
 #: crates/rnote-ui/data/ui/shortcuts.ui:132
+#: crates/rnote-ui/data/ui/shortcuts.ui:138
+#: crates/rnote-ui/data/ui/shortcuts.ui:144
 msgid "Zoom out"
 msgstr "Uzaklaştır"
 
-#: crates/rnote-ui/data/ui/canvasmenu.ui:124
+#: crates/rnote-ui/data/ui/canvasmenu.ui:104
 msgid "Reset Zoom"
 msgstr "Yakınlaştırmayı Sıfırla"
 
-#: crates/rnote-ui/data/ui/canvasmenu.ui:131
-#: crates/rnote-ui/data/ui/shortcuts.ui:102
-#: crates/rnote-ui/data/ui/shortcuts.ui:108
+#: crates/rnote-ui/data/ui/canvasmenu.ui:111
 #: crates/rnote-ui/data/ui/shortcuts.ui:114
+#: crates/rnote-ui/data/ui/shortcuts.ui:120
+#: crates/rnote-ui/data/ui/shortcuts.ui:126
 msgid "Zoom in"
 msgstr "Yakınlaştır"
 
-#: crates/rnote-ui/data/ui/canvasmenu.ui:143
+#: crates/rnote-ui/data/ui/canvasmenu.ui:123
 msgid "Zoom to Page Width"
 msgstr "Sayfa Genişliğine Yakınlaştır"
 
-#: crates/rnote-ui/data/ui/canvasmenu.ui:158
+#: crates/rnote-ui/data/ui/canvasmenu.ui:138
 msgid ""
 "Remove Page.\n"
 "Available in Fixed-Size Document Layout."
@@ -1140,7 +1161,7 @@ msgstr ""
 "Sayfayı Kaldır.\n"
 "Sabit Boyutlu Belge Düzeninde kullanılabilir."
 
-#: crates/rnote-ui/data/ui/canvasmenu.ui:167
+#: crates/rnote-ui/data/ui/canvasmenu.ui:147
 msgid ""
 "Add Page.\n"
 "Available in Fixed-Size Document Layout."
@@ -1148,7 +1169,7 @@ msgstr ""
 "Sayfa Ekle.\n"
 "Sabit Boyutlu Belge Düzeninde kullanılabilir."
 
-#: crates/rnote-ui/data/ui/canvasmenu.ui:176
+#: crates/rnote-ui/data/ui/canvasmenu.ui:156
 msgid ""
 "Resize Document to Fit Content.\n"
 "Available in Fixed-Size Document Layout."
@@ -1156,16 +1177,16 @@ msgstr ""
 "Belgeyi İçeriğe Sığacak Şekilde Yeniden Boyutlandır.\n"
 "Sabit Boyutlu Belge Düzeninde kullanılabilir."
 
-#: crates/rnote-ui/data/ui/colorpicker.ui:19
+#: crates/rnote-ui/data/ui/colorpicker.ui:23
 msgid "Stroke Color"
 msgstr "Darbe Rengi"
 
-#: crates/rnote-ui/data/ui/colorpicker.ui:26
+#: crates/rnote-ui/data/ui/colorpicker.ui:30
 msgid "Fill Color"
 msgstr "Dolgu Rengi"
 
 #: crates/rnote-ui/data/ui/filerow.ui:61
-#: crates/rnote-ui/src/dialogs/import.rs:26
+#: crates/rnote-ui/src/dialogs/import.rs:36
 msgid "Open"
 msgstr "Aç"
 
@@ -1174,7 +1195,7 @@ msgid "Open in Default App"
 msgstr "Varsayılan Uygulamada Aç"
 
 #: crates/rnote-ui/data/ui/filerow.ui:69
-#: crates/rnote-ui/src/workspacebrowser/filerow/actions/rename.rs:56
+#: crates/rnote-ui/src/workspacebrowser/filerow/actions/rename.rs:91
 msgid "Rename"
 msgstr "Yeniden adlandır"
 
@@ -1187,7 +1208,7 @@ msgid "Duplicate"
 msgstr "İkizle"
 
 #: crates/rnote-ui/data/ui/mainheader.ui:23
-#: crates/rnote-ui/src/canvas/mod.rs:595
+#: crates/rnote-ui/src/canvas/mod.rs:594
 msgid "Draft"
 msgstr "Taslak"
 
@@ -1197,6 +1218,7 @@ msgid "Show/Hide Sidebar"
 msgstr "Kenar Çubuğunu Göster/Gizle"
 
 #: crates/rnote-ui/data/ui/mainheader.ui:47
+#: crates/rnote-ui/data/ui/shortcuts.ui:26
 msgid "New Tab"
 msgstr "Yeni Sekme"
 
@@ -1205,19 +1227,19 @@ msgid "Focus Mode"
 msgstr "Odak Kipi"
 
 #: crates/rnote-ui/data/ui/mainheader.ui:66
-#: crates/rnote-ui/data/ui/shortcuts.ui:161
+#: crates/rnote-ui/data/ui/shortcuts.ui:167
 msgid "Save Document"
 msgstr "Belgeyi Kaydet"
 
-#: crates/rnote-ui/data/ui/overlays.ui:99
+#: crates/rnote-ui/data/ui/overlays.ui:98
 msgid "Move _Left"
 msgstr "_Sola Taşı"
 
-#: crates/rnote-ui/data/ui/overlays.ui:103
+#: crates/rnote-ui/data/ui/overlays.ui:102
 msgid "Move _Right"
 msgstr "Sağa _Taşı"
 
-#: crates/rnote-ui/data/ui/overlays.ui:109
+#: crates/rnote-ui/data/ui/overlays.ui:108
 msgid "_Close"
 msgstr "_Kapat"
 
@@ -1232,6 +1254,10 @@ msgstr "Kalıcı"
 #: crates/rnote-ui/data/ui/penshortcutrow.ui:13
 msgid "Toggle"
 msgstr "Değiştir"
+
+#: crates/rnote-ui/data/ui/penshortcutrow.ui:14
+msgid "Disabled"
+msgstr "Devre dışı"
 
 #: crates/rnote-ui/data/ui/settingspanel.ui:41
 #: crates/rnote-ui/data/ui/shortcuts.ui:11
@@ -1263,10 +1289,22 @@ msgid "Set whether the scrollbars on the canvas are shown"
 msgstr "Tuval üzerindeki kaydırma çubuklarının gösterilme durumunu ayarla"
 
 #: crates/rnote-ui/data/ui/settingspanel.ui:64
+msgid "Optimize for E-Paper Displays"
+msgstr "E-Kağıt Ekranlar için En İyile"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:65
+msgid ""
+"Changes certain UI elements and modifies behaviour\n"
+"of tools for optimized usage on E-Paper displays"
+msgstr ""
+"Belirli kullanıcı arayüzü öğelerini ve araç davranışları\n"
+"e-Kağıt ekranlarda en iyilenmiş kullanım için değiştirir"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:71
 msgid "Inertial Touch Scrolling"
 msgstr "Ataletsel Dokunmatik Kaydırma"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:65
+#: crates/rnote-ui/data/ui/settingspanel.ui:72
 msgid ""
 "Set whether touch scrolling on the canvas is inertial.\n"
 "An application restart is required when this option\n"
@@ -1276,210 +1314,230 @@ msgstr ""
 "Bu seçenek devre dışı bırakıldığında\n"
 "uygulamanın yeniden başlatılması gerekir."
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:72
+#: crates/rnote-ui/data/ui/settingspanel.ui:79
 msgid "Regular Cursor"
 msgstr "Normal İmleç"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:73
+#: crates/rnote-ui/data/ui/settingspanel.ui:80
 msgid "Set the regular cursor"
 msgstr "Normal imleci ayarla"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:95
+#: crates/rnote-ui/data/ui/settingspanel.ui:102
 msgid "Show Drawing Cursor"
 msgstr "Çizim İmlecini Göster"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:96
+#: crates/rnote-ui/data/ui/settingspanel.ui:103
 msgid "Set whether the drawing cursor is visible"
 msgstr "Çizim imlecinin görünür olma durumunu ayarla"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:102
+#: crates/rnote-ui/data/ui/settingspanel.ui:109
 msgid "Drawing Cursor"
 msgstr "Çizim İmleci"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:103
+#: crates/rnote-ui/data/ui/settingspanel.ui:110
 msgid "Set the drawing cursor"
 msgstr "Çizim imlecini ayarla"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:128
+#: crates/rnote-ui/data/ui/settingspanel.ui:135
 msgid "Page Format"
 msgstr "Sayfa Biçimi"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:131
+#: crates/rnote-ui/data/ui/settingspanel.ui:138
 msgid "Format"
 msgstr "Biçim"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:132
+#: crates/rnote-ui/data/ui/settingspanel.ui:139
 msgid "Choose a format"
 msgstr "Biçim seç"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:136
+#: crates/rnote-ui/data/ui/settingspanel.ui:143
 msgid "A6"
 msgstr "A6"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:137
+#: crates/rnote-ui/data/ui/settingspanel.ui:144
 msgid "A5"
 msgstr "A5"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:138
+#: crates/rnote-ui/data/ui/settingspanel.ui:145
 msgid "A4"
 msgstr "A4"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:139
+#: crates/rnote-ui/data/ui/settingspanel.ui:146
 msgid "A3"
 msgstr "A3"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:140
+#: crates/rnote-ui/data/ui/settingspanel.ui:147
 msgid "A2"
 msgstr "A2"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:141
+#: crates/rnote-ui/data/ui/settingspanel.ui:148
 msgid "US letter"
 msgstr "US mektup"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:142
+#: crates/rnote-ui/data/ui/settingspanel.ui:149
 msgid "US legal"
 msgstr "US yasal"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:143
+#: crates/rnote-ui/data/ui/settingspanel.ui:150
 msgid "Custom"
 msgstr "Özel"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:151
+#: crates/rnote-ui/data/ui/settingspanel.ui:158
 msgid "Orientation"
 msgstr "Yönelim"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:152
+#: crates/rnote-ui/data/ui/settingspanel.ui:159
 msgid "Set the format orientation"
 msgstr "Biçim yönelimini ayarla"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:164
+#: crates/rnote-ui/data/ui/settingspanel.ui:171
 msgid "Portrait"
 msgstr "Dikey"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:170
+#: crates/rnote-ui/data/ui/settingspanel.ui:177
 msgid "Landscape"
 msgstr "Yatay"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:180
+#: crates/rnote-ui/data/ui/settingspanel.ui:187
 msgid "Width"
 msgstr "Genişlik"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:181
+#: crates/rnote-ui/data/ui/settingspanel.ui:188
 msgid "Set the format width"
 msgstr "Biçim genişliğini ayarla"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:197
+#: crates/rnote-ui/data/ui/settingspanel.ui:204
 msgid "Height"
 msgstr "Yükseklik"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:198
+#: crates/rnote-ui/data/ui/settingspanel.ui:205
 msgid "Set the format height"
 msgstr "Biçim yüksekliğini ayarla"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:214
+#: crates/rnote-ui/data/ui/settingspanel.ui:221
 msgid "Dpi"
 msgstr "Dpi"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:215
+#: crates/rnote-ui/data/ui/settingspanel.ui:222
 msgid "Set the Dpi (dots per inch). Defaults to 96."
 msgstr "DPI (dots per inch) ayarla. Öntanımlı değer 96."
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:225
+#: crates/rnote-ui/data/ui/settingspanel.ui:232
 msgid "Revert"
 msgstr "Geri al"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:247
-#: crates/rnote-ui/data/ui/shortcuts.ui:146
-#: crates/rnote-ui/src/dialogs/mod.rs:630
+#: crates/rnote-ui/data/ui/settingspanel.ui:254
+#: crates/rnote-ui/data/ui/shortcuts.ui:158
+#: crates/rnote-ui/src/dialogs/mod.rs:631
 msgid "Document"
 msgstr "Belge"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:250
+#: crates/rnote-ui/data/ui/settingspanel.ui:257
+msgid "Document Layout"
+msgstr "Belge Düzeni"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:261
+msgid "Fixed Size"
+msgstr "Sabit Boyut"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:262
+msgid "Continuous Vertical"
+msgstr "Sürekli Dikey"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:263
+msgid "Semi Infinite"
+msgstr "Yarı Sonsuz"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:264
+msgid "Infinite"
+msgstr "Sonsuz"
+
+#: crates/rnote-ui/data/ui/settingspanel.ui:272
 msgid "Format Border Color"
 msgstr "Biçim Kenarlık Rengi"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:251
+#: crates/rnote-ui/data/ui/settingspanel.ui:273
 msgid "Set the format border color"
 msgstr "Biçim kenarlık rengini ayarla"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:272
+#: crates/rnote-ui/data/ui/settingspanel.ui:294
 msgid "Set the background color"
 msgstr "Arka plan rengini ayarla"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:292
+#: crates/rnote-ui/data/ui/settingspanel.ui:314
 msgid "Pattern"
 msgstr "Desen"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:293
+#: crates/rnote-ui/data/ui/settingspanel.ui:315
 msgid "Choose a background pattern"
 msgstr "Arka plan deseni seç"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:297
+#: crates/rnote-ui/data/ui/settingspanel.ui:319
 msgid "None"
 msgstr "Boş"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:298
+#: crates/rnote-ui/data/ui/settingspanel.ui:320
 msgid "Lines"
 msgstr "Satırlar"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:299
+#: crates/rnote-ui/data/ui/settingspanel.ui:321
 #: crates/rnote-ui/src/penssidebar/shaperpage.rs:429
 msgid "Grid"
 msgstr "Izgara"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:301
+#: crates/rnote-ui/data/ui/settingspanel.ui:323
 msgid "Isometric Grid"
 msgstr "İzometrik Izgara"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:302
+#: crates/rnote-ui/data/ui/settingspanel.ui:324
 msgid "Isometric Dots"
 msgstr "İzometrik Noktalar"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:310
+#: crates/rnote-ui/data/ui/settingspanel.ui:332
 msgid "Pattern Color"
 msgstr "Desen Rengi"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:311
+#: crates/rnote-ui/data/ui/settingspanel.ui:333
 msgid "Set the background pattern color"
 msgstr "Arka plan desen rengini ayarla"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:331
+#: crates/rnote-ui/data/ui/settingspanel.ui:353
 msgid "Pattern Width"
 msgstr "Desen Genişliği"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:332
+#: crates/rnote-ui/data/ui/settingspanel.ui:354
 msgid "Set the background pattern width"
 msgstr "Arka plan desen genişliğini ayarla"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:348
+#: crates/rnote-ui/data/ui/settingspanel.ui:370
 msgid "Pattern Height"
 msgstr "Desen Yüksekliği"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:349
+#: crates/rnote-ui/data/ui/settingspanel.ui:371
 msgid "Set the background pattern height"
 msgstr "Arka plan desen yüksekliğini ayarla"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:365
+#: crates/rnote-ui/data/ui/settingspanel.ui:387
 msgid "Invert Color Brightness"
 msgstr "Renk Parlaklığını Ters Çevir"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:366
+#: crates/rnote-ui/data/ui/settingspanel.ui:388
 msgid "Invert the brightness of all background pattern colors"
 msgstr "Tüm arka plan desen renklerinin parlaklığını ters çevir"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:370
+#: crates/rnote-ui/data/ui/settingspanel.ui:392
 msgid "Invert"
 msgstr "Ters Çevir"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:380
+#: crates/rnote-ui/data/ui/settingspanel.ui:402
 msgid "Button Shortcuts"
 msgstr "Düğme Kısayolları"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:383
+#: crates/rnote-ui/data/ui/settingspanel.ui:405
 msgid "Stylus Primary Button Action"
 msgstr "Stylus Birincil Düğme Eylemi"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:384
+#: crates/rnote-ui/data/ui/settingspanel.ui:406
 msgid ""
 "Set the action for the\n"
 "primary stylus button"
@@ -1487,11 +1545,11 @@ msgstr ""
 "Stylus birincil düğme\n"
 "eylemini ayarla"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:396
+#: crates/rnote-ui/data/ui/settingspanel.ui:418
 msgid "Stylus Secondary Button Action"
 msgstr "Stylus İkincil Düğme Eylemi"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:397
+#: crates/rnote-ui/data/ui/settingspanel.ui:419
 msgid ""
 "Set the action for the\n"
 "secondary stylus button"
@@ -1499,11 +1557,11 @@ msgstr ""
 "Stylus ikincil düğme\n"
 "eylemini ayarla"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:409
+#: crates/rnote-ui/data/ui/settingspanel.ui:431
 msgid "Mouse Secondary Button Action"
 msgstr "Fare İkincil Düğme Eylemi"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:410
+#: crates/rnote-ui/data/ui/settingspanel.ui:432
 msgid ""
 "Set the action for the\n"
 "secondary mouse button"
@@ -1511,11 +1569,11 @@ msgstr ""
 "Fare ikincil düğme\n"
 "eylemini ayarla"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:422
+#: crates/rnote-ui/data/ui/settingspanel.ui:444
 msgid "Touch Two-Finger Long-Press Action"
 msgstr "Dokunma, İki Parmakla Uzun Basma Eylemi"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:423
+#: crates/rnote-ui/data/ui/settingspanel.ui:445
 msgid ""
 "Set the action for the touch\n"
 "two-finger long-press gesture"
@@ -1523,11 +1581,11 @@ msgstr ""
 "Dokunma, iki parmakla uzun basma\n"
 "hareketi için eylem ayarla"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:435
+#: crates/rnote-ui/data/ui/settingspanel.ui:457
 msgid "Keyboard Ctrl-Space Action"
 msgstr "Klavye Ctrl-Space Eylemi"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:436
+#: crates/rnote-ui/data/ui/settingspanel.ui:458
 msgid ""
 "Set the action for the keyboard\n"
 "Ctrl plus Space shortcut"
@@ -1535,11 +1593,11 @@ msgstr ""
 "Ctrl + Boşluk kısayolu için\n"
 "eylem ayarla"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:448
+#: crates/rnote-ui/data/ui/settingspanel.ui:470
 msgid "Drawing Pad Button 1 Action"
 msgstr "Çizim Pedi Birinci Düğme Eylemi"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:449
+#: crates/rnote-ui/data/ui/settingspanel.ui:471
 msgid ""
 "Set the action for button 1\n"
 "on a drawing pad"
@@ -1547,11 +1605,11 @@ msgstr ""
 "Çizim pedinde birinci düğme \n"
 "eylemini ayarla"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:461
+#: crates/rnote-ui/data/ui/settingspanel.ui:483
 msgid "Drawing Pad Button 2 Action"
 msgstr "Çizim Pedi İkinci Düğme Eylemi"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:462
+#: crates/rnote-ui/data/ui/settingspanel.ui:484
 msgid ""
 "Set the action for button 2\n"
 "on a drawing pad"
@@ -1559,11 +1617,11 @@ msgstr ""
 "Çizim pedinde ikinci düğme \n"
 "eylemini ayarla"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:474
+#: crates/rnote-ui/data/ui/settingspanel.ui:496
 msgid "Drawing Pad Button 3 Action"
 msgstr "Çizim Pedi Üçüncü Düğme Eylemi"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:475
+#: crates/rnote-ui/data/ui/settingspanel.ui:497
 msgid ""
 "Set the action for button 3\n"
 "on a drawing pad"
@@ -1571,11 +1629,11 @@ msgstr ""
 "Çizim pedinde üçüncü düğme \n"
 "eylemini ayarla"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:487
+#: crates/rnote-ui/data/ui/settingspanel.ui:509
 msgid "Drawing Pad Button 4 Action"
 msgstr "Çizim Pedi Dördüncü Düğme Eylemi"
 
-#: crates/rnote-ui/data/ui/settingspanel.ui:488
+#: crates/rnote-ui/data/ui/settingspanel.ui:510
 msgid ""
 "Set the action for button 4\n"
 "on a drawing pad"
@@ -1587,117 +1645,117 @@ msgstr ""
 msgid "Show Keyboard Shortcuts"
 msgstr "Klavye Kısayolarını Göster"
 
-#: crates/rnote-ui/data/ui/shortcuts.ui:20
+#: crates/rnote-ui/data/ui/shortcuts.ui:32
 msgid "Close the Active Tab"
 msgstr "Aktif Sekmeyi Kapat"
 
-#: crates/rnote-ui/data/ui/shortcuts.ui:26
+#: crates/rnote-ui/data/ui/shortcuts.ui:38
 msgid "Quit the Application"
 msgstr "Uygulamadan Çık"
 
-#: crates/rnote-ui/data/ui/shortcuts.ui:32
+#: crates/rnote-ui/data/ui/shortcuts.ui:44
 msgid "Open the Canvas-Menu"
 msgstr "Tuval Menüsünü Aç"
 
-#: crates/rnote-ui/data/ui/shortcuts.ui:38
+#: crates/rnote-ui/data/ui/shortcuts.ui:50
 msgid "Open the App-Menu"
 msgstr "Uygulama Menüsünü Aç"
 
-#: crates/rnote-ui/data/ui/shortcuts.ui:52
+#: crates/rnote-ui/data/ui/shortcuts.ui:64
 msgid "Navigation"
 msgstr "Gezinme"
 
-#: crates/rnote-ui/data/ui/shortcuts.ui:55
+#: crates/rnote-ui/data/ui/shortcuts.ui:67
 msgid "Switch to the 'Brush'"
 msgstr "'Fırça'ya geç"
 
-#: crates/rnote-ui/data/ui/shortcuts.ui:61
+#: crates/rnote-ui/data/ui/shortcuts.ui:73
 msgid "Switch to the 'Shaper'"
 msgstr "'Şekillendirici'ye geç"
 
-#: crates/rnote-ui/data/ui/shortcuts.ui:67
+#: crates/rnote-ui/data/ui/shortcuts.ui:79
 msgid "Switch to the 'Typewriter'"
 msgstr "'Daktilo'ya geç"
 
-#: crates/rnote-ui/data/ui/shortcuts.ui:73
+#: crates/rnote-ui/data/ui/shortcuts.ui:85
 msgid "Switch to the 'Eraser'"
 msgstr "'Silgi'ye geç"
 
-#: crates/rnote-ui/data/ui/shortcuts.ui:79
+#: crates/rnote-ui/data/ui/shortcuts.ui:91
 msgid "Switch to the 'Selector'"
 msgstr "'Seçici'ye geç"
 
-#: crates/rnote-ui/data/ui/shortcuts.ui:85
+#: crates/rnote-ui/data/ui/shortcuts.ui:97
 msgid "Switch to the 'Tools'"
 msgstr "'Araçlar'a geç"
 
-#: crates/rnote-ui/data/ui/shortcuts.ui:93
+#: crates/rnote-ui/data/ui/shortcuts.ui:105
 msgid "View"
 msgstr "Görünüm"
 
-#: crates/rnote-ui/data/ui/shortcuts.ui:97
+#: crates/rnote-ui/data/ui/shortcuts.ui:109
 msgid "Alt + Drag"
 msgstr "Alt + Sürükle"
 
-#: crates/rnote-ui/data/ui/shortcuts.ui:138
+#: crates/rnote-ui/data/ui/shortcuts.ui:150
 msgid "Zoom in/out"
 msgstr "Yakınlaştır/Uzaklaştır"
 
-#: crates/rnote-ui/data/ui/shortcuts.ui:139
+#: crates/rnote-ui/data/ui/shortcuts.ui:151
 msgid "Alt + Shift + Drag"
 msgstr "Alt + Shift + Sürükle"
 
-#: crates/rnote-ui/data/ui/shortcuts.ui:155
+#: crates/rnote-ui/data/ui/shortcuts.ui:161
 msgid "Open Document"
 msgstr "Belge Aç"
 
-#: crates/rnote-ui/data/ui/shortcuts.ui:167
-#: crates/rnote-ui/src/dialogs/export.rs:30
+#: crates/rnote-ui/data/ui/shortcuts.ui:173
+#: crates/rnote-ui/src/dialogs/export.rs:40
 msgid "Save Document As"
 msgstr "Belgeyi Farklı Kaydet"
 
-#: crates/rnote-ui/data/ui/shortcuts.ui:173
+#: crates/rnote-ui/data/ui/shortcuts.ui:179
 msgid "Snap Positions"
 msgstr "Çıtçıtlı Konumlar"
 
-#: crates/rnote-ui/data/ui/shortcuts.ui:185
+#: crates/rnote-ui/data/ui/shortcuts.ui:191
 msgid "Add Page (When in Fixed-Size Layout)"
 msgstr "Sayfa Ekle (Sabit Boyutlu Düzeninde kullanılabilir)"
 
-#: crates/rnote-ui/data/ui/shortcuts.ui:191
+#: crates/rnote-ui/data/ui/shortcuts.ui:197
 msgid "Remove Last Page (When in Fixed-Size Layout)"
 msgstr "Son Sayfayı Kaldır (Sabit Boyutlu Düzende kullanılabilir)"
 
-#: crates/rnote-ui/data/ui/shortcuts.ui:197
+#: crates/rnote-ui/data/ui/shortcuts.ui:203
 msgid "Print Document"
 msgstr "Belgeyi Yazdır"
 
-#: crates/rnote-ui/data/ui/shortcuts.ui:203
-#: crates/rnote-ui/src/dialogs/import.rs:66
+#: crates/rnote-ui/data/ui/shortcuts.ui:209
+#: crates/rnote-ui/src/dialogs/import.rs:92
 msgid "Import File"
 msgstr "Dosya İçe Aktar"
 
-#: crates/rnote-ui/data/ui/shortcuts.ui:209
+#: crates/rnote-ui/data/ui/shortcuts.ui:215
 msgid "Drawing"
 msgstr "Çizim"
 
-#: crates/rnote-ui/data/ui/shortcuts.ui:212
+#: crates/rnote-ui/data/ui/shortcuts.ui:218
 msgid "Copy to Clipboard"
 msgstr "Panoya Kopyala"
 
-#: crates/rnote-ui/data/ui/shortcuts.ui:218
+#: crates/rnote-ui/data/ui/shortcuts.ui:224
 msgid "Cut to Clipboard"
 msgstr "Panoya Kes"
 
-#: crates/rnote-ui/data/ui/shortcuts.ui:224
+#: crates/rnote-ui/data/ui/shortcuts.ui:230
 msgid "Paste Clipboard"
 msgstr "Panodan Yapıştır"
 
-#: crates/rnote-ui/data/ui/shortcuts.ui:236
+#: crates/rnote-ui/data/ui/shortcuts.ui:242
 msgid "Undo"
 msgstr "Geri Al"
 
-#: crates/rnote-ui/data/ui/shortcuts.ui:242
+#: crates/rnote-ui/data/ui/shortcuts.ui:248
 msgid "Redo"
 msgstr "Yinele"
 
@@ -1725,40 +1783,46 @@ msgstr "Çalışma Alanı Dizin Eylemleri"
 msgid "Create new Folder"
 msgstr "Yeni Klasör Oluştur"
 
-#: crates/rnote-ui/src/appwindow/actions.rs:596
-#: crates/rnote-ui/src/appwindow/imp.rs:248
-#: crates/rnote-ui/src/dialogs/export.rs:70
-#: crates/rnote-ui/src/dialogs/mod.rs:126
-#: crates/rnote-ui/src/dialogs/mod.rs:257
-#: crates/rnote-ui/src/dialogs/mod.rs:411
+#: crates/rnote-ui/src/appwindow/actions.rs:573
+#: crates/rnote-ui/src/appwindow/imp.rs:313
+#: crates/rnote-ui/src/dialogs/export.rs:81
+#: crates/rnote-ui/src/dialogs/mod.rs:118
+#: crates/rnote-ui/src/dialogs/mod.rs:248
+#: crates/rnote-ui/src/dialogs/mod.rs:401
 msgid "Saving document failed"
 msgstr "Belge kaydedilemedi"
 
-#: crates/rnote-ui/src/appwindow/actions.rs:659
+#: crates/rnote-ui/src/appwindow/actions.rs:636
 msgid "Printing document failed"
 msgstr "Belge yazdırılamadı"
 
-#: crates/rnote-ui/src/appwindow/actions.rs:695
+#: crates/rnote-ui/src/appwindow/actions.rs:672
 msgid "Exporting selection failed, nothing selected"
 msgstr "Seçim dışa aktarılamadı, hiçbir şey seçilmedi"
 
 #: crates/rnote-ui/src/appwindow/imp.rs:268
+#, fuzzy
+#| msgid "Saves are in progress"
+msgid "Saves are in progress, waiting before closing.."
+msgstr "Kayıt devam ediyor"
+
+#: crates/rnote-ui/src/appwindow/imp.rs:336
 msgid "Button 1"
 msgstr "Düğme 1"
 
-#: crates/rnote-ui/src/appwindow/imp.rs:275
+#: crates/rnote-ui/src/appwindow/imp.rs:343
 msgid "Button 2"
 msgstr "Düğme 2"
 
-#: crates/rnote-ui/src/appwindow/imp.rs:282
+#: crates/rnote-ui/src/appwindow/imp.rs:350
 msgid "Button 3"
 msgstr "Düğme 3"
 
-#: crates/rnote-ui/src/appwindow/imp.rs:289
+#: crates/rnote-ui/src/appwindow/imp.rs:357
 msgid "Button 4"
 msgstr "Düğme 4"
 
-#: crates/rnote-ui/src/appwindow/mod.rs:126
+#: crates/rnote-ui/src/appwindow/mod.rs:141
 msgid ""
 "Settings schema is not installed. App settings could not be loaded and won't "
 "be saved."
@@ -1766,413 +1830,413 @@ msgstr ""
 "Ayarlar şeması henüz indirilmemiştir. Uygulama ayarları yüklenemedi ve "
 "kaydedilmeyecek."
 
-#: crates/rnote-ui/src/appwindow/mod.rs:458
+#: crates/rnote-ui/src/appwindow/mod.rs:520
 msgid "Opening file failed"
 msgstr "Dosya açılamadı"
 
-#: crates/rnote-ui/src/canvas/mod.rs:867 crates/rnote-ui/src/dialogs/mod.rs:204
-#: crates/rnote-ui/src/dialogs/mod.rs:341
+#: crates/rnote-ui/src/canvas/mod.rs:858 crates/rnote-ui/src/dialogs/mod.rs:195
+#: crates/rnote-ui/src/dialogs/mod.rs:331
 msgid "- invalid file name -"
 msgstr "- geçersiz dosya adı -"
 
-#: crates/rnote-ui/src/canvas/mod.rs:880
+#: crates/rnote-ui/src/canvas/mod.rs:871
 msgid "- invalid folder path -"
 msgstr "- geçersiz klasör yolu -"
 
-#: crates/rnote-ui/src/canvas/mod.rs:922
+#: crates/rnote-ui/src/canvas/mod.rs:895
 msgid "Opened file was modified on disk"
 msgstr "Açılan dosya disk üzerinde değiştirildi"
 
-#: crates/rnote-ui/src/canvas/mod.rs:923
+#: crates/rnote-ui/src/canvas/mod.rs:896
 msgid "Reload"
 msgstr "Yeniden yükle"
 
-#: crates/rnote-ui/src/canvas/mod.rs:930
+#: crates/rnote-ui/src/canvas/mod.rs:903
 msgid "Reloading .rnote file from disk failed"
 msgstr ".rnote dosyasının diskten yeniden yüklenmesi başarısız oldu"
 
-#: crates/rnote-ui/src/canvas/mod.rs:994
-msgid "Opened file was renamed on disk"
-msgstr "Açılan dosya disk üzerinde yeniden adlandırıldı"
+#: crates/rnote-ui/src/canvas/mod.rs:969
+msgid "Opened file was renamed or moved."
+msgstr "Açılan dosya yeniden adlandırıldı ya da taşındı."
 
-#: crates/rnote-ui/src/canvas/mod.rs:1007
-msgid "Opened file was moved or deleted on disk"
-msgstr "Açılan dosya diskte taşınmış veya silinmiş"
+#: crates/rnote-ui/src/canvas/mod.rs:983
+msgid "Opened file was removed."
+msgstr "Açılan dosya kaldırıldı."
 
-#: crates/rnote-ui/src/canvas/mod.rs:1139
+#: crates/rnote-ui/src/canvas/mod.rs:1169
 msgid "Inserting file failed"
 msgstr "Dosya eklenemedi"
 
-#: crates/rnote-ui/src/canvas/mod.rs:1149
+#: crates/rnote-ui/src/canvas/mod.rs:1179
 msgid "Inserting text failed"
 msgstr "Metin eklenemedi"
 
-#: crates/rnote-ui/src/dialogs/export.rs:27
-#: crates/rnote-ui/src/dialogs/import.rs:21
+#: crates/rnote-ui/src/dialogs/export.rs:33
+#: crates/rnote-ui/src/dialogs/import.rs:28
 msgid ".rnote"
 msgstr ".rnote"
 
-#: crates/rnote-ui/src/dialogs/export.rs:55
+#: crates/rnote-ui/src/dialogs/export.rs:66
 msgid "Saved document successfully"
 msgstr "Belge kaydedildi"
 
-#: crates/rnote-ui/src/dialogs/export.rs:226
-#: crates/rnote-ui/src/dialogs/export.rs:239
-#: crates/rnote-ui/src/dialogs/export.rs:536
-#: crates/rnote-ui/src/dialogs/export.rs:804
+#: crates/rnote-ui/src/dialogs/export.rs:243
+#: crates/rnote-ui/src/dialogs/export.rs:256
+#: crates/rnote-ui/src/dialogs/export.rs:586
+#: crates/rnote-ui/src/dialogs/export.rs:882
 msgid "Exporting document failed"
 msgstr "Belge dışa aktarılamadı"
 
-#: crates/rnote-ui/src/dialogs/export.rs:230
+#: crates/rnote-ui/src/dialogs/export.rs:247
 msgid "Exported document successfully"
 msgstr "Belge dışa aktarıldı"
 
-#: crates/rnote-ui/src/dialogs/export.rs:231
-#: crates/rnote-ui/src/dialogs/export.rs:532
-#: crates/rnote-ui/src/dialogs/export.rs:796
+#: crates/rnote-ui/src/dialogs/export.rs:248
+#: crates/rnote-ui/src/dialogs/export.rs:582
+#: crates/rnote-ui/src/dialogs/export.rs:874
 msgid "View in file manager"
 msgstr "Dosya yöneticisinde görüntüleyin"
 
-#: crates/rnote-ui/src/dialogs/export.rs:245
-#: crates/rnote-ui/src/dialogs/export.rs:542
-#: crates/rnote-ui/src/dialogs/export.rs:810
+#: crates/rnote-ui/src/dialogs/export.rs:262
+#: crates/rnote-ui/src/dialogs/export.rs:592
+#: crates/rnote-ui/src/dialogs/export.rs:888
 msgid "Failed to open the file in the file manager"
 msgstr "Dosyanın dosya yöneticisinde açılması başarısız oldu"
 
-#: crates/rnote-ui/src/dialogs/export.rs:255
+#: crates/rnote-ui/src/dialogs/export.rs:272
 msgid "Exporting document failed, no file selected"
 msgstr "Belgeyi dışa aktarılamadı, dosya seçilmedi"
 
-#: crates/rnote-ui/src/dialogs/export.rs:270
-#: crates/rnote-ui/src/dialogs/export.rs:567
-#: crates/rnote-ui/src/dialogs/export.rs:856
-#: crates/rnote-ui/src/dialogs/mod.rs:509
+#: crates/rnote-ui/src/dialogs/export.rs:287
+#: crates/rnote-ui/src/dialogs/export.rs:617
+#: crates/rnote-ui/src/dialogs/export.rs:935
+#: crates/rnote-ui/src/dialogs/mod.rs:504
 msgid "Select"
 msgstr "Seç"
 
-#: crates/rnote-ui/src/dialogs/export.rs:527
+#: crates/rnote-ui/src/dialogs/export.rs:577
 msgid "Exporting document pages failed"
 msgstr "Belge sayfaları dışa aktarılamadı"
 
-#: crates/rnote-ui/src/dialogs/export.rs:531
+#: crates/rnote-ui/src/dialogs/export.rs:581
 msgid "Exported document pages successfully"
 msgstr "Belge sayfaları dışa aktarıldı"
 
-#: crates/rnote-ui/src/dialogs/export.rs:551
+#: crates/rnote-ui/src/dialogs/export.rs:601
 msgid "Exporting document pages failed, no directory selected"
 msgstr "Belge sayfaları dışa aktarılamadı, dizin seçilmedi"
 
-#: crates/rnote-ui/src/dialogs/export.rs:781
+#: crates/rnote-ui/src/dialogs/export.rs:859
 msgid "Exporting selection failed, no file selected"
 msgstr "Seçim dışa aktarılamadı, dosya seçilmedi"
 
-#: crates/rnote-ui/src/dialogs/export.rs:791
+#: crates/rnote-ui/src/dialogs/export.rs:869
 msgid "Exporting selection failed"
 msgstr "Seçim dışa aktarılamadı"
 
-#: crates/rnote-ui/src/dialogs/export.rs:795
+#: crates/rnote-ui/src/dialogs/export.rs:873
 msgid "Exported selection successfully"
 msgstr "Seçim dışa aktarıldı"
 
-#: crates/rnote-ui/src/dialogs/export.rs:897
-#: crates/rnote-ui/src/dialogs/export.rs:945
+#: crates/rnote-ui/src/dialogs/export.rs:1011
+#: crates/rnote-ui/src/dialogs/export.rs:1074
 msgid "Json"
 msgstr "Json"
 
-#: crates/rnote-ui/src/dialogs/export.rs:905
+#: crates/rnote-ui/src/dialogs/export.rs:1023
 msgid "Export Engine State"
 msgstr "Motor Durumunu Dışa Aktar"
 
-#: crates/rnote-ui/src/dialogs/export.rs:923
+#: crates/rnote-ui/src/dialogs/export.rs:1042
 msgid "Exporting engine state failed"
 msgstr "Motor durumu dışa aktarılamadı"
 
-#: crates/rnote-ui/src/dialogs/export.rs:927
+#: crates/rnote-ui/src/dialogs/export.rs:1046
 msgid "Exported engine state successfully"
 msgstr "Motor durumu dışa aktarıldı"
 
-#: crates/rnote-ui/src/dialogs/export.rs:953
+#: crates/rnote-ui/src/dialogs/export.rs:1086
 msgid "Export Engine Config"
 msgstr "Motor Ayarını Dışa Aktar"
 
-#: crates/rnote-ui/src/dialogs/export.rs:971
+#: crates/rnote-ui/src/dialogs/export.rs:1105
 msgid "Exporting engine config failed"
 msgstr "Motor ayarı dışa aktarılamadı"
 
-#: crates/rnote-ui/src/dialogs/export.rs:975
+#: crates/rnote-ui/src/dialogs/export.rs:1109
 msgid "Exported engine config successfully"
 msgstr "Motor ayarı dışa aktarıldı"
 
-#: crates/rnote-ui/src/dialogs/import.rs:24
+#: crates/rnote-ui/src/dialogs/import.rs:34
 msgid "Open File"
 msgstr "Dosya Aç"
 
-#: crates/rnote-ui/src/dialogs/import.rs:63
+#: crates/rnote-ui/src/dialogs/import.rs:86
 msgid "Jpg, Pdf, Png, Svg, Xopp, Txt"
 msgstr "Jpg, Pdf, Png, Svg, Xopp, Txt"
 
-#: crates/rnote-ui/src/dialogs/import.rs:192
+#: crates/rnote-ui/src/dialogs/import.rs:239
 msgid "- no file name -"
 msgstr "- adsız -"
 
-#: crates/rnote-ui/src/dialogs/import.rs:197
+#: crates/rnote-ui/src/dialogs/import.rs:244
 msgid "- no title -"
 msgstr "- başlıksız -"
 
-#: crates/rnote-ui/src/dialogs/import.rs:200
+#: crates/rnote-ui/src/dialogs/import.rs:247
 msgid "- no author -"
 msgstr "- yazar yok -"
 
-#: crates/rnote-ui/src/dialogs/import.rs:204
+#: crates/rnote-ui/src/dialogs/import.rs:251
 msgid "- no date -"
 msgstr "- tarih yok -"
 
-#: crates/rnote-ui/src/dialogs/import.rs:211
+#: crates/rnote-ui/src/dialogs/import.rs:258
 msgid "File name:"
 msgstr "Dosya adı:"
 
-#: crates/rnote-ui/src/dialogs/import.rs:215
+#: crates/rnote-ui/src/dialogs/import.rs:262
 msgid "Title:"
 msgstr "Başlık:"
 
-#: crates/rnote-ui/src/dialogs/import.rs:219
+#: crates/rnote-ui/src/dialogs/import.rs:266
 msgid "Author:"
 msgstr "Yazar:"
 
-#: crates/rnote-ui/src/dialogs/import.rs:223
+#: crates/rnote-ui/src/dialogs/import.rs:270
 msgid "Modification date:"
 msgstr "Değiştirilme tarihi:"
 
-#: crates/rnote-ui/src/dialogs/import.rs:227
+#: crates/rnote-ui/src/dialogs/import.rs:274
 msgid "Pages:"
 msgstr "Sayfalar:"
 
 #. TRANSLATORS: 'Name <email@domain.com>' or 'Name https://website.example'
-#: crates/rnote-ui/src/dialogs/mod.rs:47
+#: crates/rnote-ui/src/dialogs/mod.rs:40
 msgid "translator-credits"
 msgstr ""
-"Sabri Ünal <libreajans@gmail.com>\n"
+"Sabri Ünal <yakushabb@gmail.com>\n"
 "Oğuz Ersen <oguz@ersen.moe>"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:211
-#: crates/rnote-ui/src/dialogs/mod.rs:348
+#: crates/rnote-ui/src/dialogs/mod.rs:202
+#: crates/rnote-ui/src/dialogs/mod.rs:338
 msgid "- invalid save folder name -"
 msgstr "- geçersiz kayıt klasörü adı -"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:227
-#: crates/rnote-ui/src/dialogs/mod.rs:363
+#: crates/rnote-ui/src/dialogs/mod.rs:218
+#: crates/rnote-ui/src/dialogs/mod.rs:353
 msgid "The changes will be saved"
 msgstr "Değişiklikler kaydedilecek"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:232
-#: crates/rnote-ui/src/dialogs/mod.rs:368
+#: crates/rnote-ui/src/dialogs/mod.rs:223
+#: crates/rnote-ui/src/dialogs/mod.rs:358
 msgid "A new file will be created"
 msgstr "Yeni bir dosya oluşturulacak"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:507
+#: crates/rnote-ui/src/dialogs/mod.rs:502
 msgid "Change Workspace Directory"
 msgstr "Çalışma Alanı Dizinini Değiştir"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:617
+#: crates/rnote-ui/src/dialogs/mod.rs:618
 msgid "Band-Aid"
 msgstr "Yara Bandı"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:618
+#: crates/rnote-ui/src/dialogs/mod.rs:619
 msgid "Bank"
 msgstr "Banka"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:619
+#: crates/rnote-ui/src/dialogs/mod.rs:620
 msgid "Bookmark"
 msgstr "Yer İmi"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:620
+#: crates/rnote-ui/src/dialogs/mod.rs:621
 msgid "Book"
 msgstr "Kitap"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:621
+#: crates/rnote-ui/src/dialogs/mod.rs:622
 msgid "Bread"
 msgstr "Ekmek"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:622
+#: crates/rnote-ui/src/dialogs/mod.rs:623
 msgid "Calendar"
 msgstr "Takvim"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:623
+#: crates/rnote-ui/src/dialogs/mod.rs:624
 msgid "Camera"
 msgstr "Kamera"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:624
+#: crates/rnote-ui/src/dialogs/mod.rs:625
 msgctxt "as in computer chip"
 msgid "Chip"
 msgstr "Çip"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:625
+#: crates/rnote-ui/src/dialogs/mod.rs:626
 msgid "Clock"
 msgstr "Saat"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:626
+#: crates/rnote-ui/src/dialogs/mod.rs:627
 msgid "Code"
 msgstr "Kod"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:627
+#: crates/rnote-ui/src/dialogs/mod.rs:628
 msgid "Compose"
 msgstr "Düzenle"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:628
+#: crates/rnote-ui/src/dialogs/mod.rs:629
 msgctxt "as in plant"
 msgid "Crop"
 msgstr "Kırp"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:629
+#: crates/rnote-ui/src/dialogs/mod.rs:630
 msgid "Dictionary"
 msgstr "Sözlük"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:631
+#: crates/rnote-ui/src/dialogs/mod.rs:632
 msgid "Drinks"
 msgstr "İçecekler"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:632
+#: crates/rnote-ui/src/dialogs/mod.rs:633
 msgid "Flag"
 msgstr "Bayrak"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:633
+#: crates/rnote-ui/src/dialogs/mod.rs:634
 msgid "Folder"
 msgstr "Klasör"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:634
+#: crates/rnote-ui/src/dialogs/mod.rs:635
 msgid "Footprints"
 msgstr "Ayak İzleri"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:635
+#: crates/rnote-ui/src/dialogs/mod.rs:636
 msgid "Gamepad"
 msgstr "Oyun kolu"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:636
+#: crates/rnote-ui/src/dialogs/mod.rs:637
 msgid "Gear"
 msgstr "Dişli"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:637
+#: crates/rnote-ui/src/dialogs/mod.rs:638
 msgid "Globe"
 msgstr "Küre"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:638
+#: crates/rnote-ui/src/dialogs/mod.rs:639
 msgid "Hammer"
 msgstr "Çekiç"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:639
+#: crates/rnote-ui/src/dialogs/mod.rs:640
 msgid "Heart"
 msgstr "Kalp"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:640
+#: crates/rnote-ui/src/dialogs/mod.rs:641
 msgid "Hourglass"
 msgstr "Kum Saati"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:641
+#: crates/rnote-ui/src/dialogs/mod.rs:642
 msgid "Key"
 msgstr "Anahtar"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:642
+#: crates/rnote-ui/src/dialogs/mod.rs:643
 msgid "Language"
 msgstr "Dil"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:643
+#: crates/rnote-ui/src/dialogs/mod.rs:644
 msgid "Library"
 msgstr "Kütüphane"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:644
+#: crates/rnote-ui/src/dialogs/mod.rs:645
 msgid "Lightbulb"
 msgstr "Ampül"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:645
+#: crates/rnote-ui/src/dialogs/mod.rs:646
 msgid "Mathematics"
 msgstr "Matematik"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:646
+#: crates/rnote-ui/src/dialogs/mod.rs:647
 msgid "Meeting"
 msgstr "Toplantı"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:647
+#: crates/rnote-ui/src/dialogs/mod.rs:648
 msgid "Money"
 msgstr "Para"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:648
+#: crates/rnote-ui/src/dialogs/mod.rs:649
 msgid "Musical Note"
 msgstr "Müzik Notaları"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:649
+#: crates/rnote-ui/src/dialogs/mod.rs:650
 msgid "Nature"
 msgstr "Doğa"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:650
+#: crates/rnote-ui/src/dialogs/mod.rs:651
 msgid "Open Book"
 msgstr "Açık Kitap"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:651
+#: crates/rnote-ui/src/dialogs/mod.rs:652
 msgid "Paintbrush"
 msgstr "Boya Fırçası"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:652
+#: crates/rnote-ui/src/dialogs/mod.rs:653
 msgid "Pencil and Paper"
 msgstr "Kalem ve Kağıt"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:653
+#: crates/rnote-ui/src/dialogs/mod.rs:654
 msgid "People"
 msgstr "Kişiler"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:654
+#: crates/rnote-ui/src/dialogs/mod.rs:655
 msgid "Person"
 msgstr "Kişi"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:655
+#: crates/rnote-ui/src/dialogs/mod.rs:656
 msgid "Projector"
 msgstr "Projektör"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:656
+#: crates/rnote-ui/src/dialogs/mod.rs:657
 msgid "Science"
 msgstr "Bilim"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:657
+#: crates/rnote-ui/src/dialogs/mod.rs:658
 msgid "Scratchpad"
 msgstr "Karalama Defteri"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:658
+#: crates/rnote-ui/src/dialogs/mod.rs:659
 msgid "Shapes"
 msgstr "Şekiller"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:659
+#: crates/rnote-ui/src/dialogs/mod.rs:660
 msgid "Shopping"
 msgstr "Alışveriş"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:660
+#: crates/rnote-ui/src/dialogs/mod.rs:661
 msgid "Speech Bubble"
 msgstr "Konuşma Balonu"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:661
+#: crates/rnote-ui/src/dialogs/mod.rs:662
 msgid "Speedometer"
 msgstr "Hız Ölçer"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:662
+#: crates/rnote-ui/src/dialogs/mod.rs:663
 msgid "Star"
 msgstr "Yıldız"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:664
+#: crates/rnote-ui/src/dialogs/mod.rs:665
 msgctxt "as in terminal software"
 msgid "Terminal"
 msgstr "Uçbirim"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:666
+#: crates/rnote-ui/src/dialogs/mod.rs:667
 msgid "Text"
 msgstr "Metin"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:667
+#: crates/rnote-ui/src/dialogs/mod.rs:668
 msgid "Travel"
 msgstr "Seyahat"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:668
+#: crates/rnote-ui/src/dialogs/mod.rs:669
 msgid "Weather"
 msgstr "Hava Durumu"
 
-#: crates/rnote-ui/src/dialogs/mod.rs:669
+#: crates/rnote-ui/src/dialogs/mod.rs:670
 msgid "Weight"
 msgstr "Ağırlık"
 
@@ -2237,112 +2301,266 @@ msgid "Polyline"
 msgstr "Çoklu çizgi"
 
 #: crates/rnote-ui/src/penssidebar/shaperpage.rs:438
-#, fuzzy
-#| msgid "Polyline"
 msgid "Polygon"
-msgstr "Çoklu çizgi"
+msgstr "Çokgen"
 
-#: crates/rnote-ui/src/settingspanel/mod.rs:536
+#: crates/rnote-ui/src/settingspanel/mod.rs:571
 msgid "Application restart is required"
 msgstr "Uygulamanın yeniden başlatılması gerekiyor"
 
-#: crates/rnote-ui/src/settingspanel/mod.rs:831
+#: crates/rnote-ui/src/settingspanel/mod.rs:887
 msgctxt "a cursor type"
 msgid "Crosshair (Small)"
 msgstr "Artı Simgesi (Küçük)"
 
-#: crates/rnote-ui/src/settingspanel/mod.rs:832
+#: crates/rnote-ui/src/settingspanel/mod.rs:888
 msgctxt "a cursor type"
 msgid "Crosshair (Medium)"
 msgstr "Artı Simgesi (Orta)"
 
-#: crates/rnote-ui/src/settingspanel/mod.rs:833
+#: crates/rnote-ui/src/settingspanel/mod.rs:889
 msgctxt "a cursor type"
 msgid "Crosshair (Large)"
 msgstr "Artı Simgesi (Büyük)"
 
-#: crates/rnote-ui/src/settingspanel/mod.rs:834
+#: crates/rnote-ui/src/settingspanel/mod.rs:890
 msgctxt "a cursor type"
 msgid "Dot (Small)"
 msgstr "Nokta (Küçük)"
 
-#: crates/rnote-ui/src/settingspanel/mod.rs:835
+#: crates/rnote-ui/src/settingspanel/mod.rs:891
 msgctxt "a cursor type"
 msgid "Dot (Medium)"
 msgstr "Nokta (Orta)"
 
-#: crates/rnote-ui/src/settingspanel/mod.rs:836
+#: crates/rnote-ui/src/settingspanel/mod.rs:892
 msgctxt "a cursor type"
 msgid "Dot (Large)"
 msgstr "Nokta (Büyük)"
 
-#: crates/rnote-ui/src/settingspanel/mod.rs:837
+#: crates/rnote-ui/src/settingspanel/mod.rs:893
 msgctxt "a cursor type"
 msgid "Teardrop North-West (Small)"
 msgstr "Gözyaşı Kuzey Batı (Küçük)"
 
-#: crates/rnote-ui/src/settingspanel/mod.rs:838
+#: crates/rnote-ui/src/settingspanel/mod.rs:894
 msgctxt "a cursor type"
 msgid "Teardrop North-West (Medium)"
 msgstr "Gözyaşı Kuzey Batı (Orta)"
 
-#: crates/rnote-ui/src/settingspanel/mod.rs:839
+#: crates/rnote-ui/src/settingspanel/mod.rs:895
 msgctxt "a cursor type"
 msgid "Teardrop North-West (Large)"
 msgstr "Gözyaşı Kuzey Batı (Büyük)"
 
-#: crates/rnote-ui/src/settingspanel/mod.rs:840
+#: crates/rnote-ui/src/settingspanel/mod.rs:896
 msgctxt "a cursor type"
 msgid "Teardrop North-East (Small)"
 msgstr "Gözyaşı Kuzey Doğu (Küçük)"
 
-#: crates/rnote-ui/src/settingspanel/mod.rs:841
+#: crates/rnote-ui/src/settingspanel/mod.rs:897
 msgctxt "a cursor type"
 msgid "Teardrop North-East (Medium)"
 msgstr "Gözyaşı Kuzey Doğu (Orta)"
 
-#: crates/rnote-ui/src/settingspanel/mod.rs:842
+#: crates/rnote-ui/src/settingspanel/mod.rs:898
 msgctxt "a cursor type"
 msgid "Teardrop North-East (Large)"
 msgstr "Gözyaşı Kuzey Doğu (Büyük)"
 
-#: crates/rnote-ui/src/settingspanel/mod.rs:843
+#: crates/rnote-ui/src/settingspanel/mod.rs:899
 msgctxt "a cursor type"
 msgid "Teardrop North (Small)"
 msgstr "Gözyaşı Kuzey (Küçük)"
 
-#: crates/rnote-ui/src/settingspanel/mod.rs:844
+#: crates/rnote-ui/src/settingspanel/mod.rs:900
 msgctxt "a cursor type"
 msgid "Teardrop North (Medium)"
 msgstr "Gözyaşı Kuzey (Orta)"
 
-#: crates/rnote-ui/src/settingspanel/mod.rs:845
+#: crates/rnote-ui/src/settingspanel/mod.rs:901
 msgctxt "a cursor type"
 msgid "Teardrop North (Large)"
 msgstr "Gözyaşı Kuzey (Büyük)"
 
-#: crates/rnote-ui/src/settingspanel/mod.rs:846
+#: crates/rnote-ui/src/settingspanel/mod.rs:902
 msgctxt "a cursor type"
 msgid "Beam (Small)"
 msgstr "Hüzme (Küçük)"
 
-#: crates/rnote-ui/src/settingspanel/mod.rs:847
+#: crates/rnote-ui/src/settingspanel/mod.rs:903
 msgctxt "a cursor type"
 msgid "Beam (Medium)"
 msgstr "Hüzme (Orta)"
 
-#: crates/rnote-ui/src/settingspanel/mod.rs:848
+#: crates/rnote-ui/src/settingspanel/mod.rs:904
 msgctxt "a cursor type"
 msgid "Beam (Large)"
 msgstr "Hüzme (Büyük)"
 
-#: crates/rnote-ui/src/workspacebrowser/workspaceactions/createfolder.rs:56
+#: crates/rnote-ui/src/workspacebrowser/filerow/actions/duplicate.rs:35
+msgid "Can't duplicate an unsaved document"
+msgstr "Kaydedilmemiş belge çoğaltılamaz"
+
+#: crates/rnote-ui/src/workspacebrowser/filerow/actions/duplicate.rs:45
+msgid "Duplicating the file failed"
+msgstr "Dosya çoğaltılamadı"
+
+#: crates/rnote-ui/src/workspacebrowser/filerow/actions/duplicate.rs:51
+msgid "Duplicating the directory failed"
+msgstr "Dizin çoğaltılamadı"
+
+#: crates/rnote-ui/src/workspacebrowser/filerow/actions/open_in_default_app.rs:18
+msgid "Open the file in the default app failed"
+msgstr "Dosya öntanımlı dosya yöneticisinde açılamadı"
+
+#: crates/rnote-ui/src/workspacebrowser/filerow/actions/rename.rs:39
+msgid "Renaming file failed, target file already exists"
+msgstr "Dosya yeniden adlandırılamadı, hedef dosya zaten var"
+
+#: crates/rnote-ui/src/workspacebrowser/filerow/actions/rename.rs:46
+msgid "Renaming file failed"
+msgstr "Dosya yeniden adlandırılamadı"
+
+#: crates/rnote-ui/src/workspacebrowser/filerow/actions/trash.rs:20
+msgid "Trashing file failed"
+msgstr "Dosya çöpe taşınamadı"
+
+#: crates/rnote-ui/src/workspacebrowser/workspaceactions/createfolder.rs:67
 msgid "Folder Name"
 msgstr "Klasör Adı"
 
-#: crates/rnote-ui/src/workspacebrowser/workspaceactions/createfolder.rs:64
+#: crates/rnote-ui/src/workspacebrowser/workspaceactions/createfolder.rs:75
 msgid "New Folder"
 msgstr "Yeni Klasör"
+
+#: crates/rnote-ui/src/utils.rs:159
+msgctxt "used in string representation of the current selected color"
+msgid "grey"
+msgstr "gri"
+
+#: crates/rnote-ui/src/utils.rs:161 crates/rnote-ui/src/utils.rs:196
+msgctxt "part of string representation of a color"
+msgid "rose"
+msgstr "gül"
+
+#: crates/rnote-ui/src/utils.rs:163
+msgctxt "part of string representation of a color"
+msgid "red"
+msgstr "kırmızı"
+
+#: crates/rnote-ui/src/utils.rs:166
+msgctxt "part of string representation of a color"
+msgid "orange"
+msgstr "turuncu"
+
+#: crates/rnote-ui/src/utils.rs:169
+msgctxt "part of string representation of a color"
+msgid "yellow"
+msgstr "sarı"
+
+#: crates/rnote-ui/src/utils.rs:173
+msgctxt "part of string representation of a color"
+msgid "chartreuse-green"
+msgstr "chartreuse yeşili"
+
+#: crates/rnote-ui/src/utils.rs:176
+msgctxt "part of string representation of a color"
+msgid "green"
+msgstr "yeşil"
+
+#: crates/rnote-ui/src/utils.rs:179
+msgctxt "part of string representation of a color"
+msgid "spring-green"
+msgstr "bahar yeşili"
+
+#: crates/rnote-ui/src/utils.rs:182
+msgctxt "part of string representation of a color"
+msgid "cyan"
+msgstr "camgöbeği"
+
+#: crates/rnote-ui/src/utils.rs:185
+msgctxt "part of string representation of a color"
+msgid "azure"
+msgstr "gök mavisi"
+
+#: crates/rnote-ui/src/utils.rs:188
+msgctxt "part of string representation of a color"
+msgid "blue"
+msgstr "mavi"
+
+#: crates/rnote-ui/src/utils.rs:191
+msgctxt "part of string representation of a color"
+msgid "violet"
+msgstr "menekşe"
+
+#: crates/rnote-ui/src/utils.rs:194
+msgctxt "part of string representation of a color"
+msgid "magenta"
+msgstr "macenta"
+
+#: crates/rnote-ui/src/utils.rs:201
+msgctxt "part of string representation of a color"
+msgid "greyish"
+msgstr "grimsi"
+
+#: crates/rnote-ui/src/utils.rs:204
+msgctxt "part of string representation of a color"
+msgid "vivid"
+msgstr "canlı"
+
+#: crates/rnote-ui/src/utils.rs:208
+msgctxt "part of string representation of a color"
+msgid "very-dark"
+msgstr "çok koyu"
+
+#: crates/rnote-ui/src/utils.rs:210
+msgctxt "part of string representation of a color"
+msgid "dark"
+msgstr "koyu"
+
+#: crates/rnote-ui/src/utils.rs:213
+msgctxt "part of string representation of a color"
+msgid "mid"
+msgstr "orta"
+
+#: crates/rnote-ui/src/utils.rs:215
+msgctxt "part of string representation of a color"
+msgid "bright"
+msgstr "parlak"
+
+#: crates/rnote-ui/src/utils.rs:219
+msgctxt "part of string representation of a color"
+msgid "transparent"
+msgstr "saydam"
+
+#: crates/rnote-ui/src/utils.rs:221
+msgctxt "part of string representation of a color"
+msgid "translucent"
+msgstr "yarı saydam"
+
+#: crates/rnote-ui/src/utils.rs:225
+msgctxt "part of string representation of a color"
+msgid "slightly-translucent"
+msgstr "hafif saydam"
+
+#: crates/rnote-ui/src/utils.rs:234
+msgctxt "part of string representation of a color"
+msgid "fully transparent"
+msgstr "tamamen saydam"
+
+#: crates/rnote-ui/src/utils.rs:237
+msgctxt "part of string representation of a color"
+msgid "black"
+msgstr "siyah"
+
+#: crates/rnote-ui/src/utils.rs:239
+msgctxt "part of string representation of a color"
+msgid "white"
+msgstr "beyaz"
+
+#~ msgid "Opened file was moved or deleted on disk"
+#~ msgstr "Açılan dosya diskte taşınmış veya silinmiş"
 
 #~ msgid "Lecture Note 1"
 #~ msgstr "Ders Notu 1"
@@ -2371,9 +2589,6 @@ msgstr "Yeni Klasör"
 #~ msgstr ""
 #~ "Bu dosyanın açılması, kaydedilmemiş tüm değişikliklerin üzerine yazacak. "
 #~ "Geçerli belgeyi kaydetmek istiyor musunuz?"
-
-#~ msgid "Opening .rnote file failed"
-#~ msgstr ".rnote dosyası açılamadı"
 
 #~ msgid "Opening vector image file failed"
 #~ msgstr "Vektör görüntü dosyası açılamadı"

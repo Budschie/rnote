@@ -7,9 +7,10 @@ use crate::{render, Drawable};
 use p2d::bounding_volume::{Aabb, BoundingVolume};
 use rnote_compose::ext::AabbExt;
 use rnote_compose::shapes::Shapeable;
+use tracing::error;
 
 /// The tolerance where check between scale-factors are considered "equal".
-pub(crate) const RENDER_IMAGE_SCALE_EQUALITY_TOLERANCE: f64 = 0.01;
+pub(crate) const RENDER_IMAGE_SCALE_TOLERANCE: f64 = 0.01;
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum RenderCompState {
@@ -123,7 +124,7 @@ impl StrokeStore {
                         }
                         Err(e) => {
                             render_comp.state = RenderCompState::Dirty;
-                            tracing::error!(
+                            error!(
                                 "Creating rendernodes from partial images failed while regenerating stroke rendering, Err: {e:?}"
                             );
                         }
@@ -144,7 +145,7 @@ impl StrokeStore {
                         }
                         Err(e) => {
                             render_comp.state = RenderCompState::Dirty;
-                            tracing::error!(
+                            error!(
                                 "Creating rendernodes from full images failed while regenerating stroke rendering, Err: {e:?}"
                             );
                         }
@@ -157,9 +158,7 @@ impl StrokeStore {
                 }
                 Err(e) => {
                     render_comp.state = RenderCompState::Dirty;
-                    tracing::error!(
-                        "Generating images for stroke with key {key:?} failed, Err: {e:?}"
-                    );
+                    error!("Generating images for stroke with key {key:?} failed, Err: {e:?}");
                 }
             }
         }
@@ -206,11 +205,10 @@ impl StrokeStore {
                             key,
                             images,
                             image_scale,
-                            stroke_bounds: stroke.bounds(),
                         });
                     }
                     Err(e) => {
-                        tracing::error!(
+                        error!(
                             "Generating images of stroke failed while regenerating stroke rendering, stroke key {key:?} , Err: {e:?}"
                         );
                     }
@@ -305,11 +303,10 @@ impl StrokeStore {
                                 key,
                                 images,
                                 image_scale,
-                                stroke_bounds: stroke.bounds(),
                             });
                         }
                         Err(e) => {
-                            tracing::error!(
+                            error!(
                                 "Generating stroke images failed stroke while regenerating rendering in viewport `{viewport:?}`, stroke key: {key:?}, Err: {e:?}"
                             );
                         }
@@ -358,7 +355,7 @@ impl StrokeStore {
                                 }
                                 Err(e) => {
                                     render_comp.state = RenderCompState::Dirty;
-                                    tracing::error!("Failed to generated rendernodes while appending last segments rendering, Err: {e:?}");
+                                    error!("Failed to generated rendernodes while appending last segments rendering, Err: {e:?}");
                                 }
                             }
                             #[cfg(not(feature = "ui"))]
@@ -370,7 +367,7 @@ impl StrokeStore {
                         Ok(None) => {}
                         Err(e) => {
                             render_comp.state = RenderCompState::Dirty;
-                            tracing::error!(
+                            error!(
                                 "Failed to generate image while appending last segments rendering, Err: {e:?}"
                             );
                         }
@@ -412,7 +409,7 @@ impl StrokeStore {
                             render_comp.state = RenderCompState::ForViewport(viewport);
                         }
                         Err(e) => {
-                            tracing::error!("Generating rendernodes failed while replacing rendering with partial images, Err {e:?}");
+                            error!("Generating rendernodes failed while replacing rendering with partial images, Err {e:?}");
                             render_comp.state = RenderCompState::Dirty;
                         }
                     }
@@ -431,7 +428,7 @@ impl StrokeStore {
                             render_comp.state = RenderCompState::Complete;
                         }
                         Err(e) => {
-                            tracing::error!("Generating rendernodes failed while replacing rendering with full images, Err {e:?}");
+                            error!("Generating rendernodes failed while replacing rendering with full images, Err {e:?}");
                             render_comp.state = RenderCompState::Dirty;
                         }
                     }
@@ -467,7 +464,7 @@ impl StrokeStore {
                             render_comp.images.append(&mut images);
                         }
                         Err(e) => {
-                            tracing::error!("Generating rendernodes failed while appending rendering full images, Err {e:?}");
+                            error!("Generating rendernodes failed while appending rendering full images, Err {e:?}");
                             render_comp.state = RenderCompState::Dirty;
                         }
                     }
@@ -555,9 +552,7 @@ impl StrokeStore {
         for key in self.stroke_keys_as_rendered_intersecting_bounds(viewport) {
             if let Some(stroke) = self.stroke_components.get(key) {
                 if let Err(e) = stroke.draw(piet_cx, image_scale) {
-                    tracing::error!(
-                        "Drawing stroke immediate on piet RenderContext failed , Err: {e:?}"
-                    );
+                    error!("Drawing stroke immediate on piet RenderContext failed , Err: {e:?}");
                 }
             }
         }

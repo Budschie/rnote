@@ -8,6 +8,7 @@ use rnote_compose::eventresult::{EventPropagation, EventResult};
 use rnote_compose::penevent::{KeyboardKey, ModifierKey, PenProgress};
 use rnote_compose::penpath::Element;
 use rnote_compose::shapes::Shapeable;
+use std::collections::HashSet;
 use std::time::Instant;
 use unicode_segmentation::GraphemeCursor;
 
@@ -15,7 +16,7 @@ impl Typewriter {
     pub(super) fn handle_pen_event_down(
         &mut self,
         element: Element,
-        _modifier_keys: Vec<ModifierKey>,
+        _modifier_keys: HashSet<ModifierKey>,
         _now: Instant,
         engine_view: &mut EngineViewMut,
     ) -> (EventResult<PenProgress>, WidgetFlags) {
@@ -74,7 +75,9 @@ impl Typewriter {
                 widget_flags |= engine_view
                     .camera
                     .nudge_w_pos(element.pos, engine_view.document);
-                widget_flags |= engine_view.document.expand_autoexpand(engine_view.camera);
+                widget_flags |= engine_view
+                    .document
+                    .expand_autoexpand(engine_view.camera, engine_view.store);
                 engine_view.store.regenerate_rendering_in_viewport_threaded(
                     engine_view.tasks_tx.clone(),
                     false,
@@ -258,8 +261,9 @@ impl Typewriter {
                             widget_flags |= engine_view
                                 .camera
                                 .nudge_w_pos(element.pos, engine_view.document);
-                            widget_flags |=
-                                engine_view.document.expand_autoexpand(engine_view.camera);
+                            widget_flags |= engine_view
+                                .document
+                                .expand_autoexpand(engine_view.camera, engine_view.store);
                             engine_view.store.regenerate_rendering_in_viewport_threaded(
                                 engine_view.tasks_tx.clone(),
                                 false,
@@ -322,7 +326,7 @@ impl Typewriter {
     pub(super) fn handle_pen_event_up(
         &mut self,
         element: Element,
-        _modifier_keys: Vec<ModifierKey>,
+        _modifier_keys: HashSet<ModifierKey>,
         _now: Instant,
         engine_view: &mut EngineViewMut,
     ) -> (EventResult<PenProgress>, WidgetFlags) {
@@ -427,7 +431,7 @@ impl Typewriter {
     pub(super) fn handle_pen_event_proximity(
         &mut self,
         element: Element,
-        _modifier_keys: Vec<ModifierKey>,
+        _modifier_keys: HashSet<ModifierKey>,
         _now: Instant,
         engine_view: &mut EngineViewMut,
     ) -> (EventResult<PenProgress>, WidgetFlags) {
@@ -475,7 +479,7 @@ impl Typewriter {
     pub(super) fn handle_pen_event_keypressed(
         &mut self,
         keyboard_key: KeyboardKey,
-        modifier_keys: Vec<ModifierKey>,
+        modifier_keys: HashSet<ModifierKey>,
         _now: Instant,
         engine_view: &mut EngineViewMut,
     ) -> (EventResult<PenProgress>, WidgetFlags) {

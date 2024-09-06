@@ -1,5 +1,6 @@
 // Imports
 use super::content::GeneratedContentImages;
+use super::resize::{calculate_resize_ratio, ImageSizeOption};
 use super::{Content, Stroke};
 use crate::document::Format;
 use crate::engine::import::{PdfImportPageSpacing, PdfImportPrefs};
@@ -15,7 +16,8 @@ use rnote_compose::transform::Transform;
 use rnote_compose::transform::Transformable;
 use serde::{Deserialize, Serialize};
 use std::ops::Range;
-use usvg::{TreeParsing, TreeTextToPath, TreeWriting};
+use std::sync::Arc;
+use tracing::error;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(default, rename = "vectorimage")]
@@ -56,7 +58,7 @@ impl Content for VectorImage {
                 ),
             )
             .set("preserveAspectRatio", "none")
-            .add(svg::node::Text::new(self.svg_data.clone()));
+            .add(svg::node::Blob::new(self.svg_data.clone()));
         let group = svg::node::element::Group::new()
             .set(
                 "transform",
@@ -138,44 +140,65 @@ impl VectorImage {
     pub fn from_svg_str(
         svg_data: &str,
         pos: na::Vector2<f64>,
-        size: Option<na::Vector2<f64>>,
+        size_option: ImageSizeOption,
     ) -> Result<Self, anyhow::Error> {
         const COORDINATES_PREC: u8 = 3;
         const TRANSFORMS_PREC: u8 = 4;
 
-        let xml_options = usvg::XmlOptions {
+        let xml_options = usvg::WriteOptions {
             id_prefix: Some(rnote_compose::utils::svg_random_id_prefix()),
+            preserve_text: true,
             coordinates_precision: COORDINATES_PREC,
             transforms_precision: TRANSFORMS_PREC,
-            writer_opts: xmlwriter::Options {
-                use_single_quote: false,
-                indent: xmlwriter::Indent::None,
-                attributes_indent: xmlwriter::Indent::None,
-            },
+            use_single_quote: false,
+            indent: xmlwriter::Indent::None,
+            attributes_indent: xmlwriter::Indent::None,
         };
-        let mut svg_tree = usvg::Tree::from_str(svg_data, &usvg::Options::default())?;
-        svg_tree.convert_text(&render::USVG_FONTDB);
+        let svg_tree = usvg::Tree::from_str(
+            svg_data,
+            &usvg::Options {
+                fontdb: Arc::clone(&render::USVG_FONTDB),
+                ..Default::default()
+            },
+        )?;
 
-        let intrinsic_size =
-            na::vector![svg_tree.size.width() as f64, svg_tree.size.height() as f64];
+        let intrinsic_size = na::vector![
+            svg_tree.size().width() as f64,
+            svg_tree.size().height() as f64
+        ];
         let svg_data = svg_tree.to_string(&xml_options);
-        let rectangle = if let Some(size) = size {
-            Rectangle {
-                cuboid: p2d::shape::Cuboid::new(size * 0.5),
-                transform: Transform::new_w_isometry(na::Isometry2::new(pos + size * 0.5, 0.0)),
+
+        let mut transform = Transform::default();
+        let rectangle = match size_option {
+            ImageSizeOption::RespectOriginalSize => {
+                // Size not given : use the intrisic size
+                transform.append_translation_mut(pos + intrinsic_size * 0.5);
+                Rectangle {
+                    cuboid: p2d::shape::Cuboid::new(intrinsic_size * 0.5),
+                    transform,
+                }
             }
-        } else {
-            Rectangle {
-                cuboid: p2d::shape::Cuboid::new(intrinsic_size * 0.5),
-                transform: Transform::new_w_isometry(na::Isometry2::new(
-                    pos + intrinsic_size * 0.5,
-                    0.0,
-                )),
+            ImageSizeOption::ImposeSize(given_size) => {
+                // Size given : use the given size
+                transform.append_translation_mut(pos + given_size * 0.5);
+                Rectangle {
+                    cuboid: p2d::shape::Cuboid::new(given_size * 0.5),
+                    transform,
+                }
+            }
+            ImageSizeOption::ResizeImage(resize_struct) => {
+                // Resize : calculate the ratio
+                let resize_ratio = calculate_resize_ratio(resize_struct, intrinsic_size, pos);
+                transform.append_translation_mut(pos + intrinsic_size * resize_ratio * 0.5);
+                Rectangle {
+                    cuboid: p2d::shape::Cuboid::new(intrinsic_size * resize_ratio * 0.5),
+                    transform,
+                }
             }
         };
 
         Ok(Self {
-            svg_data: svg_data.to_string(),
+            svg_data,
             intrinsic_size,
             rectangle,
         })
@@ -191,7 +214,11 @@ impl VectorImage {
         let doc = poppler::Document::from_bytes(&glib::Bytes::from(bytes), None)?;
         let page_range = page_range.unwrap_or(0..doc.n_pages() as u32);
 
-        let page_width = format.width() * (pdf_import_prefs.page_width_perc / 100.0);
+        let page_width = if pdf_import_prefs.adjust_document {
+            format.width()
+        } else {
+            format.width() * (pdf_import_prefs.page_width_perc / 100.0)
+        };
         // calculate the page zoom based on the width of the first page.
         let page_zoom = if let Some(first_page) = doc.page(0) {
             page_width / first_page.size().0
@@ -281,17 +308,21 @@ impl VectorImage {
 
                 let bounds = Aabb::new(na::point![x, y], na::point![x + width, y + height]);
 
-                y += match pdf_import_prefs.page_spacing {
-                    PdfImportPageSpacing::Continuous => {
-                        height + Stroke::IMPORT_OFFSET_DEFAULT[1] * 0.5
-                    }
-                    PdfImportPageSpacing::OnePerDocumentPage => format.height(),
-                };
+                if pdf_import_prefs.adjust_document {
+                    y += height
+                } else {
+                    y += match pdf_import_prefs.page_spacing {
+                        PdfImportPageSpacing::Continuous => {
+                            height + Stroke::IMPORT_OFFSET_DEFAULT[1] * 0.5
+                        }
+                        PdfImportPageSpacing::OnePerDocumentPage => format.height(),
+                    };
+                }
 
                 match res() {
                     Ok(svg_data) => Some(render::Svg { svg_data, bounds }),
                     Err(e) => {
-                        tracing::error!("Importing page {page_i} from pdf failed, Err: {e:?}");
+                        error!("Importing page {page_i} from pdf failed, Err: {e:?}");
                         None
                     }
                 }
@@ -303,7 +334,7 @@ impl VectorImage {
                 Self::from_svg_str(
                     svg.svg_data.as_str(),
                     svg.bounds.mins.coords,
-                    Some(svg.bounds.extents()),
+                    ImageSizeOption::ImposeSize(svg.bounds.extents()),
                 )
             })
             .collect()

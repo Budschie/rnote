@@ -17,6 +17,7 @@ use std::time::Instant;
 pub struct VerticalSpaceTool {
     start_pos_y: f64,
     pos_y: f64,
+    limit_x: Option<(f64, f64)>,
     strokes_below: Vec<StrokeKey>,
 }
 
@@ -25,6 +26,7 @@ impl Default for VerticalSpaceTool {
         Self {
             start_pos_y: 0.0,
             pos_y: 0.0,
+            limit_x: None,
             strokes_below: vec![],
         }
     }
@@ -63,9 +65,17 @@ impl DrawableOnDoc for VerticalSpaceTool {
 
         let total_zoom = engine_view.camera.total_zoom();
         let viewport = engine_view.camera.viewport();
-        let x = viewport.mins[0];
+        let x = if self.limit_x.is_some() {
+            viewport.mins[0].max(self.limit_x.unwrap().0)
+        } else {
+            viewport.mins[0]
+        };
         let y = self.start_pos_y;
-        let width = viewport.extents()[0];
+        let width = if self.limit_x.is_some() {
+            self.limit_x.unwrap().1 - viewport.mins[0].max(self.limit_x.unwrap().0)
+        } else {
+            viewport.extents()[0]
+        };
         let height = self.pos_y - self.start_pos_y;
         let tool_bounds = Aabb::new_positive(na::point![x, y], na::point![x + width, y + height]);
 
@@ -93,7 +103,6 @@ impl DrawableOnDoc for VerticalSpaceTool {
             &Self::OFFSET_LINE_COLOR,
             Self::OFFSET_LINE_WIDTH / total_zoom,
         );
-
         cx.restore().map_err(|e| anyhow::anyhow!("{e:?}"))?;
         Ok(())
     }
@@ -300,9 +309,47 @@ impl PenBehaviour for Tools {
                         self.verticalspace_tool.start_pos_y = element.pos[1];
                         self.verticalspace_tool.pos_y = element.pos[1];
 
-                        self.verticalspace_tool.strokes_below = engine_view
-                            .store
-                            .keys_below_y(self.verticalspace_tool.pos_y);
+                        let pos_x = element.pos[0];
+
+                        let limit_movement_horizontal_borders = engine_view
+                            .pens_config
+                            .tools_config
+                            .verticalspace_tool_config
+                            .limit_movement_horizontal_borders;
+                        let limit_movement_vertical_borders = engine_view
+                            .pens_config
+                            .tools_config
+                            .verticalspace_tool_config
+                            .limit_movement_vertical_borders;
+
+                        let y_max = ((self.verticalspace_tool.pos_y
+                            / engine_view.document.format.height())
+                        .floor()
+                            + 1.0f64)
+                            * engine_view.document.format.height();
+
+                        let limit_x = {
+                            let page_number_hor =
+                                (pos_x / engine_view.document.format.width()).floor();
+                            (
+                                page_number_hor * engine_view.document.format.width(),
+                                (page_number_hor + 1.0f64) * engine_view.document.format.width(),
+                            )
+                        };
+
+                        self.verticalspace_tool.limit_x = if limit_movement_vertical_borders {
+                            Some(limit_x)
+                        } else {
+                            None
+                        };
+
+                        self.verticalspace_tool.strokes_below = engine_view.store.keys_between(
+                            self.verticalspace_tool.pos_y,
+                            y_max,
+                            limit_x,
+                            limit_movement_vertical_borders,
+                            limit_movement_horizontal_borders,
+                        );
                     }
                     ToolStyle::OffsetCamera => {
                         self.offsetcamera_tool.start = element.pos;
@@ -369,7 +416,9 @@ impl PenBehaviour for Tools {
                         widget_flags |= engine_view
                             .camera
                             .nudge_w_pos(element.pos, engine_view.document);
-                        widget_flags |= engine_view.document.expand_autoexpand(engine_view.camera);
+                        widget_flags |= engine_view
+                            .document
+                            .expand_autoexpand(engine_view.camera, engine_view.store);
                         engine_view.store.regenerate_rendering_in_viewport_threaded(
                             engine_view.tasks_tx.clone(),
                             false,
@@ -397,25 +446,40 @@ impl PenBehaviour for Tools {
                             .resize_autoexpand(engine_view.store, engine_view.camera);
                     }
                     ToolStyle::Zoom => {
-                        let total_zoom = engine_view.camera.total_zoom();
-                        let viewport_center = engine_view.camera.viewport_center();
+                        let total_zoom_old = engine_view.camera.total_zoom();
+                        let camera_offset = engine_view.camera.offset();
+
                         let new_surface_coord = engine_view
                             .camera
                             .transform()
                             .transform_point(&element.pos.into())
                             .coords;
+
                         let offset = new_surface_coord - self.zoom_tool.current_surface_coord;
 
                         // Drag down zooms out, drag up zooms in
                         let new_zoom =
-                            total_zoom * (1.0 - offset[1] * Camera::DRAG_ZOOM_MAGN_ZOOM_FACTOR);
+                            total_zoom_old * (1.0 - offset[1] * Camera::DRAG_ZOOM_MAGN_ZOOM_FACTOR);
 
                         if (Camera::ZOOM_MIN..=Camera::ZOOM_MAX).contains(&new_zoom) {
                             widget_flags |= engine_view
                                 .camera
                                 .zoom_w_timeout(new_zoom, engine_view.tasks_tx.clone());
-                            widget_flags |= engine_view.camera.set_viewport_center(viewport_center)
-                                | engine_view.document.expand_autoexpand(engine_view.camera);
+
+                            // Translate the camera view so that the start_surface_coord has the same surface position
+                            // as before the zoom occurred
+                            let new_camera_offset = (((camera_offset
+                                + self.zoom_tool.start_surface_coord)
+                                / total_zoom_old)
+                                * new_zoom)
+                                - self.zoom_tool.start_surface_coord;
+                            widget_flags |= engine_view
+                                .camera
+                                .set_offset(new_camera_offset, engine_view.document);
+
+                            widget_flags |= engine_view
+                                .document
+                                .expand_autoexpand(engine_view.camera, engine_view.store);
                         }
                         self.zoom_tool.current_surface_coord = new_surface_coord;
                     }

@@ -1,6 +1,3 @@
-// gtk4::Dialog is deprecated, but the replacement adw::ToolbarView is not suitable for a async flow
-#![allow(deprecated)]
-
 // Modules
 pub(crate) mod export;
 pub(crate) mod import;
@@ -15,9 +12,10 @@ use crate::{globals, RnIconPicker};
 use adw::prelude::*;
 use gettextrs::{gettext, pgettext};
 use gtk4::{
-    gio, glib, glib::clone, Builder, Button, CheckButton, ColorDialogButton, Dialog, FileDialog,
-    Label, MenuButton, ResponseType, ShortcutsWindow, StringList,
+    gio, glib, glib::clone, Builder, Button, CheckButton, ColorDialogButton, FileDialog, Label,
+    MenuButton, ShortcutsWindow, StringList,
 };
+use tracing::{debug, error, warn};
 
 // About Dialog
 pub(crate) fn dialog_about(appwindow: &RnAppWindow) {
@@ -27,9 +25,7 @@ pub(crate) fn dialog_about(appwindow: &RnAppWindow) {
         config::APP_NAME.to_string()
     };
 
-    let aboutdialog = adw::AboutWindow::builder()
-        .modal(true)
-        .transient_for(appwindow)
+    let aboutdialog = adw::AboutDialog::builder()
         .application_name(config::APP_NAME_CAPITALIZED)
         .application_icon(app_icon_name)
         .comments(gettext("Sketch and take handwritten notes"))
@@ -37,12 +33,7 @@ pub(crate) fn dialog_about(appwindow: &RnAppWindow) {
         .issue_url(config::APP_ISSUES_URL)
         .support_url(config::APP_SUPPORT_URL)
         .developer_name(config::APP_AUTHOR_NAME)
-        .developers(glib::StrV::from(
-            config::APP_AUTHORS
-                .iter()
-                .map(|&s| String::from(s))
-                .collect::<Vec<String>>(),
-        ))
+        .developers(config::APP_AUTHORS.lines().collect::<Vec<&str>>())
         // TRANSLATORS: 'Name <email@domain.com>' or 'Name https://website.example'
         .translator_credits(gettext("translator-credits"))
         .license_type(globals::APP_LICENSE)
@@ -53,7 +44,7 @@ pub(crate) fn dialog_about(appwindow: &RnAppWindow) {
         aboutdialog.add_css_class("devel");
     }
 
-    aboutdialog.present();
+    aboutdialog.present(appwindow);
 }
 
 pub(crate) fn dialog_keyboard_shortcuts(appwindow: &RnAppWindow) {
@@ -68,10 +59,9 @@ pub(crate) async fn dialog_clear_doc(appwindow: &RnAppWindow, canvas: &RnCanvas)
     let builder = Builder::from_resource(
         (String::from(config::APP_IDPATH) + "ui/dialogs/dialogs.ui").as_str(),
     );
-    let dialog: adw::MessageDialog = builder.object("dialog_clear_doc").unwrap();
-    dialog.set_transient_for(Some(appwindow));
+    let dialog: adw::AlertDialog = builder.object("dialog_clear_doc").unwrap();
 
-    match dialog.choose_future().await.as_str() {
+    match dialog.choose_future(appwindow).await.as_str() {
         "clear" => {
             let prev_empty = canvas.empty();
 
@@ -94,8 +84,7 @@ pub(crate) async fn dialog_new_doc(appwindow: &RnAppWindow, canvas: &RnCanvas) {
     let builder = Builder::from_resource(
         (String::from(config::APP_IDPATH) + "ui/dialogs/dialogs.ui").as_str(),
     );
-    let dialog: adw::MessageDialog = builder.object("dialog_new_doc").unwrap();
-    dialog.set_transient_for(Some(appwindow));
+    let dialog: adw::AlertDialog = builder.object("dialog_new_doc").unwrap();
 
     let new_doc = |appwindow: &RnAppWindow, canvas: &RnCanvas| {
         let widget_flags = canvas.engine_mut().clear();
@@ -111,7 +100,7 @@ pub(crate) async fn dialog_new_doc(appwindow: &RnAppWindow, canvas: &RnCanvas) {
         return;
     }
 
-    match dialog.choose_future().await.as_str() {
+    match dialog.choose_future(appwindow).await.as_str() {
         "discard" => {
             new_doc(appwindow, canvas);
         }
@@ -121,8 +110,7 @@ pub(crate) async fn dialog_new_doc(appwindow: &RnAppWindow, canvas: &RnCanvas) {
                     appwindow.overlays().progressbar_start_pulsing();
 
                     if let Err(e) = canvas.save_document_to_file(&output_file).await {
-                        tracing::error!("Saving document failed before creating new document, Err: {e:?}");
-
+                        error!("Saving document failed before creating new document, Err: {e:?}");
                         canvas.set_output_file(None);
                         appwindow.overlays().dispatch_toast_error(&gettext("Saving document failed"));
                         appwindow.overlays().progressbar_abort();
@@ -156,9 +144,8 @@ pub(crate) async fn dialog_close_tab(appwindow: &RnAppWindow, tab_page: &adw::Ta
     let builder = Builder::from_resource(
         (String::from(config::APP_IDPATH) + "ui/dialogs/dialogs.ui").as_str(),
     );
-    let dialog: adw::MessageDialog = builder.object("dialog_close_tab").unwrap();
+    let dialog: adw::AlertDialog = builder.object("dialog_close_tab").unwrap();
     let file_group: adw::PreferencesGroup = builder.object("close_tab_file_group").unwrap();
-    dialog.set_transient_for(Some(appwindow));
     let canvas = tab_page
         .child()
         .downcast::<RnCanvasWrapper>()
@@ -243,26 +230,23 @@ pub(crate) async fn dialog_close_tab(appwindow: &RnAppWindow, tab_page: &adw::Ta
 
     // Returns close_finish_confirm, a boolean that indicates if the tab should actually be closed or closing
     // should be aborted.
-    match dialog.choose_future().await.as_str() {
+    match dialog.choose_future(appwindow).await.as_str() {
         "discard" => true,
         "save" => {
             if let Some(save_file) = save_file {
                 appwindow.overlays().progressbar_start_pulsing();
 
                 if let Err(e) = canvas.save_document_to_file(&save_file).await {
+                    error!("Saving document failed before closing tab, Err: {e:?}");
                     canvas.set_output_file(None);
-
-                    tracing::error!("Saving document failed before closing tab, Err: {e:?}");
                     appwindow
                         .overlays()
                         .dispatch_toast_error(&gettext("Saving document failed"));
                     appwindow.overlays().progressbar_abort();
                 } else {
                     appwindow.overlays().progressbar_finish();
+                    // No success toast on saving without dialog, success is already indicated in the header title
                 }
-
-                appwindow.overlays().progressbar_finish();
-                // No success toast on saving without dialog, success is already indicated in the header title
             }
 
             // only close if saving was successful
@@ -279,9 +263,8 @@ pub(crate) async fn dialog_close_window(appwindow: &RnAppWindow) {
     let builder = Builder::from_resource(
         (String::from(config::APP_IDPATH) + "ui/dialogs/dialogs.ui").as_str(),
     );
-    let dialog: adw::MessageDialog = builder.object("dialog_close_window").unwrap();
+    let dialog: adw::AlertDialog = builder.object("dialog_close_window").unwrap();
     let files_group: adw::PreferencesGroup = builder.object("close_window_files_group").unwrap();
-    dialog.set_transient_for(Some(appwindow));
 
     let tabs = appwindow.tabs_snapshot();
     let mut rows = Vec::new();
@@ -380,7 +363,7 @@ pub(crate) async fn dialog_close_window(appwindow: &RnAppWindow) {
         rows.push((i, check, save_file));
     }
 
-    let close = match dialog.choose_future().await.as_str() {
+    let close = match dialog.choose_future(appwindow).await.as_str() {
         "discard" => {
             // do nothing and close
             true
@@ -403,9 +386,8 @@ pub(crate) async fn dialog_close_window(appwindow: &RnAppWindow) {
                     .canvas();
 
                 if let Err(e) = canvas.save_document_to_file(&save_file).await {
-                    tracing::error!("Saving document failed before closing window, Err: `{e:?}`");
-
                     close = false;
+                    error!("Saving document failed before closing window, Err: `{e:?}`");
                     canvas.set_output_file(None);
                     appwindow
                         .overlays()
@@ -431,7 +413,7 @@ pub(crate) async fn dialog_edit_selected_workspace(appwindow: &RnAppWindow) {
     let builder = Builder::from_resource(
         (String::from(config::APP_IDPATH) + "ui/dialogs/dialogs.ui").as_str(),
     );
-    let dialog: Dialog = builder.object("dialog_edit_selected_workspace").unwrap();
+    let dialog: adw::Dialog = builder.object("dialog_edit_selected_workspace").unwrap();
     let preview_row: RnWorkspaceRow = builder
         .object("edit_selected_workspace_preview_row")
         .unwrap();
@@ -451,9 +433,14 @@ pub(crate) async fn dialog_edit_selected_workspace(appwindow: &RnAppWindow) {
     let icon_picker: RnIconPicker = builder
         .object("edit_selected_workspace_icon_picker")
         .unwrap();
+    let edit_selected_workspace_button_cancel: Button = builder
+        .object("edit_selected_workspace_button_cancel")
+        .unwrap();
+    let edit_selected_workspace_button_apply: Button = builder
+        .object("edit_selected_workspace_button_apply")
+        .unwrap();
 
     preview_row.init(appwindow);
-    dialog.set_transient_for(Some(appwindow));
 
     // Sets the icons
     icon_picker.set_list(
@@ -468,7 +455,7 @@ pub(crate) async fn dialog_edit_selected_workspace(appwindow: &RnAppWindow) {
         .workspacesbar()
         .selected_workspacelistentry()
     else {
-        tracing::warn!("Tried to edit workspace entry in dialog, but no workspace is selected.");
+        warn!("Tried to edit workspace entry in dialog, but no workspace is selected.");
         return;
     };
 
@@ -502,7 +489,7 @@ pub(crate) async fn dialog_edit_selected_workspace(appwindow: &RnAppWindow) {
     dir_button.connect_clicked(
         clone!(@weak preview_row, @weak dir_label, @weak name_entryrow, @weak dialog, @weak appwindow => move |_| {
             glib::spawn_future_local(clone!(@weak preview_row, @weak dir_label, @weak name_entryrow, @weak dialog, @weak appwindow => async move {
-                dialog.hide();
+                dialog.set_sensitive(false);
 
                 let filedialog = FileDialog::builder()
                     .title(gettext("Change Workspace Directory"))
@@ -529,18 +516,25 @@ pub(crate) async fn dialog_edit_selected_workspace(appwindow: &RnAppWindow) {
                         }
                     }
                     Err(e) => {
-                        tracing::debug!("Did not select new folder for workspacerow (Error or dialog dismissed by user), Err: {e:?}");
+                        debug!("Did not select new folder for workspacerow (Error or dialog dismissed by user), Err: {e:?}");
                     }
                 }
-                dialog.present();
+
+                dialog.set_sensitive(true);
             }));
         }),
     );
 
-    let response = dialog.run_future().await;
-    dialog.close();
-    match response {
-        ResponseType::Apply => {
+    // Listen to responses
+
+    edit_selected_workspace_button_cancel.connect_clicked(clone!(@weak dialog => move |_| {
+        dialog.close();
+    }));
+
+    edit_selected_workspace_button_apply.connect_clicked(
+        clone!(@weak preview_row, @weak dialog, @weak appwindow => move |_| {
+            dialog.close();
+
             // update the actual selected entry
             appwindow
                 .sidebar()
@@ -552,11 +546,10 @@ pub(crate) async fn dialog_edit_selected_workspace(appwindow: &RnAppWindow) {
                 .sidebar()
                 .workspacebrowser()
                 .refresh_dir_list_selected_workspace();
-        }
-        _ => {
-            // Cancel
-        }
-    }
+        }),
+    );
+
+    dialog.present(appwindow);
 }
 
 const WORKSPACELISTENTRY_ICONS_LIST: &[&str] = &[

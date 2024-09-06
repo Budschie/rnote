@@ -3,6 +3,7 @@ use super::{ModifyState, ResizeCorner, Selector, SelectorState};
 use crate::engine::EngineViewMut;
 use crate::pens::pensconfig::selectorconfig::SelectorStyle;
 use crate::snap::SnapCorner;
+use crate::store::StrokeKey;
 use crate::{DrawableOnDoc, WidgetFlags};
 use p2d::bounding_volume::Aabb;
 use p2d::query::PointQuery;
@@ -10,13 +11,14 @@ use rnote_compose::eventresult::{EventPropagation, EventResult};
 use rnote_compose::ext::{AabbExt, Vector2Ext};
 use rnote_compose::penevent::{KeyboardKey, ModifierKey, PenProgress};
 use rnote_compose::penpath::Element;
+use std::collections::HashSet;
 use std::time::Instant;
 
 impl Selector {
     pub(super) fn handle_pen_event_down(
         &mut self,
         element: Element,
-        modifier_keys: Vec<ModifierKey>,
+        modifier_keys: HashSet<ModifierKey>,
         _now: Instant,
         engine_view: &mut EngineViewMut,
     ) -> (EventResult<PenProgress>, WidgetFlags) {
@@ -51,7 +53,9 @@ impl Selector {
                 widget_flags |= engine_view
                     .camera
                     .nudge_w_pos(element.pos, engine_view.document);
-                widget_flags |= engine_view.document.expand_autoexpand(engine_view.camera);
+                widget_flags |= engine_view
+                    .document
+                    .expand_autoexpand(engine_view.camera, engine_view.store);
                 engine_view.store.regenerate_rendering_in_viewport_threaded(
                     engine_view.tasks_tx.clone(),
                     false,
@@ -124,6 +128,7 @@ impl Selector {
                                 from_corner: ResizeCorner::TopLeft,
                                 start_bounds: *selection_bounds,
                                 start_pos: element.pos,
+                                last_rendered_bounds: *selection_bounds,
                             }
                         } else if Self::resize_node_bounds(
                             ResizeCorner::TopRight,
@@ -136,6 +141,7 @@ impl Selector {
                                 from_corner: ResizeCorner::TopRight,
                                 start_bounds: *selection_bounds,
                                 start_pos: element.pos,
+                                last_rendered_bounds: *selection_bounds,
                             }
                         } else if Self::resize_node_bounds(
                             ResizeCorner::BottomLeft,
@@ -148,6 +154,7 @@ impl Selector {
                                 from_corner: ResizeCorner::BottomLeft,
                                 start_bounds: *selection_bounds,
                                 start_pos: element.pos,
+                                last_rendered_bounds: *selection_bounds,
                             }
                         } else if Self::resize_node_bounds(
                             ResizeCorner::BottomRight,
@@ -160,6 +167,7 @@ impl Selector {
                                 from_corner: ResizeCorner::BottomRight,
                                 start_bounds: *selection_bounds,
                                 start_pos: element.pos,
+                                last_rendered_bounds: *selection_bounds,
                             }
                         } else if selection_bounds.contains_local_point(&element.pos.into()) {
                             let snap_corner =
@@ -216,7 +224,9 @@ impl Selector {
                         widget_flags |= engine_view
                             .camera
                             .nudge_w_pos(element.pos, engine_view.document);
-                        widget_flags |= engine_view.document.expand_autoexpand(engine_view.camera);
+                        widget_flags |= engine_view
+                            .document
+                            .expand_autoexpand(engine_view.camera, engine_view.store);
                         engine_view.store.regenerate_rendering_in_viewport_threaded(
                             engine_view.tasks_tx.clone(),
                             false,
@@ -259,6 +269,7 @@ impl Selector {
                         from_corner,
                         start_bounds,
                         start_pos,
+                        last_rendered_bounds,
                     } => {
                         let lock_aspectratio = engine_view
                             .pens_config
@@ -312,8 +323,7 @@ impl Selector {
                             let offset_mean = offset_to_start.mean();
                             offset_to_start = start_extents * (offset_mean / start_mean);
                         }
-                        let min_extents = (Self::RESIZE_NODE_SIZE
-                            + na::Vector2::<f64>::from_element(Self::ROTATE_NODE_DIAMETER))
+                        let min_extents = na::Vector2::<f64>::from_element(2.0f64)
                             / engine_view.camera.total_zoom();
                         let scale = (start_bounds.extents() + offset_to_start)
                             .maxs(&min_extents)
@@ -335,13 +345,36 @@ impl Selector {
                         widget_flags |= engine_view
                             .camera
                             .nudge_w_pos(element.pos, engine_view.document);
-                        widget_flags |= engine_view.document.expand_autoexpand(engine_view.camera);
-                        engine_view.store.regenerate_rendering_in_viewport_threaded(
-                            engine_view.tasks_tx.clone(),
-                            false,
-                            engine_view.camera.viewport(),
-                            engine_view.camera.image_scale(),
-                        );
+                        widget_flags |= engine_view
+                            .document
+                            .expand_autoexpand(engine_view.camera, engine_view.store);
+
+                        // Rerender but based on some conditions
+                        const RERENDER_BOUNDS_FACTOR: f64 = 1.5;
+                        let last_rendered_bounds_scale = selection_bounds
+                            .extents()
+                            .component_div(&last_rendered_bounds.extents());
+
+                        if last_rendered_bounds_scale[0] < 1. / RERENDER_BOUNDS_FACTOR
+                            || last_rendered_bounds_scale[0] > RERENDER_BOUNDS_FACTOR
+                            || last_rendered_bounds_scale[1] < 1. / RERENDER_BOUNDS_FACTOR
+                            || last_rendered_bounds_scale[1] > RERENDER_BOUNDS_FACTOR
+                        {
+                            let selection_in_viewport: Vec<StrokeKey> = engine_view
+                                .store
+                                .filter_keys_intersecting_bounds::<&Vec<StrokeKey>>(
+                                    selection,
+                                    engine_view.camera.viewport(),
+                                )
+                                .copied()
+                                .collect();
+                            engine_view.store.regenerate_rendering_for_strokes(
+                                &selection_in_viewport,
+                                engine_view.camera.viewport(),
+                                engine_view.camera.image_scale(),
+                            );
+                            *last_rendered_bounds = *selection_bounds;
+                        }
                     }
                 }
 
@@ -361,7 +394,7 @@ impl Selector {
     pub(super) fn handle_pen_event_up(
         &mut self,
         element: Element,
-        _modifier_keys: Vec<ModifierKey>,
+        _modifier_keys: HashSet<ModifierKey>,
         _now: Instant,
         engine_view: &mut EngineViewMut,
     ) -> (EventResult<PenProgress>, WidgetFlags) {
@@ -472,6 +505,8 @@ impl Selector {
                         if let Some(new_bounds) = engine_view.store.bounds_for_strokes(selection) {
                             *selection_bounds = new_bounds;
                         }
+                        // We would need to update bounds held in the modify state, but since we transition into either
+                        // the up or hover state anyway that is not actually needed.
 
                         widget_flags |= engine_view.store.record(Instant::now());
                         widget_flags.store_modified = true;
@@ -502,7 +537,7 @@ impl Selector {
     pub(super) fn handle_pen_event_proximity(
         &mut self,
         element: Element,
-        _modifier_keys: Vec<ModifierKey>,
+        _modifier_keys: HashSet<ModifierKey>,
         _now: Instant,
         engine_view: &mut EngineViewMut,
     ) -> (EventResult<PenProgress>, WidgetFlags) {
@@ -543,7 +578,7 @@ impl Selector {
     pub(super) fn handle_pen_event_keypressed(
         &mut self,
         keyboard_key: KeyboardKey,
-        modifier_keys: Vec<ModifierKey>,
+        modifier_keys: HashSet<ModifierKey>,
         _now: Instant,
         engine_view: &mut EngineViewMut,
     ) -> (EventResult<PenProgress>, WidgetFlags) {

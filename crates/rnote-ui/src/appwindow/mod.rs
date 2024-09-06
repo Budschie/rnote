@@ -22,6 +22,7 @@ use rnote_engine::Engine;
 use rnote_engine::{engine::EngineTask, WidgetFlags};
 use std::cell::RefMut;
 use std::path::Path;
+use tracing::{error, warn};
 
 glib::wrapper! {
     pub(crate) struct RnAppWindow(ObjectSubclass<imp::RnAppWindow>)
@@ -36,6 +37,16 @@ impl RnAppWindow {
 
     pub(crate) fn new(app: &Application) -> Self {
         glib::Object::builder().property("application", app).build()
+    }
+
+    #[allow(unused)]
+    pub(crate) fn save_in_progress(&self) -> bool {
+        self.property::<bool>("save-in-progress")
+    }
+
+    #[allow(unused)]
+    pub(crate) fn set_save_in_progress(&self, save_in_progress: bool) {
+        self.set_property("save-in-progress", save_in_progress.to_value());
     }
 
     #[allow(unused)]
@@ -88,6 +99,11 @@ impl RnAppWindow {
         self.set_property("focus-mode", focus_mode.to_value());
     }
 
+    #[allow(unused)]
+    pub(crate) fn respect_borders(&self) -> bool {
+        self.property::<bool>("respect-borders")
+    }
+
     pub(crate) fn app(&self) -> RnApp {
         self.application().unwrap().downcast::<RnApp>().unwrap()
     }
@@ -131,13 +147,13 @@ impl RnAppWindow {
             ));
         } else {
             if let Err(e) = self.setup_settings_binds() {
-                tracing::error!("Failed to setup settings binds, Err: {e:}");
+                error!("Failed to setup settings binds, Err: {e:?}");
             }
             if let Err(e) = self.setup_periodic_save() {
-                tracing::error!("Failed to setup periodic save, Err: {e:}");
+                error!("Failed to setup periodic save, Err: {e:?}");
             }
             if let Err(e) = self.load_settings() {
-                tracing::error!("Failed to load initial settings, Err: {e:}");
+                error!("Failed to load initial settings, Err: {e:?}");
             }
         }
 
@@ -167,7 +183,7 @@ impl RnAppWindow {
         if self.app().settings_schema_found() {
             // Saving all state
             if let Err(e) = self.save_to_settings() {
-                tracing::error!("Failed to save appwindow to settings, Err: {e:?}");
+                error!("Failed to save appwindow to settings, Err: {e:?}");
             }
         }
 
@@ -260,6 +276,8 @@ impl RnAppWindow {
 
     // Returns true if the flags indicate that any loop that handles the flags should be quit. (usually an async event loop)
     pub(crate) fn handle_widget_flags(&self, widget_flags: WidgetFlags, canvas: &RnCanvas) {
+        //debug!("handling widget flags: '{widget_flags:?}'");
+
         if widget_flags.redraw {
             canvas.queue_draw();
         }
@@ -344,6 +362,33 @@ impl RnAppWindow {
             .expect("there must always be one active tab")
     }
 
+    pub(crate) fn n_tabs_open(&self) -> usize {
+        self.imp().overlays.tabview().pages().n_items() as usize
+    }
+
+    /// Returns a vector of all tabs of the current windows
+    pub(crate) fn get_all_tabs(&self) -> Vec<RnCanvasWrapper> {
+        let n_tabs = self.n_tabs_open();
+        let mut tabs = Vec::with_capacity(n_tabs);
+
+        for i in 0..n_tabs {
+            let wrapper = self
+                .imp()
+                .overlays
+                .tabview()
+                .pages()
+                .item(i as u32)
+                .unwrap()
+                .downcast::<adw::TabPage>()
+                .unwrap()
+                .child()
+                .downcast::<crate::RnCanvasWrapper>()
+                .unwrap();
+            tabs.push(wrapper);
+        }
+        tabs
+    }
+
     /// Get the active (selected) tab page child.
     pub(crate) fn active_tab_wrapper(&self) -> RnCanvasWrapper {
         self.active_tab_page()
@@ -360,10 +405,10 @@ impl RnAppWindow {
                 .canvas()
                 .load_engine_config_from_settings(&app_settings)
             {
-                tracing::error!("Failed to load engine config for initial tab, Err: {e:?}");
+                error!("Failed to load engine config for initial tab, Err: {e:?}");
             }
         } else {
-            tracing::warn!("Could not load settings for initial tab. Settings schema not found.");
+            warn!("Could not load settings for initial tab. Settings schema not found.");
         }
         self.append_wrapper_new_tab(&wrapper)
     }
@@ -420,6 +465,23 @@ impl RnAppWindow {
             .any(|c| c.unsaved_changes())
     }
 
+    pub(crate) fn tabs_any_saves_in_progress(&self) -> bool {
+        self.overlays()
+            .tabview()
+            .pages()
+            .snapshot()
+            .iter()
+            .map(|o| {
+                o.downcast_ref::<adw::TabPage>()
+                    .unwrap()
+                    .child()
+                    .downcast_ref::<RnCanvasWrapper>()
+                    .unwrap()
+                    .canvas()
+            })
+            .any(|c| c.save_in_progress())
+    }
+
     pub(crate) fn tabs_query_file_opened(
         &self,
         input_file_path: impl AsRef<Path>,
@@ -443,7 +505,8 @@ impl RnAppWindow {
                 ))
             })
             .find(|(_, output_file_path)| {
-                same_file::is_same_file(output_file_path, input_file_path.as_ref()).unwrap_or(false)
+                crate::utils::paths_abs_eq(output_file_path, input_file_path.as_ref())
+                    .unwrap_or(false)
             })
             .map(|(found, _)| found)
     }
@@ -540,7 +603,7 @@ impl RnAppWindow {
                 self.overlays().progressbar_abort();
             }
             Err(e) => {
-                tracing::error!("Opening file with dialogs failed, Err: {e:?}");
+                error!("Opening file with dialogs failed, Err: {e:?}");
 
                 self.overlays()
                     .dispatch_toast_error(&gettext("Opening file failed"));
@@ -599,7 +662,7 @@ impl RnAppWindow {
                 let canvas = self.active_tab_wrapper().canvas();
                 let (bytes, _) = input_file.load_bytes_future().await?;
                 canvas
-                    .load_in_vectorimage_bytes(bytes.to_vec(), target_pos)
+                    .load_in_vectorimage_bytes(bytes.to_vec(), target_pos, self.respect_borders())
                     .await?;
                 true
             }
@@ -607,7 +670,7 @@ impl RnAppWindow {
                 let canvas = self.active_tab_wrapper().canvas();
                 let (bytes, _) = input_file.load_bytes_future().await?;
                 canvas
-                    .load_in_bitmapimage_bytes(bytes.to_vec(), target_pos)
+                    .load_in_bitmapimage_bytes(bytes.to_vec(), target_pos, self.respect_borders())
                     .await?;
                 true
             }
@@ -658,7 +721,6 @@ impl RnAppWindow {
         let pen_style = canvas.engine_ref().penholder.current_pen_style_w_override();
         let pen_sounds = canvas.engine_ref().pen_sounds();
         let doc_format = canvas.engine_ref().document.format;
-        let doc_layout = canvas.engine_ref().document.layout;
         let total_zoom = canvas.engine_ref().camera.total_zoom();
         let snap_positions = canvas.engine_ref().document.snap_positions;
         let can_undo = canvas.engine_ref().can_undo();
@@ -678,11 +740,6 @@ impl RnAppWindow {
 
         // we change the state through the actions, because they themselves hold state.
         // (for example needed to display ticks in menus for boolean actions)
-        adw::prelude::ActionGroupExt::activate_action(
-            self,
-            "doc-layout",
-            Some(&doc_layout.to_string().to_variant()),
-        );
         adw::prelude::ActionGroupExt::change_action_state(
             self,
             "pen-style",
@@ -930,7 +987,7 @@ impl RnAppWindow {
         let active_canvas_wrapper = active_tab.child().downcast::<RnCanvasWrapper>().unwrap();
         let active_canvas = active_canvas_wrapper.canvas();
 
-        let mut widget_flags = active_canvas.engine_mut().load_engine_config(
+        let mut widget_flags = active_canvas.engine_mut().load_engine_config_sync_tab(
             prev_canvas.engine_ref().extract_engine_config(),
             crate::env::pkg_data_dir().ok(),
         );

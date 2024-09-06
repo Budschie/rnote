@@ -20,31 +20,6 @@
           </item>
         </section>
         <section>
-          <submenu>
-            <attribute name="label" translatable="yes">_Document Layout</attribute>
-            <section>
-              <item>
-                <attribute name="label" translatable="yes">_Fixed Size</attribute>
-                <attribute name="action">win.doc-layout</attribute>
-                <attribute name="target">fixed-size</attribute>
-              </item>
-              <item>
-                <attribute name="label" translatable="yes">_Continuous Vertical</attribute>
-                <attribute name="action">win.doc-layout</attribute>
-                <attribute name="target">continuous-vertical</attribute>
-              </item>
-              <item>
-                <attribute name="label" translatable="yes">_Semi Infinite</attribute>
-                <attribute name="action">win.doc-layout</attribute>
-                <attribute name="target">semi-infinite</attribute>
-              </item>
-              <item>
-                <attribute name="label" translatable="yes">_Infinite</attribute>
-                <attribute name="action">win.doc-layout</attribute>
-                <attribute name="target">infinite</attribute>
-              </item>
-            </section>
-          </submenu>
           <item>
             <attribute name="label" translatable="yes">_Snap Positions</attribute>
             <attribute name="toggle" />
@@ -84,6 +59,11 @@
             <attribute name="label" translatable="yes">Block Pinch to _Zoom</attribute>
             <attribute name="toggle" />
             <attribute name="action">win.block-pinch-zoom</attribute>
+          </item>
+          <item>
+            <attribute name="label" translatable="yes">Respect Borders When Pasting</attribute>
+            <attribute name="toggle"/>
+            <attribute name="action">win.respect-borders</attribute>
           </item>
         </section>
       </menu>

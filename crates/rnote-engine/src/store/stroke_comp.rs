@@ -12,6 +12,7 @@ use rnote_compose::shapes::Shapeable;
 use rnote_compose::transform::Transformable;
 use rnote_compose::Color;
 use std::sync::Arc;
+use tracing::error;
 
 /// Systems that are related to the stroke components.
 impl StrokeStore {
@@ -30,7 +31,7 @@ impl StrokeStore {
     /// Gets the stroke by cloning the Arc that is wrapped around it.
     #[allow(unused)]
     pub(crate) fn get_stroke_arc(&self, key: StrokeKey) -> Option<Arc<Stroke>> {
-        self.stroke_components.get(key).map(Arc::clone)
+        self.stroke_components.get(key).cloned()
     }
 
     /// Gets immutable references to the strokes.
@@ -43,7 +44,7 @@ impl StrokeStore {
     /// Gets the strokes by cloning the Arc's that are wrapped around them.
     pub(crate) fn get_strokes_arc(&self, keys: &[StrokeKey]) -> Vec<Arc<Stroke>> {
         keys.iter()
-            .filter_map(|&key| self.stroke_components.get(key).map(Arc::clone))
+            .filter_map(|&key| self.stroke_components.get(key).cloned())
             .collect()
     }
 
@@ -224,7 +225,7 @@ impl StrokeStore {
                     Ok(rendernodes) => {
                         render_comp.rendernodes = rendernodes;
                     }
-                    Err(e) => tracing::error!(
+                    Err(e) => error!(
                         "Generating rendernodes from images failed while translating stroke images , Err: {e:?}"
                     ),
                 }
@@ -384,8 +385,8 @@ impl StrokeStore {
                     Ok(rendernodes) => {
                         render_comp.rendernodes = rendernodes;
                     }
-                    Err(e) => tracing::error!(
-                        "Generating rendernodes from iamges failed while rotating stroke images , Err: {e:?}"
+                    Err(e) => error!(
+                        "Generating rendernodes from images failed while rotating stroke images , Err: {e:?}"
                     ),
                 }
             }
@@ -427,7 +428,7 @@ impl StrokeStore {
                     Ok(rendernodes) => {
                         render_comp.rendernodes = rendernodes;
                     }
-                    Err(e) => tracing::error!(
+                    Err(e) => error!(
                         "Generating rendernodes from images failed while scaling stroke images, Err: {e:?}"
                     ),
                 }
@@ -640,10 +641,55 @@ impl StrokeStore {
             .collect::<Vec<StrokeKey>>()
     }
 
+    pub(crate) fn keys_between(
+        &self,
+        y_start: f64,
+        y_end: f64,
+        x_lims: (f64, f64),
+        limit_movement_vertical_border: bool,
+        limit_movement_horizontal_border: bool,
+    ) -> Vec<StrokeKey> {
+        self.key_tree.keys_intersecting_bounds(Aabb::new(
+            na::point![
+                if limit_movement_vertical_border {
+                    x_lims.0
+                } else {
+                    f64::NEG_INFINITY
+                },
+                y_start
+            ],
+            na::point![
+                if limit_movement_vertical_border {
+                    x_lims.1
+                } else {
+                    f64::INFINITY
+                },
+                if limit_movement_horizontal_border {
+                    y_end
+                } else {
+                    f64::INFINITY
+                }
+            ],
+        ))
+    }
+
+    pub(crate) fn filter_keys_intersecting_bounds<'a, I: IntoIterator<Item = &'a StrokeKey>>(
+        &'a self,
+        keys: I,
+        bounds: Aabb,
+    ) -> impl Iterator<Item = &'a StrokeKey> {
+        keys.into_iter().filter(move |key| {
+            self.stroke_components
+                .get(**key)
+                .map(|s| s.bounds().intersects(&bounds))
+                .unwrap_or(false)
+        })
+    }
+
     pub(crate) fn fetch_stroke_content(&self, keys: &[StrokeKey]) -> StrokeContent {
         let strokes = keys
             .iter()
-            .filter_map(|k| self.stroke_components.get(*k).map(Arc::clone))
+            .filter_map(|k| self.stroke_components.get(*k).cloned())
             .collect();
 
         StrokeContent::default().with_strokes(strokes)
@@ -656,7 +702,7 @@ impl StrokeStore {
             .filter_map(|k| {
                 self.set_selected(*k, false);
                 self.set_trashed(*k, true);
-                self.stroke_components.get(*k).map(Arc::clone)
+                self.stroke_components.get(*k).cloned()
             })
             .collect();
 
@@ -671,6 +717,7 @@ impl StrokeStore {
     pub(crate) fn insert_stroke_content(
         &mut self,
         clipboard_content: StrokeContent,
+        ratio: f64,
         pos: na::Vector2<f64>,
     ) -> Vec<StrokeKey> {
         if clipboard_content.strokes.is_empty() {
@@ -687,8 +734,15 @@ impl StrokeStore {
             .map(|s| {
                 let offset = s.bounds().mins.coords - clipboard_bounds.mins.coords;
                 let key = self.insert_stroke((*s).clone(), None);
+                // position strokes without resizing
                 self.set_stroke_pos(key, pos);
                 self.translate_strokes(&[key], offset);
+
+                // apply a rescale around a pivot
+                self.scale_strokes_with_pivot(&[key], na::Vector2::new(ratio, ratio), pos);
+                self.scale_strokes_images_with_pivot(&[key], na::Vector2::new(ratio, ratio), pos);
+
+                // select keys
                 self.set_selected(key, true);
                 key
             })

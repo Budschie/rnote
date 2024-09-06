@@ -4,6 +4,7 @@ use super::{FileFormatLoader, FileFormatSaver, ToXmlAttributeValue, XmlLoadable,
 use roxmltree::{Node, NodeType};
 use serde::{Deserialize, Serialize};
 use std::io::{Read, Write};
+use tracing::{error, trace};
 
 /// The decimal places when serializing values.
 pub const VALS_DEC_PLACES: usize = 3;
@@ -370,7 +371,7 @@ impl XmlLoadable for XoppBackground {
                 })?) {
                     Ok(s) => s,
                     Err(e) => {
-                        tracing::error!("Failed to retrieve the XoppBackgroundSolidStyle from `style` attribute, Err: {e:?}");
+                        error!("Failed to retrieve the XoppBackgroundSolidStyle from `style` attribute, Err: {e:?}");
                         XoppBackgroundSolidStyle::Plain
                     }
                 };
@@ -473,22 +474,30 @@ impl XmlLoadable for XoppLayer {
 
 impl XmlWritable for XoppLayer {
     fn write_to_xml(&self, w: &mut xmlwriter::XmlWriter) {
-        w.start_element("layer");
+        // only do something if we are sure the layer is not empty
+        // Fix for #985
+        let is_empty = self.strokes.is_empty() && self.texts.is_empty() && self.images.is_empty();
+        if is_empty {
+            trace!("empty layer, skipped")
+        } else {
+            w.start_element("layer");
+            trace!("layer element opened");
 
-        if let Some(name) = self.name.as_ref() {
-            w.write_attribute("name", name.as_str());
-        }
+            if let Some(name) = self.name.as_ref() {
+                w.write_attribute("name", name.as_str());
+            }
 
-        for stroke in self.strokes.iter() {
-            stroke.write_to_xml(w);
+            for stroke in self.strokes.iter() {
+                stroke.write_to_xml(w);
+            }
+            for text in self.texts.iter() {
+                text.write_to_xml(w);
+            }
+            for image in self.images.iter() {
+                image.write_to_xml(w);
+            }
+            w.end_element();
         }
-        for text in self.texts.iter() {
-            text.write_to_xml(w);
-        }
-        for image in self.images.iter() {
-            image.write_to_xml(w);
-        }
-        w.end_element();
     }
 }
 
