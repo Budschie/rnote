@@ -2,8 +2,8 @@
 use crate::{config, dialogs, RnAppWindow, RnCanvas};
 use adw::glib::subclass::types::ObjectSubclassIsExt;
 use gettextrs::gettext;
-// use gtk4::TextView;
 use gtk4::graphene;
+use gtk4::TextView;
 
 use gtk4::{
     gdk, gio, glib, glib::clone, prelude::*, PrintOperation, PrintOperationAction, Unit,

@@ -222,8 +222,8 @@ impl RnAppWindow {
             .penholder
             .current_pen_ref()
         {
-            if let EquationState::AwaitCompilation(info) = &equation.state {
-                stroke_key_to_look_up = Some(info.stroke_key.clone());
+            if let EquationState::AwaitCompilation(await_compilation) = &equation.state {
+                stroke_key_to_look_up = Some(await_compilation.compilation_info.stroke_key.clone());
             }
         }
 
@@ -250,8 +250,8 @@ impl RnAppWindow {
             .current_pen_ref()
         {
             // If this equation pen is currently selecting something, it will return the code of the equation in question
-            if let EquationState::AwaitCompilation(compilation_info) = &equation.state {
-                currently_selected_stroke = Some(compilation_info.stroke_key);
+            if let EquationState::AwaitCompilation(await_compilation) = &equation.state {
+                currently_selected_stroke = Some(await_compilation.compilation_info.stroke_key);
             }
         }
 

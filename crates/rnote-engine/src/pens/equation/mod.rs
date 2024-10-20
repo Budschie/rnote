@@ -46,10 +46,16 @@ pub struct CompilationInfo {
 }
 
 #[derive(Debug, Clone)]
+pub struct AwaitCompilationData {
+    pub compilation_info: CompilationInfo,
+    pub had_changes_since_compilation: bool,
+}
+
+#[derive(Debug, Clone)]
 pub enum EquationState {
     Idle,
     InitialWidthPick(Vector2<f64>),
-    AwaitCompilation(CompilationInfo),
+    AwaitCompilation(AwaitCompilationData),
 }
 
 #[derive(Debug, Clone)]
@@ -154,10 +160,19 @@ impl Equation {
     }
 
     /// Submits a compilation request when the EquationCompilationPolicy is set to allow compilation
-    pub fn check_equation_compilation(&self, stroke_store: &StrokeStore) {
-        if let EquationState::AwaitCompilation(compilation_info) = &self.state {
-            if let EquationCompilationPolicy::Allow = compilation_info.equation_compilation_policy {
-                if let Some(stroke) = stroke_store.get_stroke_ref(compilation_info.stroke_key) {
+    pub fn check_equation_compilation(&mut self, stroke_store: &StrokeStore) {
+        if let EquationState::AwaitCompilation(await_compilation) = &self.state {
+            if let EquationCompilationPolicy::Allow = await_compilation
+                .compilation_info
+                .equation_compilation_policy
+            {
+                if !await_compilation.had_changes_since_compilation {
+                    return;
+                }
+
+                if let Some(stroke) =
+                    stroke_store.get_stroke_ref(await_compilation.compilation_info.stroke_key)
+                {
                     if let Stroke::EquationImage(equation) = stroke {
                         self.equation_compiler
                             .as_ref()
@@ -166,12 +181,16 @@ impl Equation {
                             .as_ref()
                             .unwrap()
                             .send(EquationCompilerTask::Compile(
-                                compilation_info.stroke_key,
+                                await_compilation.compilation_info.stroke_key,
                                 CompilationTask::new(equation),
                             ));
                     }
                 }
             }
+        }
+
+        if let EquationState::AwaitCompilation(await_compilation) = &mut self.state {
+            await_compilation.had_changes_since_compilation = false;
         }
     }
 
@@ -214,46 +233,53 @@ impl Equation {
         }
     }
 
+    pub fn mark_recompilation(info: &mut EquationState) {
+        if let EquationState::AwaitCompilation(await_compilation) = info {
+            await_compilation.had_changes_since_compilation = true;
+        }
+    }
+
     /// Updates the penconfig and marks it as such
     pub fn mark_updated_penconfig(
-        &self,
+        &mut self,
         stroke_store: &mut StrokeStore,
         pens_config: &mut PensConfig,
     ) {
-        if let EquationState::AwaitCompilation(compilation_info) = &self.state {
-            self.process_marked_updated_penconfig(stroke_store, pens_config, &compilation_info);
-        }
-    }
-
-    /// Updates the text and marks it as such using a String slice
-    pub fn mark_updated_text_str_ref(
-        &self,
-        stroke_store: &mut StrokeStore,
-        new_equation_code: &str,
-    ) {
-        if let EquationState::AwaitCompilation(compilation_info) = &self.state {
-            self.process_marked_updated_text(
+        if let EquationState::AwaitCompilation(await_compilation) = &self.state {
+            self.process_marked_updated_penconfig(
                 stroke_store,
-                &compilation_info,
-                String::from(new_equation_code),
+                pens_config,
+                &await_compilation.compilation_info,
             );
         }
+
+        Self::mark_recompilation(&mut self.state);
     }
 
     /// Updates the text and marks it as such using a String
-    pub fn mark_updated_text(&self, stroke_store: &mut StrokeStore, new_equation_code: String) {
-        if let EquationState::AwaitCompilation(compilation_info) = &self.state {
-            self.process_marked_updated_text(stroke_store, &compilation_info, new_equation_code);
+    pub fn mark_updated_text(&mut self, stroke_store: &mut StrokeStore, new_equation_code: String) {
+        if let EquationState::AwaitCompilation(await_compilation) = &self.state {
+            self.process_marked_updated_text(
+                stroke_store,
+                &await_compilation.compilation_info,
+                new_equation_code,
+            );
         }
+
+        Self::mark_recompilation(&mut self.state);
     }
 
     /// Sets the equation compilation policy
     fn enable_compilation(&mut self, stroke_store: &mut StrokeStore) -> anyhow::Result<()> {
-        if let EquationState::AwaitCompilation(compilation_info) = &mut self.state {
-            if let EquationCompilationPolicy::Deny =
-                compilation_info.equation_compilation_policy.clone()
+        if let EquationState::AwaitCompilation(await_compilation) = &mut self.state {
+            if let EquationCompilationPolicy::Deny = await_compilation
+                .compilation_info
+                .equation_compilation_policy
+                .clone()
             {
-                compilation_info.equation_compilation_policy = EquationCompilationPolicy::Allow;
+                await_compilation
+                    .compilation_info
+                    .equation_compilation_policy = EquationCompilationPolicy::Allow;
                 self.check_equation_compilation(&stroke_store);
             }
 
@@ -265,8 +291,10 @@ impl Equation {
 
     /// Disables compilation of the equation
     fn disable_compilation(&mut self, stroke_store: &mut StrokeStore) -> anyhow::Result<()> {
-        if let EquationState::AwaitCompilation(compilation_info) = &mut self.state {
-            compilation_info.equation_compilation_policy = EquationCompilationPolicy::Deny;
+        if let EquationState::AwaitCompilation(await_compilation) = &mut self.state {
+            await_compilation
+                .compilation_info
+                .equation_compilation_policy = EquationCompilationPolicy::Deny;
 
             return Ok(());
         }
@@ -286,8 +314,11 @@ impl Equation {
     }
 
     pub(crate) fn get_compilation_policy(&self) -> anyhow::Result<EquationCompilationPolicy> {
-        if let EquationState::AwaitCompilation(compilation_info) = &self.state {
-            return Ok(compilation_info.equation_compilation_policy.clone());
+        if let EquationState::AwaitCompilation(await_compilation) = &self.state {
+            return Ok(await_compilation
+                .compilation_info
+                .equation_compilation_policy
+                .clone());
         }
 
         Err(anyhow!(WrongStateError))
@@ -364,10 +395,14 @@ impl PenBehaviour for Equation {
                                 equation.equation_config.clone();
 
                             // Transition to awaiting compilation
-                            self.state = EquationState::AwaitCompilation(CompilationInfo {
-                                stroke_key,
-                                equation_compilation_policy: EquationCompilationPolicy::Deny,
+                            self.state = EquationState::AwaitCompilation(AwaitCompilationData {
+                                compilation_info: CompilationInfo {
+                                    stroke_key,
+                                    equation_compilation_policy: EquationCompilationPolicy::Deny,
+                                },
+                                had_changes_since_compilation: true,
                             });
+
                             widget_flags.refresh_equation_ui = true;
                         }
                     }
@@ -413,9 +448,12 @@ impl PenBehaviour for Equation {
                     engine_view.camera.viewport(),
                     engine_view.camera.image_scale(),
                 );
-                self.state = EquationState::AwaitCompilation(CompilationInfo {
-                    stroke_key,
-                    equation_compilation_policy: EquationCompilationPolicy::Deny,
+                self.state = EquationState::AwaitCompilation(AwaitCompilationData {
+                    compilation_info: CompilationInfo {
+                        stroke_key,
+                        equation_compilation_policy: EquationCompilationPolicy::Deny,
+                    },
+                    had_changes_since_compilation: true,
                 });
 
                 widget_flags.show_equation_sidebar_ui = true;
@@ -449,8 +487,8 @@ impl PenBehaviour for Equation {
                 let mut magnitude = equation_width_some.length();
 
                 let stroke_key = match &self.state {
-                    EquationState::AwaitCompilation(compilation_info) => {
-                        Some(compilation_info.stroke_key)
+                    EquationState::AwaitCompilation(await_compilation) => {
+                        Some(await_compilation.compilation_info.stroke_key)
                     }
                     _ => None,
                 };

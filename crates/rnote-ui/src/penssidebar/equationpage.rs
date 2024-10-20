@@ -9,10 +9,10 @@ use adw::glib::GString;
 use adw::prelude::*;
 use cairo::glib::closure_local;
 use gtk4::{glib, glib::clone, subclass::prelude::*, CompositeTemplate};
-use gtk4::{Widget, Window};
+use gtk4::{ListBoxRow, Widget, Window};
 use rnote_engine::engine::EngineViewMut;
 use rnote_engine::pens::equation::equation_provider::EquationProvider;
-use rnote_engine::pens::equation::executable_checks::LatexExecutableChecker;
+use rnote_engine::pens::equation::executable_checks::{ExecutableChecker, LatexExecutableChecker};
 use rnote_engine::pens::equation::latex_equation_provider::LatexEquationProvider;
 use rnote_engine::pens::equation::{EquationCompilationPolicy, EquationState};
 use rnote_engine::pens::pensconfig::equationconfig::EquationConfig;
@@ -111,25 +111,60 @@ impl RnEquationPage {
         glib::Object::new()
     }
 
+    fn convert_row_index_to_equation_provider(row_index: i32) -> EquationProvider {
+        match row_index {
+            0 => EquationProvider::LatexEquationProvider(
+                LatexEquationProvider {},
+                LatexExecutableChecker {},
+            ),
+            _ => panic!("More than one row is currently not implemented yet."),
+        }
+    }
+
     pub(crate) fn equation_type(&self) -> Option<EquationProvider> {
         let currently_selected_row = self.imp().equationtype_listbox.selected_row();
 
         if let Some(some_row) = currently_selected_row {
-            return Some(match some_row.index() {
-                0 => EquationProvider::LatexEquationProvider(
-                    LatexEquationProvider {},
-                    LatexExecutableChecker {},
-                ),
-                _ => panic!("More than one row is currently not implemented yet."),
-            });
+            // Perform test to verify that the equation provider is indeed present
+
+            return Some(Self::convert_row_index_to_equation_provider(
+                some_row.index(),
+            ));
         }
 
         None
     }
 
+    fn list_box_row_available(index: i32) -> bool {
+        let converted = Self::convert_row_index_to_equation_provider(index);
+        converted.is_available()
+    }
+
+    fn update_disable_equation_type(&self) {
+        let mut i = 0;
+        let list_box = self.imp().equationtype_listbox.clone();
+
+        loop {
+            let list_box_row = list_box.row_at_index(i);
+
+            if let Some(present_row) = list_box_row {
+                if Self::list_box_row_available(i) {
+                    present_row.set_sensitive(true);
+                } else {
+                    present_row.set_sensitive(false);
+                    list_box.unselect_row(&present_row);
+                }
+            } else {
+                break;
+            }
+
+            i += 1;
+        }
+    }
+
     pub(crate) fn read_equation_type(&self, equation_provider: &EquationProvider) {
         match equation_provider {
-            EquationProvider::LatexEquationProvider(_) => {
+            EquationProvider::LatexEquationProvider(_, _) => {
                 self.imp()
                     .equationtype_listbox
                     .select_row(Some(&*self.imp().equationtype_latex_row));
@@ -178,7 +213,7 @@ impl RnEquationPage {
         imp.equationtype_listbox.connect_row_selected(clone!(@weak self as equationpage, @weak appwindow => move |_, _| {
 			if let Some(equation_type) = equationpage.equation_type() {
 				let icon_name = match equation_type {
-					EquationProvider::LatexEquationProvider(_) => {
+					EquationProvider::LatexEquationProvider(_, _) => {
 						"face-cool"
 					}
 				};
@@ -198,6 +233,19 @@ impl RnEquationPage {
 
         imp.compile_equation.connect_clicked(clone!(@weak self as equationpage, @weak appwindow => move |button| {
 			let mut inverted_option: Option<EquationCompilationPolicy> = None;
+
+			// Get currently selected list box
+			if let Some(some_equation) = equationpage.equation_type() {
+				// Display not available
+				if !some_equation.is_available() {
+					appwindow.overlays().dispatch_toast_error(&gettextrs::gettext("No binaries for selected equation type specified."));
+					return;
+				}
+			} else {
+				// Display nothing selected
+				appwindow.overlays().dispatch_toast_error(&gettextrs::gettext("Cannot compile as there is no equation type selected."));
+				return;
+			}
 
 			if let Ok(policy) = appwindow.active_tab_wrapper().canvas().engine_mut().get_equation_compilation_policy() {
 				inverted_option = Some(EquationCompilationPolicy::invert(policy.clone()));
@@ -221,6 +269,8 @@ impl RnEquationPage {
 				EquationCodeCompilationResult::from(Result::Ok(String::from("nothing")))
             }),
         );
+
+        self.update_disable_equation_type();
     }
 
     fn set_compilation_graphics(&self, compilation_policy: EquationCompilationPolicy) {

@@ -1,11 +1,16 @@
+use serde::{Deserialize, Serialize};
+use which::which;
+
 pub trait ExecutableChecker {
-    pub fn is_available() -> bool;
+    fn is_available(&self) -> bool;
 }
 
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct LatexExecutableChecker {}
 
 impl ExecutableChecker for LatexExecutableChecker {
-    pub fn is_available() -> bool {
-        true
+    fn is_available(&self) -> bool {
+        // Check for binaries
+        which("dvisvgm").is_ok() && which("latex").is_ok()
     }
 }

@@ -495,7 +495,7 @@ impl Engine {
                 }
             }
             EngineTask::CheckEquationCompilation => {
-                if let Pen::Equation(equation) = self.penholder.current_pen_ref() {
+                if let Pen::Equation(equation) = self.penholder.current_pen_mut() {
                     equation.check_equation_compilation(&self.store);
                 }
             }
@@ -1115,6 +1115,7 @@ impl Engine {
                         store: &mut self.store,
                         camera: &mut self.camera,
                         audioplayer: &mut self.audioplayer,
+                        equation_compiler: &mut self.equation_compiler,
                     },
                 )
             } else {
@@ -1127,6 +1128,7 @@ impl Engine {
                         store: &mut self.store,
                         camera: &mut self.camera,
                         audioplayer: &mut self.audioplayer,
+                        equation_compiler: &mut self.equation_compiler,
                     },
                 )
             }

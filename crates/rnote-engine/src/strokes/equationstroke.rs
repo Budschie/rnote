@@ -12,7 +12,7 @@ use crate::{pens::pensconfig::equationconfig::EquationConfig, render, Drawable};
 
 pub(crate) use super::equationstrokedefault::DEFAULT_SVG_CODE;
 
-use super::{content::GeneratedContentImages, Content, VectorImage};
+use super::{content::GeneratedContentImages, resize::ImageSizeOption, Content, VectorImage};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(default, rename = "vectorimage")]
@@ -107,7 +107,13 @@ impl EquationImage {
         pos: na::Vector2<f64>,
         size: Option<na::Vector2<f64>>,
     ) -> Self {
-        let vector_image = VectorImage::from_svg_str(DEFAULT_SVG_CODE, pos, size).unwrap();
+        let size_option = if let Some(some_size) = size {
+            ImageSizeOption::ImposeSize(some_size)
+        } else {
+            ImageSizeOption::RespectOriginalSize
+        };
+
+        let vector_image = VectorImage::from_svg_str(DEFAULT_SVG_CODE, pos, size_option).unwrap();
 
         Self {
             equation_code: String::from(equation_code),
@@ -117,8 +123,11 @@ impl EquationImage {
     }
 
     pub fn update_svg_code(&mut self, svg_code: &str) {
-        let mut vector_image =
-            VectorImage::from_svg_str(svg_code, self.access_rectangle().pos(), None);
+        let mut vector_image = VectorImage::from_svg_str(
+            svg_code,
+            self.access_rectangle().pos(),
+            ImageSizeOption::RespectOriginalSize,
+        );
         if let Ok(mut some_vector_image) = vector_image {
             EquationImage::copy_transform_preserve_position(
                 &mut some_vector_image.rectangle,

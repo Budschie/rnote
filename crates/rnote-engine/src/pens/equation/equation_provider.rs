@@ -15,12 +15,12 @@ pub enum EquationProvider {
 
 impl Default for EquationProvider {
     fn default() -> Self {
-        EquationProvider::LatexEquationProvider(LatexEquationProvider {})
+        EquationProvider::LatexEquationProvider(LatexEquationProvider {}, LatexExecutableChecker {})
     }
 }
 
 impl ExecutableChecker for EquationProvider {
-    pub fn is_available() -> bool {
+    fn is_available(&self) -> bool {
         match self {
             EquationProvider::LatexEquationProvider(_, exec) => exec.is_available(),
         }
@@ -35,7 +35,7 @@ impl EquationProviderTrait for EquationProvider {
         page_width: f64,
     ) -> Result<String, String> {
         match self {
-            EquationProvider::LatexEquationProvider(latex_equation_provider) => {
+            EquationProvider::LatexEquationProvider(latex_equation_provider, _) => {
                 latex_equation_provider.generate_svg(code, font_size, page_width)
             }
         }
