@@ -5,6 +5,8 @@ use crate::pens::equation::equation_provider::{EquationProvider, EquationProvide
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(default, rename = "equation_config")]
 pub struct EquationConfig {
+    // Add ,default, skip_deserializing when conversion issues should arise
+    // TODO: Above comment is temporary
     #[serde(rename = "equation_provider")]
     pub equation_provider: EquationProvider,
     #[serde(rename = "font_size")]

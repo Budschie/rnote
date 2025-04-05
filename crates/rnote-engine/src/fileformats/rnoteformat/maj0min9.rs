@@ -1,6 +1,6 @@
 // Imports
 use super::maj0min6::RnoteFileMaj0Min6;
-use crate::Camera;
+use crate::{pens::equation::latex_equation_provider, Camera};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

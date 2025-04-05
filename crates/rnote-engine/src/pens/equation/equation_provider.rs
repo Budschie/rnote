@@ -1,28 +1,25 @@
 use serde::{Deserialize, Serialize};
 
-use super::{
-    executable_checks::{ExecutableChecker, LatexExecutableChecker},
-    latex_equation_provider::LatexEquationProvider,
-};
+use super::{executable_checks::ExecutableChecker, latex_equation_provider::LatexEquationProvider};
 
 /// An equation provider compiles equations such as LaTeX and returns SVG code.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename = "equation_provider")]
 pub enum EquationProvider {
     #[serde(rename = "latex_equation_provider")]
-    LatexEquationProvider(LatexEquationProvider, LatexExecutableChecker),
+    LatexEquationProvider(LatexEquationProvider),
 }
 
 impl Default for EquationProvider {
     fn default() -> Self {
-        EquationProvider::LatexEquationProvider(LatexEquationProvider {}, LatexExecutableChecker {})
+        EquationProvider::LatexEquationProvider(LatexEquationProvider {})
     }
 }
 
 impl ExecutableChecker for EquationProvider {
     fn is_available(&self) -> bool {
         match self {
-            EquationProvider::LatexEquationProvider(_, exec) => exec.is_available(),
+            EquationProvider::LatexEquationProvider(exec) => exec.is_available(),
         }
     }
 }
@@ -35,7 +32,7 @@ impl EquationProviderTrait for EquationProvider {
         page_width: f64,
     ) -> Result<String, String> {
         match self {
-            EquationProvider::LatexEquationProvider(latex_equation_provider, _) => {
+            EquationProvider::LatexEquationProvider(latex_equation_provider) => {
                 latex_equation_provider.generate_svg(code, font_size, page_width)
             }
         }

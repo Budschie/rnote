@@ -12,7 +12,7 @@ use gtk4::{glib, glib::clone, subclass::prelude::*, CompositeTemplate};
 use gtk4::{ListBoxRow, Widget, Window};
 use rnote_engine::engine::EngineViewMut;
 use rnote_engine::pens::equation::equation_provider::EquationProvider;
-use rnote_engine::pens::equation::executable_checks::{ExecutableChecker, LatexExecutableChecker};
+use rnote_engine::pens::equation::executable_checks::ExecutableChecker;
 use rnote_engine::pens::equation::latex_equation_provider::LatexEquationProvider;
 use rnote_engine::pens::equation::{EquationCompilationPolicy, EquationState};
 use rnote_engine::pens::pensconfig::equationconfig::EquationConfig;
@@ -113,10 +113,7 @@ impl RnEquationPage {
 
     fn convert_row_index_to_equation_provider(row_index: i32) -> EquationProvider {
         match row_index {
-            0 => EquationProvider::LatexEquationProvider(
-                LatexEquationProvider {},
-                LatexExecutableChecker {},
-            ),
+            0 => EquationProvider::LatexEquationProvider(LatexEquationProvider {}),
             _ => panic!("More than one row is currently not implemented yet."),
         }
     }
@@ -164,7 +161,7 @@ impl RnEquationPage {
 
     pub(crate) fn read_equation_type(&self, equation_provider: &EquationProvider) {
         match equation_provider {
-            EquationProvider::LatexEquationProvider(_, _) => {
+            EquationProvider::LatexEquationProvider(_) => {
                 self.imp()
                     .equationtype_listbox
                     .select_row(Some(&*self.imp().equationtype_latex_row));
@@ -213,7 +210,7 @@ impl RnEquationPage {
         imp.equationtype_listbox.connect_row_selected(clone!(@weak self as equationpage, @weak appwindow => move |_, _| {
 			if let Some(equation_type) = equationpage.equation_type() {
 				let icon_name = match equation_type {
-					EquationProvider::LatexEquationProvider(_, _) => {
+					EquationProvider::LatexEquationProvider(_) => {
 						"face-cool"
 					}
 				};
